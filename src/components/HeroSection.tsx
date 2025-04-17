@@ -4,12 +4,13 @@ import { Button } from "./ui/button"
 
 export default function HeroSection() {
   return (
-    <div className="relative">
+    <div className="relative pt-[98px]"> {/* Adjust this value based on your navbar height */}
       {/* Hero Background */}
-      <div className="absolute top-0 left-0 w-full h-[500px] bg-cover bg-center z-0" style={{ backgroundImage: "url('/hero.jpg')" }} />
+      <div className="absolute top-0 left-0 w-full h-[600px] bg-cover bg-center z-0" 
+           style={{ backgroundImage: "url('/hero.jpg')" }} />
 
       {/* Hero Content */}
-      <section className="relative z-10 text-white py-16 px-6 flex flex-col items-center justify-center min-h-[400px] text-center">
+      <section className="relative z-10 text-white py-16 px-6 flex flex-col items-center justify-center min-h-[500px] text-center">
         <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#ffde00] mb-4">
           Pakistan's #1 Marketplace for Dairy Farm Animals
         </h1>
@@ -25,7 +26,7 @@ export default function HeroSection() {
             className="flex-1 px-4 py-3 text-base rounded-md text-black focus:outline-none"
           />
           <Button className="bg-[#4a8f29] text-white px-6 py-3 rounded-md sm:ml-2 w-full sm:w-auto">
-            Search
+            Search  
           </Button>
         </div>
 

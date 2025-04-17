@@ -8,6 +8,22 @@ import { Button } from "./ui/button";
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 10) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -37,9 +53,9 @@ export default function Navbar() {
   ];
 
   return (
-    <div className="relative z-50">
+    <div className="fixed top-0 left-0 right-0 z-50">
       {/* Top Bar */}
-      <div className="flex justify-between items-center px-6 py-2 text-black bg-transparent text-sm">
+      <div className="flex justify-between items-center px-6 py-2  text-white  font-bold">
         <div className="flex items-center gap-2">
           <span>📱</span> Download App via SMS
         </div>
@@ -54,7 +70,7 @@ export default function Navbar() {
       </div>
 
       {/* Main Navigation */}
-      <nav className="main-nav flex justify-between items-center px-6 py-4 w-full relative">
+      <nav className={`main-nav flex justify-between items-center px-6 py-4 w-full transition-all duration-300 ${isScrolled ? 'bg-white' : 'bg-transparent'}`}>
         {/* Logo */}
         <Link href="/">
           <img src="/logo.png" alt="JM Logo" className="h-12" />
@@ -62,7 +78,7 @@ export default function Navbar() {
 
         {/* Hamburger for mobile */}
         <div
-          className="hamburger block md:hidden text-black text-2xl cursor-pointer"
+          className="hamburger block md:hidden text-white text-2xl cursor-pointer"
           onClick={() => setIsOpen(!isOpen)}
         >
           ☰
@@ -74,7 +90,9 @@ export default function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              className={`text-black font-semibold relative ${
+              className={`font-semibold relative ${
+                isScrolled ? 'text-white' : 'text-white'
+              } ${
                 pathname === link.href ? "text-orange-500 font-bold" : ""
               } hover:text-yellow-400 transition-colors`}
             >
