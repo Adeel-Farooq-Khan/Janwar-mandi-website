@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Button } from "./ui/button";
 
-export default function Navbar() {
+export default function LightNavbar() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
@@ -53,10 +53,10 @@ export default function Navbar() {
   ];
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50">
-      <div className={`transition-all duration-300 ${isScrolled ? "bg-white shadow-md" : "bg-transparent"}`}>
+    <div className="fixed top-0 left-0 right-0 z-50 shadow-sm shadow-opacity-50" style={{ boxShadow: "0 2px 10px rgba(0, 0, 0, 0.2)" }}>  
+      <div className={`transition-all duration-300 bg-white ${isScrolled ? "shadow-md" : ""}`}>
         {/* Top Bar */}
-        <div className={`flex justify-between items-center px-6 py-2 font-bold ${isScrolled ? "text-black" : "text-white"}`}>
+        <div className="flex justify-between items-center px-6 py-2 font-bold text-black">
           <div className="flex items-center gap-2">
             <span>📱</span> Download App via SMS
           </div>
@@ -79,7 +79,7 @@ export default function Navbar() {
 
           {/* Hamburger for mobile */}
           <div
-            className={`hamburger block md:hidden cursor-pointer text-2xl ${isScrolled ? "text-black" : "text-white"}`}
+            className="hamburger block md:hidden cursor-pointer text-2xl text-black"
             onClick={() => setIsOpen(!isOpen)}
           >
             ☰
@@ -91,9 +91,7 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`font-semibold relative ${
-                  isScrolled ? "text-black" : "text-white"
-                } ${
+                className={`font-semibold relative text-black ${
                   pathname === link.href ? "text-orange-500 font-bold" : ""
                 } hover:text-yellow-400 transition-colors`}
               >
