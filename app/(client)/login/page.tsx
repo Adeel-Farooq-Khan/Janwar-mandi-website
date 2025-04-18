@@ -17,18 +17,46 @@ export default function Login() {
   const [resetLoading, setResetLoading] = useState(false)
   const [resetError, setResetError] = useState("")
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault()
-    setError("")
-    setIsLoading(true)
-
-    // Mock login functionality
-    setTimeout(() => {
-      setIsLoading(false)
-      // You would add your own authentication logic here
-      console.log("Login with:", { email, password, rememberMe })
-    }, 1500)
-  }
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+  
+    try {
+      setIsLoading(true);
+  
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
+  
+      const data = await res.json();
+  
+      if (!res.ok) {
+        throw new Error(data.error || "Something went wrong");
+      }
+  
+      // Optional: Store token in localStorage or cookies
+      localStorage.setItem("token", data.token);
+  
+      alert("Login successful!");
+      // You can redirect to dashboard or home:
+      // router.push("/dashboard");
+    }  catch (error) {
+      if (error instanceof Error) {
+          setError(error.message);
+      } else {
+          setError("An unknown error occurred");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
 
   const handleGoogleLogin = () => {
     setError("")

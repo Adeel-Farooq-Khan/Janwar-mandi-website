@@ -8,27 +8,64 @@ export default function Signup() {
   const [fullName, setFullName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
 
-  const handleSignup = (e) => {
-    e.preventDefault()
-    setError("")
-    setIsLoading(true)
-    
-    // Mock signup functionality
-    setTimeout(() => {
-      setIsLoading(false)
-      // You would add your own authentication logic here
-      console.log("Signup with:", { fullName, email, password })
-    }, 1500)
-  }
+  const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+  
+    if (password !== confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
+  
+    try {
+      setIsLoading(true);
+  
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: fullName,
+          email,
+          password,
+          confirmPassword,
+        }),
+      });
+  
+      const data = await res.json();
+  
+      if (!res.ok) {
+        throw new Error(data.error || "Something went wrong");
+      }
+  
+      alert("Account created successfully!");
+      // Optionally redirect or reset form fields
+    }  catch (error) {
+      if (error instanceof Error) {
+          setError(error.message);
+      } else {
+          setError("An unknown error occurred");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword((prev) => !prev);
+  };
+
 
   const handleGoogleSignup = () => {
     setError("")
     setIsLoading(true)
-    
+
     // Mock Google signup
     setTimeout(() => {
       setIsLoading(false)
@@ -39,7 +76,7 @@ export default function Signup() {
   const handleFacebookSignup = () => {
     setError("")
     setIsLoading(true)
-    
+
     // Mock Facebook signup
     setTimeout(() => {
       setIsLoading(false)
@@ -80,7 +117,7 @@ export default function Signup() {
 
           {/* Social login buttons */}
           <div className="flex flex-col gap-4 mb-6">
-            <button 
+            <button
               className="flex items-center justify-center py-3 px-4 rounded-lg font-medium transition-all border border-gray-200 bg-white text-gray-800 hover:bg-gray-50 disabled:opacity-70 disabled:cursor-not-allowed"
               onClick={handleGoogleSignup}
               disabled={isLoading}
@@ -89,7 +126,7 @@ export default function Signup() {
               <span>Continue with Google</span>
             </button>
 
-            <button 
+            <button
               className="flex items-center justify-center py-3 px-4 rounded-lg font-medium transition-all border border-gray-200 bg-white text-gray-800 hover:bg-gray-50 disabled:opacity-70 disabled:cursor-not-allowed"
               onClick={handleFacebookSignup}
               disabled={isLoading}
@@ -151,12 +188,34 @@ export default function Signup() {
                 disabled={isLoading}
                 className="w-full py-3 pl-11 pr-10 border border-gray-200 rounded-lg text-base transition-all focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10"
               />
-              <button 
-                type="button" 
-                onClick={togglePasswordVisibility} 
+              <button
+                type="button"
+                onClick={togglePasswordVisibility}
                 className="absolute right-4 bg-transparent border-none text-gray-500 cursor-pointer text-base"
               >
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
+            </div>
+
+            <div className="relative flex items-center">
+              <div className="absolute left-4 text-gray-500">
+                <FaLock />
+              </div>
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                placeholder="Confirm password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+                disabled={isLoading}
+                className="w-full py-3 pl-11 pr-10 border border-gray-200 rounded-lg text-base transition-all focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10"
+              />
+              <button
+                type="button"
+                onClick={toggleConfirmPasswordVisibility}
+                className="absolute right-4 bg-transparent border-none text-gray-500 cursor-pointer text-base"
+              >
+                {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
               </button>
             </div>
 
@@ -176,14 +235,15 @@ export default function Signup() {
               </label>
             </div>
 
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               className="py-3 px-4 bg-blue-500 text-white border-none rounded-lg font-medium cursor-pointer transition-colors hover:bg-blue-600 disabled:bg-blue-300 disabled:cursor-not-allowed mt-4"
               disabled={isLoading}
             >
               {isLoading ? "Creating account..." : "Create account"}
             </button>
           </form>
+
 
           <div className="text-center mt-8 text-sm text-gray-500">
             <p>
