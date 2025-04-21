@@ -1,4 +1,5 @@
-const Navbar = ({ user, showProfileMenu, toggleProfileMenu, handleSignOut }) => {
+// Option 1: Declare and then export default
+const DashboardNavbar = ({ user, showProfileMenu, toggleProfileMenu, handleSignOut }) => {
     return (
       <div className="bg-white shadow-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto flex items-center justify-between px-8 py-3 h-16">
@@ -81,3 +82,5 @@ const Navbar = ({ user, showProfileMenu, toggleProfileMenu, handleSignOut }) => 
       </div>
     )
   }
+  
+  export default DashboardNavbar;

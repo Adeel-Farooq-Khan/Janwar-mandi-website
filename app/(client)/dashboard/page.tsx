@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react"
 import { FaPlus, FaTimes, FaUpload, FaFilter, FaEdit, FaTrash, FaHeart, FaMapMarkerAlt } from "react-icons/fa"
+import DashboardNavbar from "@/components/Dashboardnavbar"
+import AnimalCard from "@/components/AnimalCard"
 
 // Mock data to replace Firebase functionality
 const MOCK_CATEGORIES = [
@@ -349,7 +351,7 @@ export default function Dashboard() {
   
     return (
       <div className="min-h-screen bg-gray-50">
-        <Das
+        <DashboardNavbar
           user={user}
           showProfileMenu={showProfileMenu}
           toggleProfileMenu={toggleProfileMenu}

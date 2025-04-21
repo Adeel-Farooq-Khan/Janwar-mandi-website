@@ -211,7 +211,7 @@ export default function Footer() {
       </div>
 
       {/* Copyright */}
-      <div className="footer-bottom flex justify-between items-center flex-wrap max-w-screen-xl mx-auto px-6 py-4">
+      <div className="footer-bottom flex justify-between items-center flex-wrap max-w-screen-xl mx-auto px-6 py-4 sm:text-center">
         <p className="text-sm opacity-80">
           © {currentYear} Janwar Mandi. All rights reserved.
         </p>
