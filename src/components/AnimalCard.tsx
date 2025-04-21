@@ -1,3 +1,5 @@
+import { FaEdit, FaHeart, FaMapMarkerAlt, FaTrash } from "react-icons/fa";
+
 const AnimalCard = ({ animal, currentUserId, onEdit, onDelete, onToggleFavorite }) => {
     const isOwner = animal.userId === currentUserId
     const formattedDate = animal.createdAt.toLocaleDateString()
@@ -89,3 +91,5 @@ const AnimalCard = ({ animal, currentUserId, onEdit, onDelete, onToggleFavorite 
       </div>
     )
   }
+
+  export default AnimalCard;

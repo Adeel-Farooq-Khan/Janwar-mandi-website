@@ -3,8 +3,10 @@
 import { useState } from "react"
 import Link from "next/link"
 import { FaGoogle, FaFacebook, FaEnvelope, FaLock, FaEye, FaEyeSlash, FaUser } from "react-icons/fa"
+import { useRouter } from "next/navigation"; // Import useRouter
 
 export default function Signup() {
+  const router = useRouter(); 
   const [fullName, setFullName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -44,7 +46,8 @@ export default function Signup() {
         throw new Error(data.error || "Something went wrong");
       }
   
-      alert("Account created successfully!");
+      alert("Account created successfully!"); 
+      router.push("/dashboard");
       // Optionally redirect or reset form fields
     }  catch (error) {
       if (error instanceof Error) {
@@ -89,21 +92,25 @@ export default function Signup() {
   }
 
   return (
-    <div className="flex w-full h-screen overflow-hidden">
-      {/* Left side - Image */}
-      <div className="relative w-1/2 h-full overflow-hidden">
-        <img src="/signup-image.jpg" alt="Sign up" className="w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black/50 flex items-center justify-center p-8">
-          <div className="text-white text-center max-w-4/5">
-            <h1 className="text-4xl font-bold mb-4 drop-shadow-md">Join Our Community</h1>
-            <p className="text-xl opacity-90 drop-shadow">Create an account to get started</p>
-          </div>
-        </div>
+    <div className="flex flex-col lg:flex-row w-full h-full lg:h-screen overflow-hidden">
+  {/* Left side - Image */}
+  <div className="relative w-full lg:w-1/2 h-64 lg:h-full overflow-hidden">
+    <img src="/signup-image.jpg" alt="Sign up" className="w-full h-full object-cover" />
+    <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black/50 flex items-center justify-center p-8">
+      <div className="text-white text-center max-w-4/5">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 lg:mb-4 drop-shadow-md">
+          Join Our Community
+        </h1>
+        <p className="text-base sm:text-lg lg:text-xl opacity-90 drop-shadow">
+          Create an account to get started
+        </p>
       </div>
+    </div>
+  </div>
 
       {/* Right side - Form */}
-      <div className="w-1/2 h-full flex items-center justify-center bg-white p-8 overflow-y-auto">
-        <div className="w-full max-w-md p-4">
+      <div className="w-full lg:w-1/2 h-full flex items-center justify-center bg-white p-4 sm:p-6 lg:p-8 overflow-y-auto">
+    <div className="w-full max-w-md p-2 sm:p-4">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-gray-800 mb-2">Create Account</h1>
             <p className="text-gray-600">Sign up to get started</p>
