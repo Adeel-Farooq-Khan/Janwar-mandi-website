@@ -1,90 +1,137 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Link from "next/link"
-import { FaGoogle, FaFacebook, FaEnvelope, FaLock, FaEye, FaEyeSlash } from "react-icons/fa"
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation"; // Import useRouter
+import {
+  FaGoogle,
+  FaFacebook,
+  FaEnvelope,
+  FaLock,
+  FaEye,
+  FaEyeSlash,
+} from "react-icons/fa";
 
 export default function Login() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [showPassword, setShowPassword] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState("")
-  const [rememberMe, setRememberMe] = useState(false)
-  const [resetEmailSent, setResetEmailSent] = useState(false)
-  const [showForgotPassword, setShowForgotPassword] = useState(false)
-  const [resetEmail, setResetEmail] = useState("")
-  const [resetLoading, setResetLoading] = useState(false)
-  const [resetError, setResetError] = useState("")
+  const router = useRouter(); // Initialize router
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
+  const [resetEmailSent, setResetEmailSent] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
+  const [resetLoading, setResetLoading] = useState(false);
+  const [resetError, setResetError] = useState("");
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault()
-    setError("")
-    setIsLoading(true)
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
-    // Mock login functionality
-    setTimeout(() => {
-      setIsLoading(false)
-      // You would add your own authentication logic here
-      console.log("Login with:", { email, password, rememberMe })
-    }, 1500)
-  }
+    try {
+      setIsLoading(true);
+
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Something went wrong");
+      }
+
+      // Store token in localStorage
+      localStorage.setItem("token", data.token);
+
+      // Redirect to dashboard
+      router.push("/dashboard");
+    } catch (error) {
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError("An unknown error occurred");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleGoogleLogin = () => {
-    setError("")
-    setIsLoading(true)
-    
+    setError("");
+    setIsLoading(true);
+
     // Mock Google login
     setTimeout(() => {
-      setIsLoading(false)
-      console.log("Logged in with Google")
-    }, 1500)
-  }
+      setIsLoading(false);
+      console.log("Logged in with Google");
+      // Redirect to dashboard after successful Google login
+      router.push("/dashboard");
+    }, 1500);
+  };
 
   const handleFacebookLogin = () => {
-    setError("")
-    setIsLoading(true)
-    
+    setError("");
+    setIsLoading(true);
+
     // Mock Facebook login
     setTimeout(() => {
-      setIsLoading(false)
-      console.log("Logged in with Facebook")
-    }, 1500)
-  }
+      setIsLoading(false);
+      console.log("Logged in with Facebook");
+      // Redirect to dashboard after successful Facebook login
+      router.push("/dashboard");
+    }, 1500);
+  };
 
   const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword)
-  }
+    setShowPassword(!showPassword);
+  };
 
   const handleForgotPassword = (e: React.FormEvent) => {
-    e.preventDefault()
-    setResetError("")
-    setResetLoading(true)
+    e.preventDefault();
+    setResetError("");
+    setResetLoading(true);
 
     // Mock password reset functionality
     setTimeout(() => {
-      setResetEmailSent(true)
-      setResetLoading(false)
-      console.log("Password reset email sent to:", resetEmail)
-    }, 1500)
-  }
+      setResetEmailSent(true);
+      setResetLoading(false);
+      console.log("Password reset email sent to:", resetEmail);
+    }, 1500);
+  };
 
   const toggleForgotPassword = () => {
-    setShowForgotPassword(!showForgotPassword)
-    setResetEmail(email) // Pre-fill with the email from login form
-    setResetEmailSent(false)
-    setResetError("")
-  }
+    setShowForgotPassword(!showForgotPassword);
+    setResetEmail(email); // Pre-fill with the email from login form
+    setResetEmailSent(false);
+    setResetError("");
+  };
 
   return (
     <div className="flex w-full h-screen overflow-hidden">
       {/* Left side - Image */}
       <div className="relative w-1/2 h-full overflow-hidden">
-        <img src="/signup-image.jpg" alt="Login" className="w-full h-full object-cover" />
+        <img
+          src="/signup-image.jpg"
+          alt="Login"
+          className="w-full h-full object-cover"
+        />
         <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black/50 flex items-center justify-center p-8">
           <div className="text-white text-center max-w-4/5">
-            <h1 className="text-4xl font-bold mb-4 drop-shadow-md">Welcome Back</h1>
-            <p className="text-xl opacity-90 drop-shadow">Sign in to continue your journey with us</p>
+            <h1 className="text-4xl font-bold mb-4 drop-shadow-md">
+              Welcome Back
+            </h1>
+            <p className="text-xl opacity-90 drop-shadow">
+              Sign in to continue your journey with us
+            </p>
           </div>
         </div>
       </div>
@@ -105,7 +152,7 @@ export default function Login() {
 
           {/* Social login buttons */}
           <div className="flex flex-col gap-4 mb-6">
-            <button 
+            <button
               className="flex items-center justify-center py-3 px-4 rounded-lg font-medium transition-all border border-gray-200 bg-white text-gray-800 hover:bg-gray-50 disabled:opacity-70 disabled:cursor-not-allowed"
               onClick={handleGoogleLogin}
               disabled={isLoading}
@@ -114,7 +161,7 @@ export default function Login() {
               <span>Continue with Google</span>
             </button>
 
-            <button 
+            <button
               className="flex items-center justify-center py-3 px-4 rounded-lg font-medium transition-all border border-gray-200 bg-white text-gray-800 hover:bg-gray-50 disabled:opacity-70 disabled:cursor-not-allowed"
               onClick={handleFacebookLogin}
               disabled={isLoading}
@@ -161,9 +208,9 @@ export default function Login() {
                 disabled={isLoading}
                 className="w-full py-3 pl-11 pr-10 border border-gray-200 rounded-lg text-base transition-all focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10"
               />
-              <button 
-                type="button" 
-                onClick={togglePasswordVisibility} 
+              <button
+                type="button"
+                onClick={togglePasswordVisibility}
                 className="absolute right-4 bg-transparent border-none text-gray-500 cursor-pointer text-base"
               >
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
@@ -172,25 +219,25 @@ export default function Login() {
 
             <div className="flex justify-between items-center text-sm">
               <label className="flex items-center gap-2 cursor-pointer">
-                <input 
-                  type="checkbox" 
-                  checked={rememberMe} 
-                  onChange={(e) => setRememberMe(e.target.checked)} 
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
                   className="rounded text-blue-500 focus:ring-blue-500"
                 />
                 <span>Remember me</span>
               </label>
-              <button 
-                type="button" 
-                onClick={toggleForgotPassword} 
+              <button
+                type="button"
+                onClick={toggleForgotPassword}
                 className="text-blue-500 hover:underline"
               >
                 Forgot password?
               </button>
             </div>
 
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               className="py-3 px-4 bg-blue-500 text-white border-none rounded-lg font-medium cursor-pointer transition-colors hover:bg-blue-600 disabled:bg-blue-300 disabled:cursor-not-allowed mt-4"
               disabled={isLoading}
             >
@@ -201,7 +248,10 @@ export default function Login() {
           <div className="text-center mt-8 text-sm text-gray-500">
             <p>
               Don't have an account?{" "}
-              <Link href="/signup" className="text-blue-500 font-medium hover:underline">
+              <Link
+                href="/signup"
+                className="text-blue-500 font-medium hover:underline"
+              >
                 Sign up
               </Link>
             </p>
@@ -214,8 +264,10 @@ export default function Login() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg w-11/12 max-w-lg shadow-lg overflow-hidden">
             <div className="flex justify-between items-center p-6 border-b border-gray-100">
-              <h2 className="text-2xl font-semibold text-gray-800">Reset Password</h2>
-              <button 
+              <h2 className="text-2xl font-semibold text-gray-800">
+                Reset Password
+              </h2>
+              <button
                 className="text-3xl text-gray-400 hover:text-gray-700 transition-colors"
                 onClick={toggleForgotPassword}
               >
@@ -226,8 +278,11 @@ export default function Login() {
             <div className="p-6">
               {resetEmailSent ? (
                 <div className="text-center py-4">
-                  <p className="text-green-700 mb-6">Password reset email sent! Check your inbox for further instructions.</p>
-                  <button 
+                  <p className="text-green-700 mb-6">
+                    Password reset email sent! Check your inbox for further
+                    instructions.
+                  </p>
+                  <button
                     className="py-3 px-4 bg-blue-500 text-white border-none rounded-lg font-medium cursor-pointer transition-colors hover:bg-blue-600"
                     onClick={toggleForgotPassword}
                   >
@@ -236,7 +291,10 @@ export default function Login() {
                 </div>
               ) : (
                 <form onSubmit={handleForgotPassword}>
-                  <p className="mb-6 text-gray-600">Enter your email address and we'll send you a link to reset your password.</p>
+                  <p className="mb-6 text-gray-600">
+                    Enter your email address and we'll send you a link to reset
+                    your password.
+                  </p>
 
                   {resetError && (
                     <div className="bg-red-100 text-red-500 p-3 rounded-lg mb-6 text-sm">
@@ -259,8 +317,8 @@ export default function Login() {
                     />
                   </div>
 
-                  <button 
-                    type="submit" 
+                  <button
+                    type="submit"
                     className="w-full py-3 px-4 bg-blue-500 text-white border-none rounded-lg font-medium cursor-pointer transition-colors hover:bg-blue-600 disabled:bg-blue-300 disabled:cursor-not-allowed"
                     disabled={resetLoading}
                   >
@@ -273,5 +331,5 @@ export default function Login() {
         </div>
       )}
     </div>
-  )
+  );
 }

@@ -1,16 +1,30 @@
 "use client"
 
-import { useState } from "react"
+import { useRef } from "react"
 
 export default function CategoriesSection() {
-  const [activeDot, setActiveDot] = useState(0)
+  const scrollRef = useRef<HTMLDivElement>(null)
 
   const categories = [
-    { name: "Dairy Cows", imgClass: "dairy-img", bgImage: "/card1.png" },
-    { name: "Qurbani", imgClass: "qurbani-img", bgImage: "/card2.png" },
-    { name: "Goats", imgClass: "goats-img", bgImage: "/card3.png" },
-    { name: "Hens", imgClass: "hens-img", bgImage: "/card4.png" },
+    { name: "Dairy Cows", bgImage: "/card1.png" },
+    { name: "Qurbani", bgImage: "/card2.png" },
+    { name: "Goats", bgImage: "/card3.png" },
+    { name: "Hens", bgImage: "/card4.png" },
+    { name: "Camels", bgImage: "/camel.png" },
+    { name: "Buffaloes", bgImage: "/buffalor.jpg" },
+    { name: "Sheep", bgImage: "/sheep.jpg" },
   ]
+
+  const scroll = (direction: "left" | "right") => {
+    const container = scrollRef.current
+    if (container) {
+      const scrollAmount = container.offsetWidth / 1.2 // scroll 1 card width
+      container.scrollBy({
+        left: direction === "left" ? -scrollAmount : scrollAmount,
+        behavior: "smooth",
+      })
+    }
+  }
 
   return (
     <section className="py-16 px-4 bg-gray-50">
@@ -19,13 +33,19 @@ export default function CategoriesSection() {
         <p className="text-lg text-gray-600 max-w-2xl mx-auto">Find the perfect animal for your needs</p>
       </div>
 
-      <div className="relative max-w-6xl mx-auto flex items-center">
+      <div className="relative max-w-6xl mx-auto">
         {/* Left Arrow */}
-        <button className="absolute left-2 z-10 w-10 h-10 flex items-center justify-center bg-white text-gray-800 rounded-full shadow-md hover:bg-blue-500 hover:text-white transition-all duration-300">
+        <button
+          onClick={() => scroll("left")}
+          className="absolute -left-4 top-1/2 transform -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center bg-white text-gray-800 rounded-full shadow-md hover:bg-blue-500 hover:text-white transition-all duration-300"
+        >
           ❮
         </button>
 
-        <div className="flex gap-6 overflow-x-auto scrollbar-hide w-full justify-center">
+        <div
+          ref={scrollRef}
+          className="flex gap-6 overflow-x-auto scroll-smooth scrollbar-hide px-2 md:px-0"
+        >
           {categories.map((category, index) => (
             <div
               key={index}
@@ -34,7 +54,7 @@ export default function CategoriesSection() {
               <div
                 className="h-56 bg-cover bg-center"
                 style={{ backgroundImage: `url('${category.bgImage}')` }}
-              ></div>
+              />
               <div className="h-24 flex items-center justify-center text-xl font-semibold text-gray-700">
                 {category.name}
               </div>
@@ -43,23 +63,12 @@ export default function CategoriesSection() {
         </div>
 
         {/* Right Arrow */}
-        <button className="absolute right-2 z-10 w-10 h-10 flex items-center justify-center bg-white text-gray-800 rounded-full shadow-md hover:bg-blue-500 hover:text-white transition-all duration-300">
+        <button
+          onClick={() => scroll("right")}
+          className="absolute -right-4 top-1/2 transform -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center bg-white text-gray-800 rounded-full shadow-md hover:bg-blue-500 hover:text-white transition-all duration-300"
+        >
           ❯
         </button>
-      </div>
-
-      {/* Dots */}
-      <div className="flex justify-center mt-8 gap-2">
-        {categories.map((_, dot) => (
-          <button
-            key={dot}
-            className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
-              activeDot === dot ? "bg-blue-500 scale-110" : "bg-gray-300"
-            }`}
-            onClick={() => setActiveDot(dot)}
-            aria-label={`Go to slide ${dot + 1}`}
-          />
-        ))}
       </div>
     </section>
   )

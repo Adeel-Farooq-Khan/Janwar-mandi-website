@@ -6,23 +6,25 @@ function AboutUS() {
   return (
     <>
     <Navbar />
-      <section
-        className="relative bg-cover bg-center flex items-center w-full h-[500px] px-10 pt-8"
-        style={{
-          backgroundImage:
-            `linear-gradient(to left, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.5) 20%, rgba(0,0,0,0.2) 30%, rgba(0,0,0,0.2) 70%, rgba(0,0,0,0.5) 80%, rgba(0,0,0,0.5) 100%), url('/aboutushero.png')`,
-        }}
-      >
-        <div className="text-white text-center ">
-          <h1 className="text-[60px] font-bold text-center ">
-            <span className="text-yellow-400 text-center" >About </span> US
-          </h1>
-        </div>
-      </section>
+    <section
+  className="relative bg-cover bg-center flex justify-center items-center w-full h-[500px] px-10 pt-8"
+  style={{
+    backgroundImage:
+      `linear-gradient(to left, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.5) 20%, rgba(0,0,0,0.2) 30%, rgba(0,0,0,0.2) 70%, rgba(0,0,0,0.5) 80%, rgba(0,0,0,0.5) 100%), url('/aboutushero.png')`,
+  }}
+>
+  <div className="text-white text-center">
+    <h1 className="text-[60px] font-bold">
+      <span className="text-yellow-400">About </span> US
+    </h1>
+  </div>
+</section>
+
 
       <section className="flex flex-col items-center justify-center w-[90%] max-w-[900px] mx-auto my-10 px-5">
         <h1 className="text-[28px] text-gray-700 mb-2 text-center welcome-heading font-semibold">Welcome To Janwar Mandi</h1>
-        <p className="text-[16px] leading-relaxed text-black text-justify mb-4">
+        <p className="text-[16px] leading-relaxed text-black text-center mb-4">
+
           Janwar Mandi is Pakistan’s leading online marketplace for dairy farm
           animals, qurbani livestock, and farm accessories. We connect buyers
           and sellers from across the country, making it easier than ever to
@@ -31,7 +33,8 @@ function AboutUS() {
           secure communication, giving you the confidence to choose the best
           livestock from the comfort of your home.
         </p>
-        <p className="text-[16px] leading-relaxed text-black text-justify mb-4">
+        <p className="text-[16px] leading-relaxed text-black text-center mb-4">
+
           At Janwar Mandi, we understand the importance of healthy and well-bred
           animals, whether it’s for daily dairy needs or for the sacred occasion
           of qurbani. That’s why we provide detailed animal profiles, including
@@ -40,7 +43,8 @@ function AboutUS() {
           connect with sellers instantly!
         </p>
         <h1 className="text-[28px] text-gray-700 mb-2 text-center font-semibold">Our Mission</h1>
-        <p className="text-[16px] leading-relaxed text-black text-justify mb-4">
+        <p className="text-[16px] leading-relaxed text-black text-center mb-4">
+
           Our mission is to digitize the livestock industry in Pakistan,
           offering farmers, breeders, and buyers a seamless platform to trade.
           Whether you’re looking for cows, goats, camels, hens, or farm

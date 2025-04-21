@@ -1,13 +1,14 @@
 import AppDownload from "@/components/AppDownload";
 import Footer from "@/components/Footer";
-import Navbar from "@/components/Navbar";
+import LightNavbar from "@/components/LightNavbar";
 
 function ContactUs() {
   return (
     <>
-      <Navbar />
+      <LightNavbar />
       
-      <h1 className="text-center text-[50px] font-bold mt-8 mb-8 sm:text-[42px] md:text-[36px] lg:text-[50px] ">
+      <h1 className="text-center text-[50px] font-bold mt-[120px] mb-8 sm:text-[42px] md:text-[36px] lg:text-[50px] ">
+
         <span className="text-green-700">Contact </span>
         <span className="text-yellow-500">Us</span>
       </h1>
