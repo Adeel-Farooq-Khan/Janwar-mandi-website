@@ -1,6 +1,5 @@
 "use client";
 
-import { useRef } from "react";
 
 export default function CategoriesSection() {
   const categories = [
