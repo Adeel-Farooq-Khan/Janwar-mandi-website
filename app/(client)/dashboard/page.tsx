@@ -40,22 +40,7 @@ const MOCK_ANIMALS = [
     createdAt: new Date(2024, 3, 10),
     favorite: false
   },
-  {
-    id: "animal2",
-    title: "Mountain Goat",
-    price: 15000,
-    type: "goat",
-    location: "Islamabad, Federal",
-    color: "Brown",
-    age: "1.5 years",
-    weight: "45 kg",
-    description: "Healthy mountain goat, great for both milk and meat.",
-    imageBase64: "/api/placeholder/400/300",
-    userId: "other123",
-    userEmail: "other@example.com",
-    createdAt: new Date(2024, 3, 15),
-    favorite: true
-  },
+
   {
     id: "animal3",
     title: "Bactrian Camel",
@@ -360,7 +345,7 @@ export default function Dashboard() {
   
         <div className="max-w-7xl mx-auto px-4 sm:px-8 py-8">
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-bold text-gray-800">Animal Marketplace</h1>
+            <h1 className="text-2xl font-bold text-gray-800"></h1>
             <button 
               className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white px-5 py-3 rounded-lg font-medium transition-colors"
               onClick={toggleAddAnimalForm}

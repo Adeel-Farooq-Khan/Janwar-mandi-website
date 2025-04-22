@@ -10,8 +10,8 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="site-footer bg-gradient-to-b from-[#2E7D32] to-[#54E35B] text-white py-10 md:py-12 lg:py-16">
-      <div className="footer-container flex flex-wrap justify-between max-w-screen-xl mx-auto px-6">
+    <footer className="site-footer bg-gradient-to-b from-[#2E7D32] to-[#54E35B] text-white py-10 md:py-12 lg:py-16 px-32">
+      <div className="footer-container flex flex-wrap justify-between  mx-auto ">
         {/* Company Info */}
         <div className="footer-company flex-1 min-w-[250px] mb-8">
           <div className="footer-logo flex items-center mb-4">
@@ -175,7 +175,7 @@ export default function Footer() {
       </div>
 
       {/* Social Media and App Downloads */}
-      <div className="footer-social flex flex-wrap justify-between items-center max-w-screen-xl mx-auto px-6 py-6 border-t border-b border-white/10">
+      <div className="footer-social flex flex-wrap justify-between items-center mx-auto  py-6 border-t border-b border-white/10">
         <div className="social-icons flex gap-6 mb-6">
           <a
             href="#"
@@ -211,7 +211,7 @@ export default function Footer() {
       </div>
 
       {/* Copyright */}
-      <div className="footer-bottom flex justify-between items-center flex-wrap max-w-screen-xl mx-auto px-6 py-4 sm:text-center">
+      <div className="footer-bottom flex justify-between items-center flex-wrap mx-auto py-4 sm:text-center">
         <p className="text-sm opacity-80">
           © {currentYear} Janwar Mandi. All rights reserved.
         </p>
