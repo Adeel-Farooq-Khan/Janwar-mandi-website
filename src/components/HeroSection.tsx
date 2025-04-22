@@ -15,7 +15,7 @@ export default function HeroSection() {
       {/* Hero Content */}
       <section className="relative z-10 text-white py-16 px-6 flex flex-col items-center justify-center min-h-[500px] text-center">
         <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#ffde00] mb-4">
-          Pakistan's #1 Marketplace for Dairy Farm Animals
+          Pakistan&apos;s #1 Marketplace for Dairy Farm Animals
         </h1>
         <p className="text-base md:text-lg max-w-2xl mb-8">
           Buy & explore a wide range of Dairy Animals, Qurbani Janwar, Goats,

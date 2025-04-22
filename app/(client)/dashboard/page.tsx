@@ -1,7 +1,7 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { FaPlus, FaTimes, FaUpload, FaFilter, FaEdit, FaTrash, FaHeart, FaMapMarkerAlt } from "react-icons/fa"
+import { useEffect, useState } from "react"
+import { FaPlus, FaTimes, FaUpload, FaFilter } from "react-icons/fa"
 import DashboardNavbar from "@/components/Dashboardnavbar"
 import AnimalCard from "@/components/AnimalCard"
 
@@ -61,13 +61,13 @@ const MOCK_ANIMALS = [
 
 export default function Dashboard() {
     const [showProfileMenu, setShowProfileMenu] = useState(false)
-    const [user, setUser] = useState(MOCK_USER)
+    const [user] = useState(MOCK_USER)
     const [loading, setLoading] = useState(true)
     const [showAddAnimalForm, setShowAddAnimalForm] = useState(false)
     const [animals, setAnimals] = useState([])
     const [filteredAnimals, setFilteredAnimals] = useState([])
     const [selectedCategory, setSelectedCategory] = useState("all")
-    const [categories, setCategories] = useState(MOCK_CATEGORIES)
+    const [categories] = useState(MOCK_CATEGORIES)
     const [formData, setFormData] = useState({
       title: "",
       price: "",

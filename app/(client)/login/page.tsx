@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation"; // Import useRouter
+import Image from "next/image"; // Import Next.js Image component
+import { useRouter } from "next/navigation";
 import {
   FaGoogle,
   FaFacebook,
@@ -13,7 +14,7 @@ import {
 } from "react-icons/fa";
 
 export default function Login() {
-  const router = useRouter(); // Initialize router
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -119,10 +120,12 @@ export default function Login() {
     <div className="flex w-full h-screen overflow-hidden">
       {/* Left side - Image */}
       <div className="relative w-1/2 h-full overflow-hidden">
-        <img
+        <Image
           src="/signup-image.jpg"
           alt="Login"
-          className="w-full h-full object-cover"
+          fill
+          className="object-cover"
+          priority
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black/50 flex items-center justify-center p-8">
           <div className="text-white text-center max-w-4/5">
@@ -247,7 +250,7 @@ export default function Login() {
 
           <div className="text-center mt-8 text-sm text-gray-500">
             <p>
-              Don't have an account?{" "}
+              Don&apos;t have an account?{" "}
               <Link
                 href="/signup"
                 className="text-blue-500 font-medium hover:underline"
@@ -292,7 +295,7 @@ export default function Login() {
               ) : (
                 <form onSubmit={handleForgotPassword}>
                   <p className="mb-6 text-gray-600">
-                    Enter your email address and we'll send you a link to reset
+                    Enter your email address and we&apos;ll send you a link to reset
                     your password.
                   </p>
 
