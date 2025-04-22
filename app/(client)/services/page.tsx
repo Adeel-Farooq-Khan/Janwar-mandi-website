@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image"; // Import Next.js Image component
 import AppDownload from "@/components/AppDownload";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
@@ -105,12 +106,15 @@ function Services() {
               key={service.id}
               className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 border border-gray-200 flex flex-col"
             >
-              <div className="h-16 bg-gray-300 flex justify-center items-center">
-                <img 
-                  src={service.icon} 
-                  alt={service.title} 
-                  className="h-10 w-10 object-contain"
-                />
+              <div className="h-16 bg-gray-300 flex justify-center items-center relative">
+                <div className="relative h-10 w-10">
+                  <Image 
+                    src={service.icon} 
+                    alt={service.title} 
+                    fill
+                    className="object-contain"
+                  />
+                </div>
               </div>
               <div className="p-6 flex-1 flex flex-col">
                 <h3 className="text-xl font-bold text-gray-800 mb-3">{service.title}</h3>
@@ -195,7 +199,7 @@ function Services() {
         <div className="w-[90%] max-w-[1200px] text-center">
           <h2 className="text-3xl font-bold text-white mb-6">Ready to Experience Our Premium Services?</h2>
           <p className="text-white text-lg mb-8 max-w-2xl mx-auto">
-            Join thousands of satisfied users who are already benefiting from Janwar Mandi's innovative livestock marketplace.
+            Join thousands of satisfied users who are already benefiting from Janwar Mandi&apos;s innovative livestock marketplace.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <button 

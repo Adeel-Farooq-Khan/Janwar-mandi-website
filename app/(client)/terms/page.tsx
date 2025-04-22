@@ -10,7 +10,7 @@ function TermsAndConditions() {
         className="relative bg-cover bg-center flex justify-center items-center w-full h-[500px] px-10 pt-8"
         style={{
           backgroundImage:
-            `linear-gradient(to left, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.5) 20%, rgba(0,0,0,0.2) 30%, rgba(0,0,0,0.2) 70%, rgba(0,0,0,0.5) 80%, rgba(0,0,0,0.5) 100%), url('/terms.webp')`,
+            "linear-gradient(to left, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.5) 20%, rgba(0,0,0,0.2) 30%, rgba(0,0,0,0.2) 70%, rgba(0,0,0,0.5) 80%, rgba(0,0,0,0.5) 100%), url('/terms.webp')",
         }}
       >
         <div className="text-white text-center">
@@ -28,7 +28,7 @@ function TermsAndConditions() {
 
         <h2 className="text-[22px] text-gray-700 mb-2 text-left w-full font-semibold">Introduction</h2>
         <p className="text-[16px] leading-relaxed text-black mb-4">
-          These Terms and Conditions ("Terms") govern your access to and use of Janwar Mandi's website and mobile application (collectively, the "Platform"). By accessing or using our Platform, you agree to be bound by these Terms. If you do not agree to these Terms, please do not use our Platform.
+          These Terms and Conditions (&quot;Terms&quot;) govern your access to and use of Janwar Mandi&apos;s website and mobile application (collectively, the &quot;Platform&quot;). By accessing or using our Platform, you agree to be bound by these Terms. If you do not agree to these Terms, please do not use our Platform.
         </p>
 
         <h2 className="text-[22px] text-gray-700 mb-2 text-left w-full font-semibold">Account Registration</h2>
