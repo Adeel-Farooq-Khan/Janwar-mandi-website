@@ -3,7 +3,7 @@ import { Button } from "./ui/button"
 export default function FeaturedBanner() {
   return (
     <section
-      className="relative mt-20 h-[600px] w-full bg-cover bg-center flex justify-center flex-col px-5 md:px-10"
+      className="relative h-[600px] w-full bg-cover bg-center flex justify-center flex-col px-5 md:px-10"
       style={{ backgroundImage: `url('/3cowsimg.png')` }}
     >
       <div className="absolute inset-0 bg-gradient-to-r from-black/30 to-transparent z-0" />
@@ -15,7 +15,7 @@ export default function FeaturedBanner() {
             for <span className="text-yellow-300 px-2">Dairy & Qurbani Animals!</span>
           </h1>
         </div>
-
+      <div></div>
         <div className="text-white text-base sm:text-lg mb-6 space-x-2">
           <span className="text-shadow">Verified Sellers</span>
           <span className="text-shadow">|</span>

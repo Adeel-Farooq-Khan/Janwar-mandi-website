@@ -52,12 +52,12 @@ export default function Navbar() {
       >
         {/* Top Bar (Download text left, Auth right on large screens) */}
         <div
-          className={`flex justify-between items-center px-6 py-2 font-bold ${
+          className={`flex justify-between items-center px-32 py-2 font-bold ${
             isScrolled ? "text-black bg-white" : "text-white"
           }`}
         >
           {/* Left (Desktop only): Download Text */}
-          <div className="hidden sm:flex items-center gap-2 text-sm text-gray-900">
+          <div className="hidden sm:flex items-center gap-2 text-sm text-white">
             <img src="/mobile.png" alt="Mobile Icon" className="h-8 w-4" />
             <span>Download App via SMS</span>
           </div>
@@ -75,18 +75,18 @@ export default function Navbar() {
 
         {/* Mobile: Logo + Download text centered */}
         <div className="sm:hidden flex flex-col items-center justify-center w-full pb-3  border-gray-300">
-          <img src="/logo.png" alt="JM Logo" className="h-12 mb-2" />
-          <div className="flex items-center gap-2 text-gray-700 text-sm">
+          <img src="/newlogo.png" alt="JM Logo" className="h-12 mb-2" />
+          <div className="flex items-center gap-2 text-white text-sm">
             <img src="/mobile.png" alt="Mobile Icon" className="h-4 w-4" />
             <span>Download App via SMS</span>
           </div>
         </div>
 
         {/* Main Navigation */}
-        <nav className="main-nav flex justify-between items-center px-6 py-4 w-full transition-all duration-300 relative">
+        <nav className="main-nav flex justify-between items-center px-32 py-4 w-full transition-all duration-300 relative">
           {/* Logo (Desktop only, centered-ish) */}
           <Link href="/" className="hidden sm:block">
-            <img src="/logo.png" alt="JM Logo" className="h-12" />
+            <img src="/newlogo.png" alt="JM Logo" className="h-12" />
           </Link>
 
           {/* Hamburger (Mobile only) */}
