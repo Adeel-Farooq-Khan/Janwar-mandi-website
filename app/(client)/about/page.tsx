@@ -70,10 +70,9 @@ function AboutUS() {
         </p>
       </section>
 
-      <div className="flex justify-center items-center my-5">
-        <img src="/whychose.png" alt="Why Choose" className="w-full max-w-[800px] h-auto" />
-      </div>
-
+      <div className="flex justify-center items-center my-5 px-4 sm:px-0">  
+  <img src="/whychose.png" alt="Why Choose" className="w-full max-w-[800px] h-auto" />  
+</div>  
       <AppDownload />
       <Footer />
     </>

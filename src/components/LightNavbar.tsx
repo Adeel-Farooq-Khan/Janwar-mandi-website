@@ -12,17 +12,10 @@ export default function LightNavbar() {
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 10) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
+      setIsScrolled(window.scrollY > 10);
     };
-
     window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   useEffect(() => {
@@ -31,11 +24,8 @@ export default function LightNavbar() {
         setIsOpen(false);
       }
     };
-
     document.addEventListener("click", handleClickOutside);
-    return () => {
-      document.removeEventListener("click", handleClickOutside);
-    };
+    return () => document.removeEventListener("click", handleClickOutside);
   }, [isOpen]);
 
   useEffect(() => {
@@ -53,12 +43,13 @@ export default function LightNavbar() {
   ];
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 shadow-sm shadow-opacity-50" style={{ boxShadow: "0 2px 10px rgba(0, 0, 0, 0.2)" }}>  
-      <div className={`transition-all duration-300 bg-white ${isScrolled ? "shadow-md" : ""}`}>
+    <div className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm" style={{ boxShadow: "0 2px 10px rgba(0, 0, 0, 0.2)" }}>
+      <div className={`transition-all duration-300 ${isScrolled ? "shadow-md" : ""}`}>
         {/* Top Bar */}
-        <div className="flex justify-between items-center px-6 py-2 font-bold text-black">
-          <div className="flex items-center gap-2">
-            <span>📱</span> Download App via SMS
+        <div className="hidden sm:flex justify-between items-center px-6 py-2 font-bold text-black">
+          <div className="flex items-center gap-2 text-sm">
+            <img src="/mobile.png" alt="Mobile Icon" className="h-4 w-4" />
+            <span>Download App via SMS</span>
           </div>
           <div className="flex gap-4">
             <Link href="/signup" className="hover:underline">
@@ -70,23 +61,32 @@ export default function LightNavbar() {
           </div>
         </div>
 
+        {/* Mobile Top Bar */}
+        <div className="sm:hidden flex flex-col items-center justify-center py-2">
+          <img src="/logo.png" alt="JM Logo" className="h-12 mb-2" />
+          <div className="flex items-center gap-2 text-gray-700 text-sm">
+            <img src="/mobile.png" alt="Mobile Icon" className="h-4 w-4" />
+            <span>Download App via SMS</span>
+          </div>
+        </div>
+
         {/* Main Navigation */}
-        <nav className="main-nav flex justify-between items-center px-6 py-4 w-full transition-all duration-300">
-          {/* Logo */}
-          <Link href="/">
+        <nav className="main-nav flex justify-between items-center px-6 py-4 w-full relative">
+          {/* Logo (Desktop Only) */}
+          <Link href="/" className="hidden sm:block">
             <img src="/logo.png" alt="JM Logo" className="h-12" />
           </Link>
 
-          {/* Hamburger for mobile */}
+          {/* Hamburger Icon */}
           <div
-            className="hamburger block md:hidden cursor-pointer text-2xl text-black"
+            className="hamburger block md:hidden cursor-pointer text-2xl text-black absolute right-6 top-1/2 transform -translate-y-1/2"
             onClick={() => setIsOpen(!isOpen)}
           >
             ☰
           </div>
 
           {/* Desktop Links */}
-          <div className="hidden md:flex items-center gap-6">
+          <div className="hidden md:flex items-center gap-6 mx-auto">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
@@ -101,29 +101,48 @@ export default function LightNavbar() {
             ))}
           </div>
 
-          {/* Explore Button */}
+          {/* Explore Button (Desktop Only) */}
           <Button className="hidden md:flex bg-green-700 hover:bg-green-800 text-white font-semibold px-4 py-2 rounded-md">
             Explore Animals
           </Button>
 
-          {/* Mobile Sidebar */}
+          {/* Mobile Sidebar Menu */}
           <div
             className={`nav-links md:hidden fixed top-0 right-0 h-full w-64 bg-white shadow-lg flex flex-col items-start px-6 py-8 space-y-4 z-50 transition-transform ${
               isOpen ? "translate-x-0" : "translate-x-full"
             }`}
           >
-            {navLinks.map((link) => (
+            <div className="flex flex-col gap-4 w-full">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setIsOpen(false)}
+                  className={`text-black font-medium text-base ${
+                    pathname === link.href ? "text-orange-600 font-semibold" : ""
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+
+            <div className="mt-6 w-full border-t pt-4 flex flex-col gap-3">
               <Link
-                key={link.href}
-                href={link.href}
+                href="/signup"
+                className="w-full border border-green-700 text-green-700 font-semibold py-2 rounded-md text-center hover:bg-green-100"
                 onClick={() => setIsOpen(false)}
-                className={`text-black font-medium text-base ${
-                  pathname === link.href ? "text-orange-600 font-semibold" : ""
-                }`}
               >
-                {link.label}
+                Sign Up
               </Link>
-            ))}
+              <Link
+                href="/login"
+                className="w-full border border-blue-700 text-blue-700 font-semibold py-2 rounded-md text-center hover:bg-blue-100"
+                onClick={() => setIsOpen(false)}
+              >
+                Sign In
+              </Link>
+            </div>
           </div>
         </nav>
       </div>
