@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export default function AppDownload() {
   return (
     <section className="app-download flex flex-col lg:flex-row justify-between items-center py-32  md:px-12 lg:px-32 mt-20 gap-10 ">
@@ -17,7 +19,7 @@ export default function AppDownload() {
             href="#"
             className="transform transition-transform hover:scale-105"
           >
-            <img
+            <Image 
               src="/google-play.png"
               alt="Download on Google Play"
               className="h-10"
@@ -27,7 +29,7 @@ export default function AppDownload() {
             href="#"
             className="transform transition-transform hover:scale-105"
           >
-            <img
+            <Image 
               src="/apple.png"
               alt="Download on App Store"
               className="h-10"
@@ -38,7 +40,7 @@ export default function AppDownload() {
 
       {/* Middle: QR Code */}
       <div className="order-3 lg:order-2 text-center">
-        <img src="/qrcode.png" alt="QR Code" className="h-40 mx-auto mb-2" />
+        <Image  src="/qrcode.png" alt="QR Code" className="h-40 mx-auto mb-2" />
         {/* <p className="text-sm sm:text-base text-[#555]">
           Scan the QR <br /> to get the App
         </p> */}
@@ -46,7 +48,7 @@ export default function AppDownload() {
 
       {/* Right: Mockup Image */}
       <div className="w-full max-w-xs order-1 lg:order-3 flex justify-center items-center">
-  <img
+  <Image 
     src="/pngegg.png"
     alt="Janwar Mandi App Mockup"
     className="h-[240px] w-auto object-contain"

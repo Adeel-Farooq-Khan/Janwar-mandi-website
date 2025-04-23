@@ -1,3 +1,4 @@
+import Image from "next/image";
 import {
   FaFacebookF,
   FaTwitter,
@@ -15,7 +16,7 @@ export default function Footer() {
         {/* Company Info */}
         <div className="footer-company flex-1 min-w-[250px] mb-8">
           <div className="footer-logo flex items-center mb-4">
-            <img
+            <Image
               src="/logo.png"
               alt="Janwar Mandi Logo"
               className="w-16 h-16 mr-3"

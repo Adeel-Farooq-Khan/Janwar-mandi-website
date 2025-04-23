@@ -1,5 +1,22 @@
-// Option 1: Declare and then export default
-const DashboardNavbar = ({
+"use client";
+
+import { FC } from "react";
+
+// Define the user type locally
+interface User {
+  name: string;
+  email: string;
+  uid: string;
+}
+
+interface DashboardNavbarProps {
+  user: User;
+  showProfileMenu: boolean;
+  toggleProfileMenu: () => void;
+  handleSignOut: () => void;
+}
+
+const DashboardNavbar: FC<DashboardNavbarProps> = ({
   user,
   showProfileMenu,
   toggleProfileMenu,
@@ -9,7 +26,7 @@ const DashboardNavbar = ({
     <div className="bg-white shadow-sm sticky top-0 z-50">
       <div className="max-w-7xl mx-auto flex items-center justify-between px-8 py-3 h-16">
         <div className="font-bold text-2xl text-gray-800">
-          <a href="#">Janwar Mandi </a>
+          <a href="#">Janwar Mandi</a>
         </div>
 
         <div className="hidden md:flex items-center gap-6">
@@ -102,7 +119,7 @@ const DashboardNavbar = ({
                     >
                       <path
                         fillRule="evenodd"
-                        d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
+                        d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 001.532 1.532z"
                         clipRule="evenodd"
                       />
                     </svg>

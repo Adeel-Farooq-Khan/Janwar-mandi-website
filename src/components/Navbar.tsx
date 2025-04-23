@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Button } from "./ui/button";
+import Image from "next/image";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -58,7 +59,7 @@ export default function Navbar() {
         >
           {/* Left (Desktop only): Download Text */}
           <div className="hidden sm:flex items-center gap-2 text-sm text-white">
-            <img src="/mobile.png" alt="Mobile Icon" className="h-8 w-4" />
+          <Image src="/mobile.png" alt="Mobile Icon" className="h-8 w-4" />
             <span>Download App via SMS</span>
           </div>
 
@@ -75,9 +76,9 @@ export default function Navbar() {
 
         {/* Mobile: Logo + Download text centered */}
         <div className="sm:hidden flex flex-col items-center justify-center w-full pb-3  border-gray-300">
-          <img src="/newlogo.png" alt="JM Logo" className="h-12 mb-2" />
+          <Image src="/newlogo.png" alt="JM Logo" className="h-12 mb-2" />
           <div className="flex items-center gap-2 text-white text-sm">
-            <img src="/mobile.png" alt="Mobile Icon" className="h-4 w-4" />
+            <Image src="/mobile.png" alt="Mobile Icon" className="h-4 w-4" />
             <span>Download App via SMS</span>
           </div>
         </div>
@@ -86,7 +87,7 @@ export default function Navbar() {
         <nav className="main-nav flex justify-between items-center px-32 py-4 w-full transition-all duration-300 relative">
           {/* Logo (Desktop only, centered-ish) */}
           <Link href="/" className="hidden sm:block">
-            <img src="/newlogo.png" alt="JM Logo" className="h-12" />
+            <Image src="/newlogo.png" alt="JM Logo" className="h-12" />
           </Link>
 
           {/* Hamburger (Mobile only) */}

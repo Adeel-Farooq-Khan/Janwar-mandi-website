@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Button } from "./ui/button";
+import Image from "next/image";
 
 export default function LightNavbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -48,7 +49,7 @@ export default function LightNavbar() {
         {/* Top Bar */}
         <div className="hidden sm:flex justify-between items-center px-6 py-2 font-bold text-black">
           <div className="flex items-center gap-2 text-sm">
-            <img src="/mobile.png" alt="Mobile Icon" className="h-4 w-4" />
+          <Image src="/mobile.png" alt="Mobile Icon" className="h-4 w-4" />
             <span>Download App via SMS</span>
           </div>
           <div className="flex gap-4">
@@ -63,9 +64,9 @@ export default function LightNavbar() {
 
         {/* Mobile Top Bar */}
         <div className="sm:hidden flex flex-col items-center justify-center py-2">
-          <img src="/logo.png" alt="JM Logo" className="h-12 mb-2" />
+          <Image src="/logo.png" alt="JM Logo" className="h-12 mb-2" />
           <div className="flex items-center gap-2 text-gray-700 text-sm">
-            <img src="/mobile.png" alt="Mobile Icon" className="h-4 w-4" />
+            <Image src="/mobile.png" alt="Mobile Icon" className="h-4 w-4" />
             <span>Download App via SMS</span>
           </div>
         </div>
@@ -74,7 +75,7 @@ export default function LightNavbar() {
         <nav className="main-nav flex justify-between items-center px-6 py-4 w-full relative">
           {/* Logo (Desktop Only) */}
           <Link href="/" className="hidden sm:block">
-            <img src="/logo.png" alt="JM Logo" className="h-12" />
+            <Image src="/logo.png" alt="JM Logo" className="h-12" />
           </Link>
 
           {/* Hamburger Icon */}

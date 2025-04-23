@@ -5,33 +5,65 @@ import { ArrowLeft, Send } from "lucide-react";
 import DashboardNavbar from "@/components/Dashboardnavbar";
 
 export default function MessagesPage() {
-  const [activeConversation, setActiveConversation] = useState(null);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [user] = useState({
+    name: "User Name", // Replace with actual user data
+    email: "user@example.com",
+    uid: "123"
+  });
+
+  // Add these handlers
+  const toggleProfileMenu = () => {
+    setShowProfileMenu(!showProfileMenu);
+  };
+
+  const handleSignOut = async () => {
+    try {
+      // Add your sign out logic here
+      console.log("Signing out...");
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
+  const [activeConversation, setActiveConversation] = useState<number | null>(null);
+
   const [messages] = useState([
     { id: 1, content: "Hi there!", type: "received", time: "10:30 AM" },
-    { id: 2, content: "Hello! How can I help you?", type: "sent", time: "10:31 AM" },
+    {
+      id: 2,
+      content: "Hello! How can I help you?",
+      type: "sent",
+      time: "10:31 AM",
+    },
   ]);
   const [newMessage, setNewMessage] = useState("");
 
   return (
     <div className="flex flex-col h-screen bg-gray-100">
-      {/* <div className="p-4 bg-white border-b border-gray-200">
-        <button className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-600 bg-gray-100 rounded hover:bg-gray-200">
-          <ArrowLeft className="w-4 h-4" /> Dashboard
-        </button>
-      </div> */}
-            <DashboardNavbar />
+       <DashboardNavbar
+        user={user}
+        showProfileMenu={showProfileMenu}
+        toggleProfileMenu={toggleProfileMenu}
+        handleSignOut={handleSignOut}
+      />
+
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
         <div className="w-80 bg-white border-r border-gray-200 hidden md:flex flex-col">
           <div className="p-4 border-b border-gray-200">
-            <h2 className="text-lg font-semibold text-gray-800">Conversations</h2>
+            <h2 className="text-lg font-semibold text-gray-800">
+              Conversations
+            </h2>
           </div>
           <div className="flex-1 overflow-y-auto">
             {[1, 2].map((id) => (
               <div
                 key={id}
-                className={`flex items-center p-4 border-b hover:bg-gray-100 cursor-pointer ${activeConversation === id ? "bg-blue-50" : ""}`}
+                className={`flex items-center p-4 border-b hover:bg-gray-100 cursor-pointer ${
+                  activeConversation === id ? "bg-blue-50" : ""
+                }`}
                 onClick={() => setActiveConversation(id)}
+
               >
                 <div className="w-12 h-12 bg-gray-200 rounded-full mr-3" />
                 <div className="flex-1 min-w-0">
@@ -40,8 +72,12 @@ export default function MessagesPage() {
                     <span className="text-xs text-gray-500">10:3{id} AM</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <p className="text-sm text-gray-600 truncate">Last message preview...</p>
-                    <span className="bg-blue-500 text-white text-xs font-bold px-2 py-0.5 rounded-full ml-2">1</span>
+                    <p className="text-sm text-gray-600 truncate">
+                      Last message preview...
+                    </p>
+                    <span className="bg-blue-500 text-white text-xs font-bold px-2 py-0.5 rounded-full ml-2">
+                      1
+                    </span>
                   </div>
                 </div>
               </div>
@@ -68,7 +104,9 @@ export default function MessagesPage() {
             {messages.map((msg) => (
               <div
                 key={msg.id}
-                className={`flex max-w-[70%] ${msg.type === "sent" ? "self-end" : "self-start"}`}
+                className={`flex max-w-[70%] ${
+                  msg.type === "sent" ? "self-end" : "self-start"
+                }`}
               >
                 <div
                   className={`p-3 rounded-xl text-sm relative ${

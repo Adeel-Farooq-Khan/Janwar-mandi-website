@@ -4,6 +4,7 @@ import { useState } from "react"
 import Link from "next/link"
 import { FaGoogle, FaFacebook, FaEnvelope, FaLock, FaEye, FaEyeSlash, FaUser } from "react-icons/fa"
 import { useRouter } from "next/navigation"; // Import useRouter
+import Image from "next/image";
 
 export default function Signup() {
   const router = useRouter(); 
@@ -95,7 +96,7 @@ export default function Signup() {
     <div className="flex flex-col lg:flex-row w-full h-full lg:h-screen overflow-hidden">
   {/* Left side - Image */}
   <div className="relative w-full lg:w-1/2 h-64 lg:h-full overflow-hidden">
-    <img src="/signup-image.jpg" alt="Sign up" className="w-full h-full object-cover" />
+    <Image src="/signup-image.jpg" alt="Sign up" className="w-full h-full object-cover" />
     <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black/50 flex items-center justify-center p-8">
       <div className="text-white text-center max-w-4/5">
         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 lg:mb-4 drop-shadow-md">
