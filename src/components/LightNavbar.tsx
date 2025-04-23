@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Button } from "./ui/button";
 
-export default function Navbar() {
+export default function LightNavbar() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
@@ -14,7 +14,6 @@ export default function Navbar() {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -44,70 +43,55 @@ export default function Navbar() {
   ];
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50">
-      <div
-        className={`transition-all duration-300 ${
-          isScrolled ? "bg-white shadow-md" : "bg-transparent"
-        }`}
-      >
-        {/* Top Bar (Download text left, Auth right on large screens) */}
-        <div
-          className={`flex justify-between items-center px-32 py-2 font-bold ${
-            isScrolled ? "text-black bg-white" : "text-white"
-          }`}
-        >
-          {/* Left (Desktop only): Download Text */}
-          <div className="hidden sm:flex items-center gap-2 text-sm text-white">
-            <img src="/mobile.png" alt="Mobile Icon" className="h-8 w-4" />
+    <div className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm" style={{ boxShadow: "0 2px 10px rgba(0, 0, 0, 0.2)" }}>
+      <div className={`transition-all duration-300 ${isScrolled ? "shadow-md" : ""}`}>
+        {/* Top Bar */}
+        <div className="hidden sm:flex justify-between items-center px-6 py-2 font-bold text-black">
+          <div className="flex items-center gap-2 text-sm">
+            <img src="/mobile.png" alt="Mobile Icon" className="h-4 w-4" />
             <span>Download App via SMS</span>
           </div>
-
-          {/* Right: Sign Up / Sign In */}
-          <div className="hidden sm:flex gap-4">
-            <Link href="/signup" className="hover:underline text-white">
+          <div className="flex gap-4">
+            <Link href="/signup" className="hover:underline">
               Sign Up
             </Link>
-            <Link href="/login" className="hover:underline text-white">
+            <Link href="/login" className="hover:underline">
               Sign In
             </Link>
           </div>
         </div>
 
-        {/* Mobile: Logo + Download text centered */}
-        <div className="sm:hidden flex flex-col items-center justify-center w-full pb-3  border-gray-300">
-          <img src="/newlogo.png" alt="JM Logo" className="h-12 mb-2" />
-          <div className="flex items-center gap-2 text-white text-sm">
+        {/* Mobile Top Bar */}
+        <div className="sm:hidden flex flex-col items-center justify-center py-2">
+          <img src="/logo.png" alt="JM Logo" className="h-12 mb-2" />
+          <div className="flex items-center gap-2 text-gray-700 text-sm">
             <img src="/mobile.png" alt="Mobile Icon" className="h-4 w-4" />
             <span>Download App via SMS</span>
           </div>
         </div>
 
         {/* Main Navigation */}
-        <nav className="main-nav flex justify-between items-center px-32 py-4 w-full transition-all duration-300 relative">
-          {/* Logo (Desktop only, centered-ish) */}
+        <nav className="main-nav flex justify-between items-center px-6 py-4 w-full relative">
+          {/* Logo (Desktop Only) */}
           <Link href="/" className="hidden sm:block">
-            <img src="/newlogo.png" alt="JM Logo" className="h-12" />
+            <img src="/logo.png" alt="JM Logo" className="h-12" />
           </Link>
 
-          {/* Hamburger (Mobile only) */}
+          {/* Hamburger Icon */}
           <div
-            className={`hamburger block md:hidden cursor-pointer text-2xl absolute right-6 -top-18 ${
-              isScrolled ? "text-black" : "text-white"
-            }`}
+            className="hamburger block md:hidden cursor-pointer text-2xl text-black absolute right-6 top-1/2 transform -translate-y-1/2"
             onClick={() => setIsOpen(!isOpen)}
           >
             ☰
           </div>
 
-          {/* Desktop Nav Links */}
+          {/* Desktop Links */}
           <div className="hidden md:flex items-center gap-6 mx-auto">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`font-semibold relative ${
-                  isScrolled ? "text-black" : "text-white"
-                } ${
+                className={`font-semibold relative text-black ${
                   pathname === link.href ? "text-orange-500 font-bold" : ""
                 } hover:text-yellow-400 transition-colors`}
               >
@@ -117,14 +101,14 @@ export default function Navbar() {
             ))}
           </div>
 
-          {/* Explore Button (Desktop only) */}
+          {/* Explore Button (Desktop Only) */}
           <Button className="hidden md:flex bg-green-700 hover:bg-green-800 text-white font-semibold px-4 py-2 rounded-md">
             Explore Animals
           </Button>
 
           {/* Mobile Sidebar Menu */}
           <div
-            className={`nav-links md:hidden fixed top-0 right-0 h-full w-64 bg-white shadow-lg flex flex-col justify-start items-start px-6 py-8 space-y-4 z-50 transition-transform ${
+            className={`nav-links md:hidden fixed top-0 right-0 h-full w-64 bg-white shadow-lg flex flex-col items-start px-6 py-8 space-y-4 z-50 transition-transform ${
               isOpen ? "translate-x-0" : "translate-x-full"
             }`}
           >
@@ -135,9 +119,7 @@ export default function Navbar() {
                   href={link.href}
                   onClick={() => setIsOpen(false)}
                   className={`text-black font-medium text-base ${
-                    pathname === link.href
-                      ? "text-orange-600 font-semibold"
-                      : ""
+                    pathname === link.href ? "text-orange-600 font-semibold" : ""
                   }`}
                 >
                   {link.label}
