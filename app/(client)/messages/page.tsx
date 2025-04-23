@@ -6,7 +6,7 @@ import DashboardNavbar from "@/components/Dashboardnavbar";
 
 export default function MessagesPage() {
   const [activeConversation, setActiveConversation] = useState(null);
-  const [messages, setMessages] = useState([
+  const [messages] = useState([
     { id: 1, content: "Hi there!", type: "received", time: "10:30 AM" },
     { id: 2, content: "Hello! How can I help you?", type: "sent", time: "10:31 AM" },
   ]);
