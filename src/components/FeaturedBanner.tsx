@@ -11,7 +11,7 @@ export default function FeaturedBanner() {
       <div className="relative z-10 max-w-[750px] w-full text-center mx-auto">
         <div className="mb-6">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white leading-tight">
-            Pakistan's #1 Marketplace <br />
+            Pakistan&apos;s #1 Marketplace <br />
             for <span className="text-yellow-300 px-2">Dairy & Qurbani Animals!</span>
           </h1>
         </div>

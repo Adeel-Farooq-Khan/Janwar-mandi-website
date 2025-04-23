@@ -122,7 +122,7 @@ function Categories() {
           </span>
         </h1>
         <p className="text-[16px] leading-relaxed text-black text-center mb-4 px-10 md:px-5 sm:px-2">
-          At Janwar Mandi, we ensure that all listed animals meet high quality standards. Our sellers provide detailed information about each animal's health, breed, age, and other essential characteristics. Sign up today to explore our extensive collection of livestock and farm accessories from trusted sellers across Pakistan.
+          At Janwar Mandi, we ensure that all listed animals meet high quality standards. Our sellers provide detailed information about each animal&apos;s health, breed, age, and other essential characteristics. Sign up today to explore our extensive collection of livestock and farm accessories from trusted sellers across Pakistan.
         </p>
       </section>
 
