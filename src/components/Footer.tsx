@@ -23,7 +23,7 @@ export default function Footer() {
             <h3 className="text-xl font-semibold">Janwar Mandi</h3>
           </div>
           <p className="company-tagline text-sm mb-2 opacity-90">
-            Pakistan's #1 Marketplace for Dairy & Qurbani Animals.
+            Pakistan&apos;s #1 Marketplace for Dairy & Qurbani Animals.
           </p>
           <p className="company-description text-sm opacity-80">
             Find verified sellers and buy with ease!
