@@ -7,6 +7,7 @@ import { Button } from "./ui/button";
 
 export default function LightNavbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -19,14 +20,18 @@ export default function LightNavbar() {
   }, []);
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (!(event.target as HTMLElement).closest(".main-nav") && isOpen) {
+    const handleClickOutside = (event) => {
+      if (!(event.target).closest(".main-nav") && isOpen) {
         setIsOpen(false);
+      }
+      
+      if (!(event.target).closest(".category-dropdown") && dropdownOpen) {
+        setDropdownOpen(false);
       }
     };
     document.addEventListener("click", handleClickOutside);
     return () => document.removeEventListener("click", handleClickOutside);
-  }, [isOpen]);
+  }, [isOpen, dropdownOpen]);
 
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "auto";
@@ -36,7 +41,16 @@ export default function LightNavbar() {
     { label: "Home", href: "/" },
     { label: "About Us", href: "/about" },
     { label: "Contact Us", href: "/contactus" },
-    { label: "All Categories", href: "/categories" },
+    { 
+      label: "All Categories", 
+      href: "/categories",
+      dropdown: true,
+      items: [
+        { label: "Dairy", href: "/categories/dairy" },
+        { label: "Meat", href: "/categories/meat" },
+        { label: "Qurbani", href: "/categories/qurbani" }
+      ]
+    },
     { label: "Privacy Policy", href: "/privacy" },
     { label: "Terms & Conditions", href: "/terms" },
     { label: "Services", href: "/services" },
@@ -63,7 +77,7 @@ export default function LightNavbar() {
 
         {/* Mobile Top Bar */}
         <div className="sm:hidden flex flex-col items-center justify-center py-2">
-          <img src="/logo.png" alt="JM Logo" className="h-12 mb-2" />
+          <img src="/newlogo.png" alt="JM Logo" className="h-12 mb-2" />
           <div className="flex items-center gap-2 text-gray-700 text-sm">
             <img src="/mobile.png" alt="Mobile Icon" className="h-4 w-4" />
             <span>Download App via SMS</span>
@@ -74,7 +88,7 @@ export default function LightNavbar() {
         <nav className="main-nav flex justify-between items-center px-6 py-4 w-full relative">
           {/* Logo (Desktop Only) */}
           <Link href="/" className="hidden sm:block">
-            <img src="/logo.png" alt="JM Logo" className="h-12" />
+            <img src="/newlogo.png" alt="JM Logo" className="h-12" />
           </Link>
 
           {/* Hamburger Icon */}
@@ -88,16 +102,55 @@ export default function LightNavbar() {
           {/* Desktop Links */}
           <div className="hidden md:flex items-center gap-6 mx-auto">
             {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`font-semibold relative text-black ${
-                  pathname === link.href ? "text-orange-500 font-bold" : ""
-                } hover:text-yellow-400 transition-colors`}
-              >
-                {link.label}
-                <span className="absolute left-0 bottom-[-5px] w-full h-[2px] bg-yellow-300 scale-x-0 hover:scale-x-100 transition-transform origin-left"></span>
-              </Link>
+              <div key={link.href} className="relative category-dropdown">
+                {link.dropdown ? (
+                  <>
+                    <button
+                      onClick={() => setDropdownOpen(!dropdownOpen)}
+                      className={`font-semibold flex items-center gap-1 cursor-pointer text-black ${
+                        pathname === link.href || pathname.startsWith(link.href + '/') 
+                          ? "text-orange-500 font-bold" 
+                          : ""
+                      } hover:text-yellow-400 transition-colors`}
+                    >
+                      {link.label}
+                      <svg 
+                        xmlns="http://www.w3.org/2000/svg" 
+                        className={`h-4 w-4 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} 
+                        fill="none" 
+                        viewBox="0 0 24 24" 
+                        stroke="currentColor"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                    {dropdownOpen && (
+                      <div className="absolute top-full left-0 mt-1 bg-white shadow-lg rounded-md overflow-hidden min-w-max z-50">
+                        {link.items.map((item) => (
+                          <Link
+                            key={item.href}
+                            href={item.href}
+                            className="block px-4 py-2 text-black hover:bg-gray-100 whitespace-nowrap"
+                            onClick={() => setDropdownOpen(false)}
+                          >
+                            {item.label}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <Link
+                    href={link.href}
+                    className={`font-semibold relative text-black ${
+                      pathname === link.href ? "text-orange-500 font-bold" : ""
+                    } hover:text-yellow-400 transition-colors`}
+                  >
+                    {link.label}
+                    <span className="absolute left-0 bottom-[-5px] w-full h-[2px] bg-yellow-300 scale-x-0 hover:scale-x-100 transition-transform origin-left"></span>
+                  </Link>
+                )}
+              </div>
             ))}
           </div>
 
@@ -113,18 +166,61 @@ export default function LightNavbar() {
             }`}
           >
             <div className="flex flex-col gap-4 w-full">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setIsOpen(false)}
-                  className={`text-black font-medium text-base ${
-                    pathname === link.href ? "text-orange-600 font-semibold" : ""
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              ))}
+              {navLinks.map((link) => 
+                link.dropdown ? (
+                  <div key={link.href} className="flex flex-col">
+                    <button
+                      onClick={() => {
+                        const element = document.getElementById(`mobile-dropdown-${link.label}`);
+                        if (element) {
+                          element.classList.toggle('hidden');
+                        }
+                      }}
+                      className={`text-black font-medium text-base flex justify-between items-center ${
+                        pathname === link.href || pathname.startsWith(link.href + '/') 
+                          ? "text-orange-600 font-semibold" 
+                          : ""
+                      }`}
+                    >
+                      {link.label}
+                      <svg 
+                        xmlns="http://www.w3.org/2000/svg" 
+                        className="h-4 w-4" 
+                        fill="none" 
+                        viewBox="0 0 24 24" 
+                        stroke="currentColor"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                    <div id={`mobile-dropdown-${link.label}`} className="hidden pl-4 mt-2 flex flex-col gap-2">
+                      {link.items.map((item) => (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          onClick={() => setIsOpen(false)}
+                          className={`text-black font-medium text-sm ${
+                            pathname === item.href ? "text-orange-600" : ""
+                          }`}
+                        >
+                          {item.label}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setIsOpen(false)}
+                    className={`text-black font-medium text-base ${
+                      pathname === link.href ? "text-orange-600 font-semibold" : ""
+                    }`}
+                  >
+                    {link.label}
+                  </Link>
+                )
+              )}
             </div>
 
             <div className="mt-6 w-full border-t pt-4 flex flex-col gap-3">

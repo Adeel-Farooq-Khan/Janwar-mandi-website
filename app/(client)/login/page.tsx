@@ -117,9 +117,11 @@ export default function Login() {
   };
 
   return (
-    <div className="flex w-full h-screen overflow-hidden">
+    <div className="flex flex-col lg:flex-row w-full h-full min-h-screen">
+
       {/* Left side - Image */}
-      <div className="relative w-1/2 h-full overflow-hidden">
+      <div className="relative w-full lg:w-1/2 h-64 lg:h-full">
+
         <Image
           src="/signup-image.jpg"
           alt="Login"
@@ -140,7 +142,8 @@ export default function Login() {
       </div>
 
       {/* Right side - Form */}
-      <div className="w-1/2 h-full flex items-center justify-center bg-white p-8 overflow-y-auto">
+      <div className="w-full lg:w-1/2 flex items-center justify-center bg-white p-6 lg:p-8 overflow-y-auto">
+
         <div className="w-full max-w-md p-4">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-gray-800 mb-2">Login</h1>

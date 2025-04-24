@@ -1,3 +1,4 @@
+import Image from "next/image";
 import {
   FaFacebookF,
   FaTwitter,
@@ -10,20 +11,24 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="site-footer bg-gradient-to-b from-[#2E7D32] to-[#54E35B] text-white py-10 md:py-12 lg:py-16 px-32">
+    <footer className="site-footer bg-gradient-to-b from-[#2E7D32] to-[#54E35B] text-white py-10 md:py-12 lg:py-16 px-32 bg-cyan-400">
       <div className="footer-container flex flex-wrap justify-between  mx-auto ">
         {/* Company Info */}
         <div className="footer-company flex-1 min-w-[250px] mb-8">
           <div className="footer-logo flex items-center mb-4">
-            <img
+            <Image
               src="/logo.png"
               alt="Janwar Mandi Logo"
               className="w-16 h-16 mr-3"
+              width={64} // Adjust width according to your design
+              height={64} // Adjust height according to your design
+              layout="intrinsic" // Ensures the image adjusts to its aspect ratio
             />
+
             <h3 className="text-xl font-semibold">Janwar Mandi</h3>
           </div>
           <p className="company-tagline text-sm mb-2 opacity-90">
-            Pakistan's #1 Marketplace for Dairy & Qurbani Animals.
+            Pakistan&apos;s #1 Marketplace for Dairy & Qurbani Animals.
           </p>
           <p className="company-description text-sm opacity-80">
             Find verified sellers and buy with ease!
