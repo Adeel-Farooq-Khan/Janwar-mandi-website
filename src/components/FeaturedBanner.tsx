@@ -3,15 +3,15 @@ import { Button } from "./ui/button"
 export default function FeaturedBanner() {
   return (
     <section
-      className="relative h-[600px] w-full bg-cover bg-center flex justify-center flex-col px-5 md:px-10"
-      style={{ backgroundImage: `url('/3cowsimg.png')` }}
+      className="relative h-[600px] w-full bg-cover bg-center flex justify-center flex-col px-5 md:px-10 bg-slate-900"
+      style={{ backgroundImage: `url('/3cowsimg.png') ` }}
     >
       <div className="absolute inset-0 bg-gradient-to-r from-black/30 to-transparent z-0" />
 
       <div className="relative z-10 max-w-[750px] w-full text-center mx-auto">
         <div className="mb-6">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white leading-tight">
-            Pakistan's #1 Marketplace <br />
+            Pakistan&apos;s #1 Marketplace <br />
             for <span className="text-yellow-300 px-2">Dairy & Qurbani Animals!</span>
           </h1>
         </div>
