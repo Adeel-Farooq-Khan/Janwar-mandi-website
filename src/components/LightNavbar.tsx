@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Button } from "./ui/button";
+import Image from "next/image";
 
 export default function LightNavbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -20,12 +21,15 @@ export default function LightNavbar() {
   }, []);
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (!(event.target).closest(".main-nav") && isOpen) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (!(event.target as HTMLElement).closest(".main-nav") && isOpen) {
         setIsOpen(false);
       }
-      
-      if (!(event.target).closest(".category-dropdown") && dropdownOpen) {
+
+      if (
+        !(event.target as HTMLElement).closest(".category-dropdown") &&
+        dropdownOpen
+      ) {
         setDropdownOpen(false);
       }
     };
@@ -41,15 +45,15 @@ export default function LightNavbar() {
     { label: "Home", href: "/" },
     { label: "About Us", href: "/about" },
     { label: "Contact Us", href: "/contactus" },
-    { 
-      label: "All Categories", 
+    {
+      label: "All Categories",
       href: "/categories",
       dropdown: true,
       items: [
         { label: "Dairy", href: "/categories/dairy" },
         { label: "Meat", href: "/categories/meat" },
-        { label: "Qurbani", href: "/categories/qurbani" }
-      ]
+        { label: "Qurbani", href: "/categories/qurbani" },
+      ],
     },
     { label: "Privacy Policy", href: "/privacy" },
     { label: "Terms & Conditions", href: "/terms" },
@@ -57,12 +61,19 @@ export default function LightNavbar() {
   ];
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm" style={{ boxShadow: "0 2px 10px rgba(0, 0, 0, 0.2)" }}>
-      <div className={`transition-all duration-300 ${isScrolled ? "shadow-md" : ""}`}>
+    <div
+      className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm"
+      style={{ boxShadow: "0 2px 10px rgba(0, 0, 0, 0.2)" }}
+    >
+      <div
+        className={`transition-all duration-300 ${
+          isScrolled ? "shadow-md" : ""
+        }`}
+      >
         {/* Top Bar */}
         <div className="hidden sm:flex justify-between items-center px-6 py-2 font-bold text-black">
           <div className="flex items-center gap-2 text-sm">
-            <img src="/mobile.png" alt="Mobile Icon" className="h-4 w-4" />
+            <Image src="/mobile.png" alt="Mobile Icon" className="h-4 w-4" />
             <span>Download App via SMS</span>
           </div>
           <div className="flex gap-4">
@@ -77,9 +88,9 @@ export default function LightNavbar() {
 
         {/* Mobile Top Bar */}
         <div className="sm:hidden flex flex-col items-center justify-center py-2">
-          <img src="/newlogo.png" alt="JM Logo" className="h-12 mb-2" />
+          <Image src="/newlogo.png" alt="JM Logo" className="h-12 mb-2" />
           <div className="flex items-center gap-2 text-gray-700 text-sm">
-            <img src="/mobile.png" alt="Mobile Icon" className="h-4 w-4" />
+            <Image src="/mobile.png" alt="Mobile Icon" className="h-4 w-4" />
             <span>Download App via SMS</span>
           </div>
         </div>
@@ -88,7 +99,7 @@ export default function LightNavbar() {
         <nav className="main-nav flex justify-between items-center px-6 py-4 w-full relative">
           {/* Logo (Desktop Only) */}
           <Link href="/" className="hidden sm:block">
-            <img src="/newlogo.png" alt="JM Logo" className="h-12" />
+            <Image src="/newlogo.png" alt="JM Logo" className="h-12" />
           </Link>
 
           {/* Hamburger Icon */}
@@ -108,20 +119,28 @@ export default function LightNavbar() {
                     <button
                       onClick={() => setDropdownOpen(!dropdownOpen)}
                       className={`font-semibold flex items-center gap-1 cursor-pointer text-black ${
-                        pathname === link.href || pathname.startsWith(link.href + '/') 
-                          ? "text-orange-500 font-bold" 
+                        pathname?.startsWith(link.href + "/") ||
+                        pathname === link.href
+                          ? "text-orange-600 font-semibold"
                           : ""
                       } hover:text-yellow-400 transition-colors`}
                     >
                       {link.label}
-                      <svg 
-                        xmlns="http://www.w3.org/2000/svg" 
-                        className={`h-4 w-4 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} 
-                        fill="none" 
-                        viewBox="0 0 24 24" 
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className={`h-4 w-4 transition-transform ${
+                          dropdownOpen ? "rotate-180" : ""
+                        }`}
+                        fill="none"
+                        viewBox="0 0 24 24"
                         stroke="currentColor"
                       >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 9l-7 7-7-7"
+                        />
                       </svg>
                     </button>
                     {dropdownOpen && (
@@ -166,34 +185,46 @@ export default function LightNavbar() {
             }`}
           >
             <div className="flex flex-col gap-4 w-full">
-              {navLinks.map((link) => 
+              {navLinks.map((link) =>
                 link.dropdown ? (
                   <div key={link.href} className="flex flex-col">
                     <button
                       onClick={() => {
-                        const element = document.getElementById(`mobile-dropdown-${link.label}`);
+                        const element = document.getElementById(
+                          `mobile-dropdown-${link.label}`
+                        );
                         if (element) {
-                          element.classList.toggle('hidden');
+                          element.classList.toggle("hidden");
                         }
                       }}
                       className={`text-black font-medium text-base flex justify-between items-center ${
-                        pathname === link.href || pathname.startsWith(link.href + '/') 
-                          ? "text-orange-600 font-semibold" 
+                        pathname &&
+                        (pathname === link.href ||
+                          pathname.startsWith(link.href + "/"))
+                          ? "text-orange-600 font-semibold"
                           : ""
                       }`}
                     >
                       {link.label}
-                      <svg 
-                        xmlns="http://www.w3.org/2000/svg" 
-                        className="h-4 w-4" 
-                        fill="none" 
-                        viewBox="0 0 24 24" 
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4"
+                        fill="none"
+                        viewBox="0 0 24 24"
                         stroke="currentColor"
                       >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 9l-7 7-7-7"
+                        />
                       </svg>
                     </button>
-                    <div id={`mobile-dropdown-${link.label}`} className="hidden pl-4 mt-2 flex flex-col gap-2">
+                    <div
+                      id={`mobile-dropdown-${link.label}`}
+                      className="hidden pl-4 mt-2 flex flex-col gap-2"
+                    >
                       {link.items.map((item) => (
                         <Link
                           key={item.href}
@@ -214,7 +245,9 @@ export default function LightNavbar() {
                     href={link.href}
                     onClick={() => setIsOpen(false)}
                     className={`text-black font-medium text-base ${
-                      pathname === link.href ? "text-orange-600 font-semibold" : ""
+                      pathname === link.href
+                        ? "text-orange-600 font-semibold"
+                        : ""
                     }`}
                   >
                     {link.label}

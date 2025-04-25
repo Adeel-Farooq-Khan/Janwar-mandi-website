@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import AppDownload from "@/components/AppDownload";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
+import Image from "next/image";
 
 function Categories() {
   const router = useRouter();
@@ -97,7 +98,7 @@ function Categories() {
               className="relative overflow-hidden rounded-lg shadow-lg cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-xl group"
             >
               <div className="h-64 overflow-hidden">
-                <img 
+                <Image 
                   src={category.image} 
                   alt={category.name} 
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"

@@ -2,7 +2,7 @@
 
 import Footer from "@/components/Footer";
 import LightNavbar from "@/components/LightNavbar";
-import Navbar from "@/components/Navbar";
+
 
 export default function MeatCategoryPage() {
   // Simple dummy data for meat animals

@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 import {
   FaPlus,
   FaTimes,
@@ -20,9 +20,9 @@ import {
   FaSpinner,
   FaCloudUploadAlt,
   FaCheck,
-} from "react-icons/fa"
-import DashboardNavbar from "@/components/Dashboardnavbar"
-import AnimalCardComponent from "@/components/AnimalCard"
+} from "react-icons/fa";
+import DashboardNavbar from "@/components/Dashboardnavbar";
+import Image from "next/image";
 
 // Mock subscription plans
 const SUBSCRIPTION_PLANS = [
@@ -42,7 +42,11 @@ const SUBSCRIPTION_PLANS = [
     duration: "1 month",
     listings: 3,
     description: "Upload up to 3 animals per month",
-    features: ["3 listings per month", "30 days visibility", "Priority support"],
+    features: [
+      "3 listings per month",
+      "30 days visibility",
+      "Priority support",
+    ],
   },
   {
     id: "gold",
@@ -60,9 +64,13 @@ const SUBSCRIPTION_PLANS = [
     duration: "1 month",
     listings: 19,
     description: "Upload up to 19 animals per month",
-    features: ["19 listings per month", "Premium placement", "Dedicated support"],
+    features: [
+      "19 listings per month",
+      "Premium placement",
+      "Dedicated support",
+    ],
   },
-]
+];
 
 // Main categories and subcategories
 const CATEGORIES = {
@@ -96,7 +104,7 @@ const CATEGORIES = {
       { value: "bachra-bachri", label: "Bachra/Bachri" },
     ],
   },
-}
+};
 
 // Combined list for filtering
 const FILTER_CATEGORIES = [
@@ -105,12 +113,16 @@ const FILTER_CATEGORIES = [
   { value: "meat", label: "All Meat" },
   { value: "qurbani", label: "All Qurbani" },
   ...Object.keys(CATEGORIES).flatMap((mainCat) =>
-    CATEGORIES[mainCat].subcategories.map((subCat) => ({
-      value: `${mainCat}-${subCat.value}`,
-      label: `${CATEGORIES[mainCat].label} - ${subCat.label}`,
-    })),
+    CATEGORIES[mainCat as keyof typeof CATEGORIES].subcategories.map(
+      (subCat: { value: string; label: string }) => ({
+        value: `${mainCat}-${subCat.value}`,
+        label: `${CATEGORIES[mainCat as keyof typeof CATEGORIES].label} - ${
+          subCat.label
+        }`,
+      })
+    )
   ),
-]
+];
 
 // Breeds list
 const COW_BREEDS = [
@@ -132,7 +144,7 @@ const COW_BREEDS = [
   "Red Sindhi",
   "Sahiwal",
   "Tharparker",
-]
+];
 
 // Locations list
 const LOCATIONS = [
@@ -155,17 +167,18 @@ const LOCATIONS = [
   "Jhang, Punjab",
   "Sheikhupura, Punjab",
   "Kasur, Punjab",
-]
+];
 
 // Mock user data
 const MOCK_USER = {
+  id: "user123", // Added 'id' to match the User interface
   uid: "user123",
   email: "user@example.com",
   name: "Demo User",
   subscription: "silver", // free, silver, gold, platinum
   listingsUsed: 0,
   subscriptionEndDate: new Date(2025, 5, 1), // Example end date
-}
+};
 
 // Mock animals data
 const MOCK_ANIMALS = [
@@ -183,12 +196,14 @@ const MOCK_ANIMALS = [
     color: "Black & White",
     age: "3 years",
     weight: "450 kg",
+    gender: "Female",
     milkQuantity: 20,
     lactation: 2,
     teats: 4,
     pregnancyStatus: "Yes",
     pregnancyDuration: "3 to 6 Months",
-    description: "High quality dairy cow producing 20 liters of milk daily. Vaccinated and healthy.",
+    description:
+      "High quality dairy cow producing 20 liters of milk daily. Vaccinated and healthy.",
     images: ["/3cowsimg.png", "/api/placeholder/400/300"],
     userId: "user123",
     userEmail: "user@example.com",
@@ -210,6 +225,7 @@ const MOCK_ANIMALS = [
     color: "Light Brown",
     age: "24 months",
     weight: "800 kg",
+    gender: "Male",
     teeth: "4",
     description: "Healthy bull suitable for Qurbani. Well-fed and cared for.",
     images: ["/api/placeholder/400/300"],
@@ -219,19 +235,115 @@ const MOCK_ANIMALS = [
     userContact: "+92 300 1234567",
     createdAt: new Date(2024, 3, 5),
   },
-]
+];
+
+// Define AnimalCardComponent outside of the main component
+interface AnimalCardProps {
+  animal: (typeof MOCK_ANIMALS)[0];
+  onEdit: () => void;
+  onDelete: () => void;
+}
+
+const AnimalCardComponent = ({ animal, onEdit, onDelete }: AnimalCardProps) => {
+  return (
+    <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+      <div className="relative h-48">
+        {animal.images && animal.images.length > 0 ? (
+          <Image
+            src={animal.images[0] || "/placeholder.svg"}
+            alt={`${animal.breed} ${animal.subcategory}`}
+            width={400}
+            height={300}
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+            <FaImage className="text-gray-400 text-4xl" />
+          </div>
+        )}
+        <div className="absolute top-3 left-3">
+          <span
+            className={`text-xs font-medium px-2 py-1 rounded-full ${
+              animal.category === "dairy"
+                ? "bg-blue-100 text-blue-800"
+                : animal.category === "meat"
+                ? "bg-red-100 text-red-800"
+                : "bg-yellow-100 text-yellow-800"
+            }`}
+          >
+            {animal.category}
+          </span>
+        </div>
+      </div>
+
+      <div className="p-4">
+        <div className="flex justify-between items-start mb-2">
+          <h3 className="font-semibold text-gray-900 capitalize">
+            {animal.breed} {animal.subcategory}
+          </h3>
+          <div className="text-lg font-bold text-green-700">
+            Rs. {animal.price.toLocaleString()}
+          </div>
+        </div>
+
+        <div className="text-sm text-gray-600 mb-4">
+          <div className="flex flex-wrap gap-y-1">
+            {animal.weight && (
+              <div className="mr-4 flex items-center">
+                <FaWeight className="mr-1 text-gray-500" />
+                {animal.weight}
+              </div>
+            )}
+            {animal.age && (
+              <div className="mr-4 flex items-center">
+                <FaCalendarAlt className="mr-1 text-gray-500" />
+                {animal.age}
+              </div>
+            )}
+            {animal.location && (
+              <div className="flex items-center">
+                <FaMapMarkerAlt className="mr-1 text-gray-500" />
+                {animal.location}
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="flex justify-between items-center pt-2 border-t border-gray-100">
+          <div className="text-xs text-gray-500">
+            Posted {new Date(animal.createdAt).toLocaleDateString()}
+          </div>
+          <div className="flex space-x-2">
+            <button
+              onClick={onEdit}
+              className="p-1.5 text-blue-600 hover:bg-blue-50 rounded"
+            >
+              <FaEdit />
+            </button>
+            <button
+              onClick={onDelete}
+              className="p-1.5 text-red-600 hover:bg-red-50 rounded"
+            >
+              <FaTrashAlt />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default function Dashboard() {
-  const [showProfileMenu, setShowProfileMenu] = useState(false)
-  const [user, setUser] = useState(MOCK_USER)
-  const [loading, setLoading] = useState(true)
-  const [showAddAnimalForm, setShowAddAnimalForm] = useState(false)
-  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false)
-  const [animals, setAnimals] = useState<typeof MOCK_ANIMALS>([])
-  const [filteredAnimals, setFilteredAnimals] = useState<any[]>([])
-
-  const [selectedFilter, setSelectedFilter] = useState("all")
-  const [formStep, setFormStep] = useState(1)
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [user, setUser] = useState(MOCK_USER);
+  const [loading, setLoading] = useState(true);
+  const [showAddAnimalForm, setShowAddAnimalForm] = useState(false);
+  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
+  const [animals, setAnimals] = useState<typeof MOCK_ANIMALS>([]);
+  const [filteredAnimals, setFilteredAnimals] = useState<typeof MOCK_ANIMALS>(
+    []
+  );
+  const [selectedFilter, setSelectedFilter] = useState("all");
 
   // Form state
   const [formData, setFormData] = useState({
@@ -262,109 +374,120 @@ export default function Dashboard() {
     // Images
     images: [] as File[],
     imageUrls: [] as string[],
-  })
+  });
 
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [error, setError] = useState("")
-  const [success, setSuccess] = useState("")
-  const [isEditing, setIsEditing] = useState(false)
-  const [editingAnimalId, setEditingAnimalId] = useState<string | null>(null)
-  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
-  const [animalToDelete, setAnimalToDelete] = useState<string | null>(null)
-  const [toast, setToast] = useState(null)
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingAnimalId, setEditingAnimalId] = useState<string | null>(null);
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+  const [animalToDelete, setAnimalToDelete] = useState<string | null>(null);
+  const [toast, setToast] = useState<{
+    message: string;
+    type: "success" | "error";
+  } | null>(null);
 
-  const showToast = (message, type = "success") => {
-    setToast({ message, type })
+  const showToast = (
+    message: string,
+    type: "success" | "error" = "success"
+  ) => {
+    setToast({ message, type });
 
     // Automatically hide the toast after 3 seconds
     setTimeout(() => {
-      setToast(null)
-    }, 3000)
-  }
+      setToast(null);
+    }, 3000);
+  };
 
   useEffect(() => {
     // Simulate loading data
     setTimeout(() => {
-      setAnimals(MOCK_ANIMALS)
-      setLoading(false)
-    }, 1000)
-  }, [])
+      setAnimals(MOCK_ANIMALS);
+      setLoading(false);
+    }, 1000);
+  }, []);
 
   // Filter animals when filter or animals list changes
   useEffect(() => {
     if (selectedFilter === "all") {
-      setFilteredAnimals(animals)
+      setFilteredAnimals(animals);
     } else if (["dairy", "meat", "qurbani"].includes(selectedFilter)) {
       // Filter by main category
-      setFilteredAnimals(animals.filter((animal) => animal.category === selectedFilter))
+      setFilteredAnimals(
+        animals.filter((animal) => animal.category === selectedFilter)
+      );
     } else {
       // Filter by subcategory (format: "maincategory-subcategory")
-      const [mainCat, subCat] = selectedFilter.split("-")
-      setFilteredAnimals(animals.filter((animal) => animal.category === mainCat && animal.subcategory === subCat))
+      const [mainCat, subCat] = selectedFilter.split("-");
+      setFilteredAnimals(
+        animals.filter(
+          (animal) =>
+            animal.category === mainCat && animal.subcategory === subCat
+        )
+      );
     }
-  }, [selectedFilter, animals])
+  }, [selectedFilter, animals]);
 
   const handleSignOut = async () => {
     try {
-      setLoading(true) // Show loader while signing out
+      setLoading(true); // Show loader while signing out
       // Simulate sign out process
       setTimeout(() => {
-        alert("Signed out successfully!")
-        setLoading(false)
-      }, 500)
+        alert("Signed out successfully!");
+        setLoading(false);
+      }, 500);
     } catch (error) {
-      console.error("Error signing out:", error)
-      setLoading(false)
+      console.error("Error signing out:", error);
+      setLoading(false);
     }
-  }
+  };
 
   const toggleProfileMenu = () => {
-    setShowProfileMenu(!showProfileMenu)
-  }
+    setShowProfileMenu(!showProfileMenu);
+  };
 
   const handleAddAnimalClick = () => {
     // Check if user can add more animals based on subscription
-    const canAddMore = checkSubscriptionLimits()
+    const canAddMore = checkSubscriptionLimits();
 
     if (canAddMore) {
-      setShowAddAnimalForm(true)
-      setFormStep(1)
-      resetForm()
+      setShowAddAnimalForm(true);
+      resetForm();
     } else {
-      setShowSubscriptionModal(true)
+      setShowSubscriptionModal(true);
     }
-  }
+  };
 
   const checkSubscriptionLimits = () => {
     // Free users can add 1 listing if they haven't used it yet
     if (user.subscription === "free" && user.listingsUsed >= 1) {
-      return false
+      return false;
     }
 
     // Check limits for other subscription types
-    const plan = SUBSCRIPTION_PLANS.find((p) => p.id === user.subscription)
-    if (!plan) return false
+    const plan = SUBSCRIPTION_PLANS.find((p) => p.id === user.subscription);
+    if (!plan) return false;
 
-    return user.listingsUsed < plan.listings
-  }
+    return user.listingsUsed < plan.listings;
+  };
 
   const toggleAddAnimalForm = () => {
-    setShowAddAnimalForm(!showAddAnimalForm)
+    setShowAddAnimalForm(!showAddAnimalForm);
     if (!showAddAnimalForm) {
       if (!isEditing) {
-        resetForm()
-        setFormStep(1)
+        resetForm();
       }
     } else {
-      resetForm()
-      setIsEditing(false)
-      setEditingAnimalId(null)
+      resetForm();
+      setIsEditing(false);
+      setEditingAnimalId(null);
     }
-  }
+  };
 
   const closeSubscriptionModal = () => {
-    setShowSubscriptionModal(false)
-  }
+    setShowSubscriptionModal(false);
+  };
 
   const resetForm = () => {
     setFormData({
@@ -391,121 +514,91 @@ export default function Dashboard() {
       contactNumber: "",
       images: [],
       imageUrls: [],
-    })
-    setError("")
-    setSuccess("")
-  }
+    });
+    setError("");
+    setSuccess("");
+  };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
+  const handleInputChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
+  ) => {
+    const { name, value } = e.target;
     setFormData({
       ...formData,
       [name]: value,
-    })
-  }
+    });
+  };
 
   const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const category = e.target.value
+    const category = e.target.value;
     setFormData({
       ...formData,
       category: category,
       subcategory: "", // Reset subcategory when category changes
-    })
-  }
+    });
+  };
 
   const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedFilter(e.target.value)
-  }
+    setSelectedFilter(e.target.value);
+  };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files
-    if (!files) return
+    const files = e.target.files;
+    if (!files) return;
 
     // Check if adding these files would exceed the 5 image limit
     if (formData.images.length + files.length > 5) {
-      setError("Maximum 5 images allowed")
-      return
+      setError("Maximum 5 images allowed");
+      return;
     }
 
     // Check file sizes
-    const oversizedFiles = Array.from(files).filter((file) => file.size > 5 * 1024 * 1024)
+    const oversizedFiles = Array.from(files).filter(
+      (file) => file.size > 5 * 1024 * 1024
+    );
 
     if (oversizedFiles.length > 0) {
-      setError("Images must be less than 5MB each")
-      return
+      setError("Images must be less than 5MB each");
+      return;
     }
 
     // Add the new files
-    const newImages = [...formData.images, ...Array.from(files)]
+    const newImages = [...formData.images, ...Array.from(files)];
 
     // Generate preview URLs
-    const newImageUrls = [...formData.imageUrls]
+    const newImageUrls = [...formData.imageUrls];
     Array.from(files).forEach((file) => {
-      const url = URL.createObjectURL(file)
-      newImageUrls.push(url)
-    })
+      const url = URL.createObjectURL(file);
+      newImageUrls.push(url);
+    });
 
     setFormData({
       ...formData,
       images: newImages,
       imageUrls: newImageUrls,
-    })
+    });
 
-    setError("") // Clear any previous errors
-  }
-
-  const removeImage = (index: number) => {
-    const newImages = [...formData.images]
-    const newImageUrls = [...formData.imageUrls]
-
-    // Remove the image and its URL
-    newImages.splice(index, 1)
-    newImageUrls.splice(index, 1)
-
-    setFormData({
-      ...formData,
-      images: newImages,
-      imageUrls: newImageUrls,
-    })
-  }
+    setError(""); // Clear any previous errors
+  };
 
   const handleRemoveImage = (index: number) => {
-    const newImages = [...formData.images]
-    const newImageUrls = [...formData.imageUrls]
+    const newImages = [...formData.images];
+    const newImageUrls = [...formData.imageUrls];
 
     // Remove the image and its URL
-    newImages.splice(index, 1)
-    newImageUrls.splice(index, 1)
+    newImages.splice(index, 1);
+    newImageUrls.splice(index, 1);
 
     setFormData({
       ...formData,
       images: newImages,
       imageUrls: newImageUrls,
-    })
-  }
+    });
+  };
 
-  const handleCategorySelection = (category: string) => {
-    setFormData({
-      ...formData,
-      category: category,
-      subcategory: "", // Reset subcategory when category changes
-    })
-  }
-
-  const handleSubcategorySelection = (subcategory: string) => {
-    setFormData({
-      ...formData,
-      subcategory: subcategory,
-    })
-    // Move to next step
-    setFormStep(2)
-  }
-
-  const goBackToCategories = () => {
-    setFormStep(1)
-  }
-
-  const handleEditAnimal = (animal: any) => {
+  const handleEditAnimal = (animal: (typeof MOCK_ANIMALS)[0]) => {
     // Convert the animal data to match the form structure
     setFormData({
       title: animal.title || "",
@@ -528,173 +621,181 @@ export default function Dashboard() {
       pregnancyStatus: animal.pregnancyStatus || "No",
       pregnancyDuration: animal.pregnancyDuration || "",
       teeth: animal.teeth || "",
+      contactNumber: animal.userContact || "", // Ensure contactNumber is set
       images: [], // Cannot copy files directly
       imageUrls: animal.images || [], // Use existing image URLs
-    })
+    });
 
-    setIsEditing(true)
-    setEditingAnimalId(animal.id)
-    setShowAddAnimalForm(true)
-    setFormStep(2) // Skip to the form directly
-  }
+    setIsEditing(true);
+    setEditingAnimalId(animal.id);
+    setShowAddAnimalForm(true);
+  };
 
-  const handleDeleteAnimal = (animalId: string) => {
+  const handleDeleteAnimal = async () => {
     try {
-      // Find the animal to delete
-      const animalToDelete = animals.find((animal) => animal.id === animalId)
-
       if (!animalToDelete) {
-        throw new Error("Animal not found")
-      }
-
-      // Confirm deletion
-      if (!window.confirm("Are you sure you want to delete this animal listing?")) {
-        return
+        throw new Error("No animal ID provided for deletion");
       }
 
       // Update the state
-      setAnimals(animals.filter((animal) => animal.id !== animalId))
+      setAnimals(animals.filter((animal) => animal.id !== animalToDelete));
+
+      // Close the confirmation modal
+      setShowDeleteConfirmation(false);
+      setAnimalToDelete(null);
 
       // Show success message
-      showToast("Animal listing deleted successfully", "success")
+      showToast("Animal listing deleted successfully", "success");
     } catch (error) {
-      const err = error as Error
-      console.error("Error deleting animal:", err)
-      showToast(`Failed to delete animal listing: ${err.message}`, "error")
+      const err = error as Error;
+      console.error("Error deleting animal:", err);
+      showToast(`Failed to delete animal listing: ${err.message}`, "error");
     }
-  }
+  };
+
+  const confirmDeleteAnimal = (animalId: string) => {
+    setAnimalToDelete(animalId);
+    setShowDeleteConfirmation(true);
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setError("")
-    setSuccess("")
-
-    // Validate form - basic required fields
-    if (!formData.title || !formData.price || !formData.category || !formData.subcategory || !formData.location) {
-      setError("Please fill in all required fields")
-      return
-    }
-
-    // Validate that at least one image is uploaded for new listings
-    if (!isEditing && formData.imageUrls.length === 0) {
-      setError("Please upload at least one image")
-      return
-    }
-
-    // Validate price is a number
-    if (isNaN(Number.parseFloat(formData.price))) {
-      setError("Price must be a valid number")
-      return
-    }
-
-    setIsSubmitting(true)
+    e.preventDefault();
+    setError("");
+    setSuccess("");
 
     try {
-      // Create animal data object
-      const animalData = {
-        id: isEditing ? editingAnimalId : `animal${Date.now()}`,
+      // Validate form - basic required fields
+      if (
+        !formData.title ||
+        !formData.price ||
+        !formData.category ||
+        !formData.subcategory ||
+        !formData.location ||
+        !formData.gender || // Make sure gender is required
+        !formData.breed
+      ) {
+        setError("Please fill in all required fields");
+        return;
+      }
+
+      // Create base animal data with required fields
+      const baseAnimalData = {
+        id: isEditing ? editingAnimalId! : `animal${Date.now()}`,
         title: formData.title,
         price: Number.parseFloat(formData.price),
         category: formData.category,
         subcategory: formData.subcategory,
         breed: formData.breed,
         location: formData.location,
-        province: formData.province,
-        district: formData.district,
-        tehsil: formData.tehsil,
-        color: formData.color,
-        age: formData.age,
-        weight: formData.weight,
+        province: formData.province || "",
+        district: formData.district || "",
+        tehsil: formData.tehsil || "",
+        color: formData.color || "",
+        age: formData.age || "",
+        weight: formData.weight || "",
         gender: formData.gender,
-        description: formData.description,
-        // Conditional fields based on category/subcategory
-        ...(formData.category === "dairy" &&
-          formData.subcategory === "cow" && {
-            milkQuantity: formData.milkQuantity ? Number(formData.milkQuantity) : undefined,
-            lactation: formData.lactation ? Number(formData.lactation) : undefined,
-            teats: formData.teats ? Number(formData.teats) : undefined,
-            pregnancyStatus: formData.pregnancyStatus,
-            pregnancyDuration: formData.pregnancyStatus === "Yes" ? formData.pregnancyDuration : undefined,
-          }),
-        ...(["meat", "qurbani"].includes(formData.category) && {
-          teeth: formData.teeth,
-        }),
-        // Use existing images for editing or new uploads
+        description: formData.description || "",
         images: formData.imageUrls,
         userId: user.uid,
         userEmail: user.email,
         userName: user.name,
-        userContact: "+92 300 1234567", // Mock contact number
+        userContact: formData.contactNumber || "+92 300 1234567",
         createdAt: new Date(),
-      }
+      };
+
+      // Add category-specific fields
+      const animalData = {
+        ...baseAnimalData,
+        ...(formData.category === "dairy" && formData.subcategory === "cow"
+          ? {
+              milkQuantity: Number(formData.milkQuantity) || 0,
+              lactation: Number(formData.lactation) || 0,
+              teats: Number(formData.teats) || 0,
+              pregnancyStatus: formData.pregnancyStatus || "No",
+              pregnancyDuration:
+                formData.pregnancyStatus === "Yes"
+                  ? formData.pregnancyDuration || ""
+                  : "",
+            }
+          : {}),
+        ...(["meat", "qurbani"].includes(formData.category)
+          ? { teeth: formData.teeth || "" }
+          : {}),
+      } as (typeof MOCK_ANIMALS)[0]; // Type assertion since we've validated the data
 
       if (isEditing && editingAnimalId) {
         // Update existing animal
         setAnimals(
           animals.map((animal) =>
-            animal.id === editingAnimalId ? { ...animal, ...animalData, id: animal.id || editingAnimalId } : animal,
-          ),
-        )
-        setSuccess("Animal updated successfully!")
+            animal.id === editingAnimalId ? animalData : animal
+          )
+        );
+        setSuccess("Animal updated successfully!");
       } else {
         // Add new animal
-        setAnimals([...animals, animalData as any])
-        setSuccess("Animal added successfully!")
+        setAnimals([...animals, animalData]);
+        setSuccess("Animal added successfully!");
 
         // Update user's listings count
         setUser({
           ...user,
           listingsUsed: user.listingsUsed + 1,
-        })
+        });
       }
 
       // Reset form
-      resetForm()
+      resetForm();
 
       // Close form after a delay
       setTimeout(() => {
-        setShowAddAnimalForm(false)
-        setSuccess("")
-        setIsEditing(false)
-        setEditingAnimalId(null)
-      }, 2000)
+        setShowAddAnimalForm(false);
+        setSuccess("");
+        setIsEditing(false);
+        setEditingAnimalId(null);
+      }, 2000);
     } catch (error) {
-      const err = error as Error
-      console.error("Error saving animal:", err)
-      setError(`Failed to ${isEditing ? "update" : "add"} animal: ${err.message || "Unknown error"}`)
+      const err = error as Error;
+      console.error("Error saving animal:", err);
+      setError(
+        `Failed to ${isEditing ? "update" : "add"} animal: ${
+          err.message || "Unknown error"
+        }`
+      );
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
-  // Function to select a subscription plan
-  const selectSubscriptionPlan = (planId: string) => {
-    // In a real app, this would redirect to payment
-    alert(`You selected the ${planId} plan. In a real app, this would redirect to payment.`)
+  // const selectSubscriptionPlan = (planId: string) => {
+  //   // In a real app, this would redirect to payment
+  //   alert(`You selected the ${planId} plan. In a real app, this would redirect to payment.`)
 
-    // For demo purposes, we'll just update the user's subscription
-    setUser({
-      ...user,
-      subscription: planId,
-      listingsUsed: 0,
-    })
+  //   // For demo purposes, we'll just update the user's subscription
+  //   setUser({
+  //     ...user,
+  //     subscription: planId,
+  //     listingsUsed: 0,
+  //   })
 
-    closeSubscriptionModal()
-  }
+  //   closeSubscriptionModal()
+  // }
 
   const handleSubscriptionChange = (planId: string) => {
     // In a real app, this would redirect to payment
-    if (window.confirm(`You selected the ${planId} plan. Proceed to payment?`)) {
+    if (
+      window.confirm(`You selected the ${planId} plan. Proceed to payment?`)
+    ) {
       // For demo purposes, we'll just update the user's subscription
       setUser({
         ...user,
         subscription: planId,
         listingsUsed: 0,
-      })
+      });
 
-      closeSubscriptionModal()
-      showToast(`Successfully upgraded to ${planId} plan`, "success")
+      closeSubscriptionModal();
+      showToast(`Successfully upgraded to ${planId} plan`, "success");
     }
-  }
+  };
 
   // Simple loader component
   if (loading) {
@@ -707,20 +808,21 @@ export default function Dashboard() {
           Loading<span className="animate-pulse">...</span>
         </div>
       </div>
-    )
+    );
   }
 
   // Dynamic field rendering based on category and subcategory
-  // Dynamic field rendering based on category and subcategory
   const renderDynamicFields = () => {
-    const { category, subcategory } = formData
+    const { category, subcategory } = formData;
 
     if (category === "dairy") {
       if (subcategory === "calf") {
         return (
           <>
             <div className="flex-1 min-w-[200px]">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Breed*</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Breed*
+              </label>
               <select
                 name="breed"
                 value={formData.breed}
@@ -738,7 +840,9 @@ export default function Dashboard() {
             </div>
 
             <div className="flex-1 min-w-[200px]">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Age (Months)*</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Age (Months)*
+              </label>
               <input
                 type="number"
                 name="age"
@@ -751,7 +855,9 @@ export default function Dashboard() {
             </div>
 
             <div className="flex-1 min-w-[200px]">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Weight (KG)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Weight (KG)
+              </label>
               <input
                 type="number"
                 name="weight"
@@ -763,7 +869,9 @@ export default function Dashboard() {
             </div>
 
             <div className="flex-1 min-w-[200px]">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Gender*</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Gender*
+              </label>
               <select
                 name="gender"
                 value={formData.gender}
@@ -777,12 +885,14 @@ export default function Dashboard() {
               </select>
             </div>
           </>
-        )
+        );
       } else if (subcategory === "heifer") {
         return (
           <>
             <div className="flex-1 min-w-[200px]">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Breed*</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Breed*
+              </label>
               <select
                 name="breed"
                 value={formData.breed}
@@ -800,7 +910,9 @@ export default function Dashboard() {
             </div>
 
             <div className="flex-1 min-w-[200px]">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Age (Months)*</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Age (Months)*
+              </label>
               <input
                 type="number"
                 name="age"
@@ -813,7 +925,9 @@ export default function Dashboard() {
             </div>
 
             <div className="flex-1 min-w-[200px]">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Teeth</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Teeth
+              </label>
               <select
                 name="teeth"
                 value={formData.teeth}
@@ -829,7 +943,9 @@ export default function Dashboard() {
             </div>
 
             <div className="flex-1 min-w-[200px]">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Weight (KG)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Weight (KG)
+              </label>
               <input
                 type="number"
                 name="weight"
@@ -841,7 +957,9 @@ export default function Dashboard() {
             </div>
 
             <div className="flex-1 min-w-[200px]">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Pregnancy Status*</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Pregnancy Status*
+              </label>
               <select
                 name="pregnancyStatus"
                 value={formData.pregnancyStatus}
@@ -856,7 +974,9 @@ export default function Dashboard() {
 
             {formData.pregnancyStatus === "Yes" && (
               <div className="flex-1 min-w-[200px]">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Pregnancy Duration*</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Pregnancy Duration*
+                </label>
                 <select
                   name="pregnancyDuration"
                   value={formData.pregnancyDuration}
@@ -872,12 +992,14 @@ export default function Dashboard() {
               </div>
             )}
           </>
-        )
+        );
       } else if (subcategory === "cow") {
         return (
           <>
             <div className="flex-1 min-w-[200px]">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Breed*</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Breed*
+              </label>
               <select
                 name="breed"
                 value={formData.breed}
@@ -895,7 +1017,9 @@ export default function Dashboard() {
             </div>
 
             <div className="flex-1 min-w-[200px]">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Age (Years)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Age (Years)
+              </label>
               <input
                 type="text"
                 name="age"
@@ -907,7 +1031,9 @@ export default function Dashboard() {
             </div>
 
             <div className="flex-1 min-w-[200px]">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Weight (KG)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Weight (KG)
+              </label>
               <input
                 type="number"
                 name="weight"
@@ -919,7 +1045,9 @@ export default function Dashboard() {
             </div>
 
             <div className="flex-1 min-w-[200px]">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Daily Milk Quantity (Liters)*</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Daily Milk Quantity (Liters)*
+              </label>
               <input
                 type="number"
                 name="milkQuantity"
@@ -934,7 +1062,9 @@ export default function Dashboard() {
             </div>
 
             <div className="flex-1 min-w-[200px]">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Lactation*</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Lactation*
+              </label>
               <select
                 name="lactation"
                 value={formData.lactation}
@@ -952,7 +1082,9 @@ export default function Dashboard() {
             </div>
 
             <div className="flex-1 min-w-[200px]">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Teats*</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Teats*
+              </label>
               <select
                 name="teats"
                 value={formData.teats}
@@ -969,7 +1101,9 @@ export default function Dashboard() {
             </div>
 
             <div className="flex-1 min-w-[200px]">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Pregnancy Status*</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Pregnancy Status*
+              </label>
               <select
                 name="pregnancyStatus"
                 value={formData.pregnancyStatus}
@@ -984,7 +1118,9 @@ export default function Dashboard() {
 
             {formData.pregnancyStatus === "Yes" && (
               <div className="flex-1 min-w-[200px]">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Pregnancy Duration*</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Pregnancy Duration*
+                </label>
                 <select
                   name="pregnancyDuration"
                   value={formData.pregnancyDuration}
@@ -1000,12 +1136,14 @@ export default function Dashboard() {
               </div>
             )}
           </>
-        )
+        );
       } else if (subcategory === "bull") {
         return (
           <>
             <div className="flex-1 min-w-[200px]">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Breed*</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Breed*
+              </label>
               <select
                 name="breed"
                 value={formData.breed}
@@ -1023,7 +1161,9 @@ export default function Dashboard() {
             </div>
 
             <div className="flex-1 min-w-[200px]">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Age (Months)*</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Age (Months)*
+              </label>
               <input
                 type="number"
                 name="age"
@@ -1036,7 +1176,9 @@ export default function Dashboard() {
             </div>
 
             <div className="flex-1 min-w-[200px]">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Weight (KG)*</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Weight (KG)*
+              </label>
               <input
                 type="number"
                 name="weight"
@@ -1049,7 +1191,9 @@ export default function Dashboard() {
             </div>
 
             <div className="flex-1 min-w-[200px]">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Teeth*</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Teeth*
+              </label>
               <select
                 name="teeth"
                 value={formData.teeth}
@@ -1066,13 +1210,15 @@ export default function Dashboard() {
               </select>
             </div>
           </>
-        )
+        );
       }
     } else if (category === "meat") {
       return (
         <>
           <div className="flex-1 min-w-[200px]">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Breed*</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Breed*
+            </label>
             <select
               name="breed"
               value={formData.breed}
@@ -1098,7 +1244,9 @@ export default function Dashboard() {
           </div>
 
           <div className="flex-1 min-w-[200px]">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Gender*</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Gender*
+            </label>
             <select
               name="gender"
               value={formData.gender}
@@ -1113,7 +1261,9 @@ export default function Dashboard() {
           </div>
 
           <div className="flex-1 min-w-[200px]">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Weight (KG)*</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Weight (KG)*
+            </label>
             <input
               type="number"
               name="weight"
@@ -1126,7 +1276,9 @@ export default function Dashboard() {
           </div>
 
           <div className="flex-1 min-w-[200px]">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Age*</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Age*
+            </label>
             <input
               type="text"
               name="age"
@@ -1139,7 +1291,9 @@ export default function Dashboard() {
           </div>
 
           <div className="flex-1 min-w-[200px]">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Teeth*</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Teeth*
+            </label>
             <select
               name="teeth"
               value={formData.teeth}
@@ -1156,12 +1310,14 @@ export default function Dashboard() {
             </select>
           </div>
         </>
-      )
+      );
     } else if (category === "qurbani") {
       return (
         <>
           <div className="flex-1 min-w-[200px]">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Breed*</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Breed*
+            </label>
             <select
               name="breed"
               value={formData.breed}
@@ -1190,7 +1346,9 @@ export default function Dashboard() {
           </div>
 
           <div className="flex-1 min-w-[200px]">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Gender*</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Gender*
+            </label>
             <select
               name="gender"
               value={formData.gender}
@@ -1205,7 +1363,9 @@ export default function Dashboard() {
           </div>
 
           <div className="flex-1 min-w-[200px]">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Weight (KG)*</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Weight (KG)*
+            </label>
             <input
               type="number"
               name="weight"
@@ -1218,7 +1378,9 @@ export default function Dashboard() {
           </div>
 
           <div className="flex-1 min-w-[200px]">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Age</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Age
+            </label>
             <input
               type="text"
               name="age"
@@ -1230,7 +1392,9 @@ export default function Dashboard() {
           </div>
 
           <div className="flex-1 min-w-[200px]">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Teeth*</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Teeth*
+            </label>
             <select
               name="teeth"
               value={formData.teeth}
@@ -1247,13 +1411,12 @@ export default function Dashboard() {
             </select>
           </div>
         </>
-      )
+      );
     }
 
-    return null
-  }
+    return null;
+  };
 
-  // Now let's complete the return part of the component with the UI
   return (
     <div className="bg-gray-50 min-h-screen">
       <DashboardNavbar
@@ -1287,21 +1450,28 @@ export default function Dashboard() {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
             <div>
               <h2 className="text-lg font-medium text-gray-900">
-                Subscription: <span className="capitalize">{user.subscription}</span> Plan
+                Subscription:{" "}
+                <span className="capitalize">{user.subscription}</span> Plan
               </h2>
               <p className="text-sm text-gray-600">
                 Animals posted: {user.listingsUsed} /
-                {SUBSCRIPTION_PLANS.find((plan) => plan.id === user.subscription)?.listings || 0}
+                {SUBSCRIPTION_PLANS.find(
+                  (plan) => plan.id === user.subscription
+                )?.listings || 0}
               </p>
               {user.subscription !== "free" && (
-                <p className="text-xs text-gray-500 mt-1">Renews on {user.subscriptionEndDate.toLocaleDateString()}</p>
+                <p className="text-xs text-gray-500 mt-1">
+                  Renews on {user.subscriptionEndDate.toLocaleDateString()}
+                </p>
               )}
             </div>
             <button
               onClick={() => setShowSubscriptionModal(true)}
               className="mt-3 md:mt-0 text-sm px-3 py-1.5 border border-green-700 text-green-700 rounded hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-700"
             >
-              {user.subscription === "free" ? "Upgrade Plan" : "Manage Subscription"}
+              {user.subscription === "free"
+                ? "Upgrade Plan"
+                : "Manage Subscription"}
             </button>
           </div>
         </div>
@@ -1331,7 +1501,9 @@ export default function Dashboard() {
           <div className="bg-white shadow-sm rounded-lg p-8 text-center">
             <div className="flex flex-col items-center justify-center">
               <FaImages className="text-gray-300 text-5xl mb-4" />
-              <h3 className="text-lg font-medium text-gray-700 mb-2">No animals found</h3>
+              <h3 className="text-lg font-medium text-gray-700 mb-2">
+                No animals found
+              </h3>
               <p className="text-gray-500 mb-4">
                 {selectedFilter !== "all"
                   ? "Try changing your filter or add an animal in this category."
@@ -1353,7 +1525,7 @@ export default function Dashboard() {
                 key={animal.id}
                 animal={animal}
                 onEdit={() => handleEditAnimal(animal)}
-                onDelete={() => handleDeleteAnimal(animal.id)}
+                onDelete={() => confirmDeleteAnimal(animal.id)}
               />
             ))}
           </div>
@@ -1368,17 +1540,24 @@ export default function Dashboard() {
               <h2 className="text-xl font-semibold text-gray-800">
                 {isEditing ? "Edit Animal Listing" : "Add New Animal"}
               </h2>
-              <button onClick={toggleAddAnimalForm} className="text-gray-500 hover:text-gray-700">
+              <button
+                onClick={toggleAddAnimalForm}
+                className="text-gray-500 hover:text-gray-700"
+              >
                 <FaTimes />
               </button>
             </div>
 
             <form onSubmit={handleSubmit} className="p-6">
               <div className="mb-6">
-                <h3 className="text-lg font-medium text-gray-800 mb-4">Basic Information</h3>
+                <h3 className="text-lg font-medium text-gray-800 mb-4">
+                  Basic Information
+                </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   <div className="flex-1 min-w-[200px]">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Category*</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Category*
+                    </label>
                     <select
                       name="category"
                       value={formData.category}
@@ -1395,7 +1574,9 @@ export default function Dashboard() {
 
                   {formData.category && (
                     <div className="flex-1 min-w-[200px]">
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Subcategory*</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Subcategory*
+                      </label>
                       <select
                         name="subcategory"
                         value={formData.subcategory}
@@ -1433,7 +1614,9 @@ export default function Dashboard() {
                   )}
 
                   <div className="flex-1 min-w-[200px]">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Price (Rs.)*</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Price (Rs.)*
+                    </label>
                     <input
                       type="number"
                       name="price"
@@ -1449,28 +1632,38 @@ export default function Dashboard() {
 
               {formData.category && formData.subcategory && (
                 <div className="mb-6">
-                  <h3 className="text-lg font-medium text-gray-800 mb-4">Animal Details</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">{renderDynamicFields()}</div>
+                  <h3 className="text-lg font-medium text-gray-800 mb-4">
+                    Animal Details
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {renderDynamicFields()}
+                  </div>
                 </div>
               )}
 
               <div className="mb-6">
-                <h3 className="text-lg font-medium text-gray-800 mb-4">Additional Information</h3>
+                <h3 className="text-lg font-medium text-gray-800 mb-4">
+                  Additional Information
+                </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="col-span-1 md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Description
+                    </label>
                     <textarea
                       name="description"
                       value={formData.description}
                       onChange={handleInputChange}
-                      rows="4"
+                      rows={4}
                       placeholder="Provide additional details about your animal"
                       className="w-full p-3 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-green-700 focus:ring-2 focus:ring-green-700/10"
                     ></textarea>
                   </div>
 
                   <div className="flex-1">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Location*</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Location*
+                    </label>
                     <select
                       name="location"
                       value={formData.location}
@@ -1488,7 +1681,9 @@ export default function Dashboard() {
                   </div>
 
                   <div className="flex-1">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Contact Number*</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Contact Number*
+                    </label>
                     <input
                       type="tel"
                       name="contactNumber"
@@ -1499,13 +1694,17 @@ export default function Dashboard() {
                       required
                       className="w-full p-3 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-green-700 focus:ring-2 focus:ring-green-700/10"
                     />
-                    <p className="text-xs text-gray-500 mt-1">Format: 03XXXXXXXXX</p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Format: 03XXXXXXXXX
+                    </p>
                   </div>
                 </div>
               </div>
 
               <div className="mb-6">
-                <h3 className="text-lg font-medium text-gray-800 mb-4">Images</h3>
+                <h3 className="text-lg font-medium text-gray-800 mb-4">
+                  Images
+                </h3>
                 <div className="grid grid-cols-1 gap-4">
                   <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
                     <input
@@ -1517,20 +1716,29 @@ export default function Dashboard() {
                       onChange={handleImageUpload}
                       className="hidden"
                     />
-                    <label htmlFor="images" className="cursor-pointer flex flex-col items-center justify-center">
+                    <label
+                      htmlFor="images"
+                      className="cursor-pointer flex flex-col items-center justify-center"
+                    >
                       <FaCloudUploadAlt className="text-4xl text-gray-400 mb-2" />
-                      <span className="text-gray-600 font-medium">Drop files here or click to upload</span>
-                      <span className="text-xs text-gray-500 mt-1">(Up to 5 images, max 5MB each)</span>
+                      <span className="text-gray-600 font-medium">
+                        Drop files here or click to upload
+                      </span>
+                      <span className="text-xs text-gray-500 mt-1">
+                        (Up to 5 images, max 5MB each)
+                      </span>
                     </label>
                   </div>
 
-                  {formData.images && formData.images.length > 0 && (
+                  {formData.imageUrls && formData.imageUrls.length > 0 && (
                     <div className="flex flex-wrap gap-4 mt-4">
-                      {formData.images.map((image, index) => (
+                      {formData.imageUrls.map((imageUrl, index) => (
                         <div key={index} className="relative">
-                          <img
-                            src={image.preview || image}
+                          <Image
+                            src={imageUrl || "/placeholder.svg"}
                             alt={`Preview ${index + 1}`}
+                            width={96}
+                            height={96}
                             className="h-24 w-24 object-cover rounded-lg border border-gray-300"
                           />
                           <button
@@ -1546,6 +1754,20 @@ export default function Dashboard() {
                   )}
                 </div>
               </div>
+
+              {error && (
+                <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg flex items-center">
+                  <FaExclamationCircle className="mr-2" />
+                  {error}
+                </div>
+              )}
+
+              {success && (
+                <div className="mb-4 p-3 bg-green-50 border border-green-200 text-green-700 rounded-lg flex items-center">
+                  <FaCheckCircle className="mr-2" />
+                  {success}
+                </div>
+              )}
 
               <div className="flex justify-end pt-4 border-t">
                 <button
@@ -1580,8 +1802,13 @@ export default function Dashboard() {
         <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg shadow-xl w-full max-w-3xl">
             <div className="border-b px-6 py-4 flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-gray-800">Subscription Plans</h2>
-              <button onClick={() => setShowSubscriptionModal(false)} className="text-gray-500 hover:text-gray-700">
+              <h2 className="text-xl font-semibold text-gray-800">
+                Subscription Plans
+              </h2>
+              <button
+                onClick={() => setShowSubscriptionModal(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
                 <FaTimes />
               </button>
             </div>
@@ -1592,13 +1819,19 @@ export default function Dashboard() {
                   <div
                     key={plan.id}
                     className={`border rounded-lg p-4 flex flex-col ${
-                      user.subscription === plan.id ? "border-green-500 bg-green-50" : "border-gray-200"
+                      user.subscription === plan.id
+                        ? "border-green-500 bg-green-50"
+                        : "border-gray-200"
                     }`}
                   >
-                    <div className="text-xl font-bold mb-2 capitalize">{plan.id}</div>
+                    <div className="text-xl font-bold mb-2 capitalize">
+                      {plan.id}
+                    </div>
                     <div className="text-3xl font-semibold mb-4">
                       {plan.price > 0 ? `Rs. ${plan.price}` : "Free"}
-                      {plan.price > 0 && <span className="text-sm font-normal">/month</span>}
+                      {plan.price > 0 && (
+                        <span className="text-sm font-normal">/month</span>
+                      )}
                     </div>
                     <ul className="text-sm text-gray-700 mb-6 flex-grow">
                       <li className="mb-2 flex items-start">
@@ -1621,7 +1854,11 @@ export default function Dashboard() {
                           : "bg-green-700 text-white hover:bg-green-800"
                       }`}
                     >
-                      {user.subscription === plan.id ? "Current Plan" : plan.price > 0 ? "Upgrade" : "Downgrade"}
+                      {user.subscription === plan.id
+                        ? "Current Plan"
+                        : plan.price > 0
+                        ? "Upgrade"
+                        : "Downgrade"}
                     </button>
                   </div>
                 ))}
@@ -1639,9 +1876,12 @@ export default function Dashboard() {
               <div className="flex items-center justify-center text-red-600 mb-4">
                 <FaExclamationTriangle className="text-4xl" />
               </div>
-              <h3 className="text-xl font-medium text-gray-900 text-center mb-2">Delete Animal Listing</h3>
+              <h3 className="text-xl font-medium text-gray-900 text-center mb-2">
+                Delete Animal Listing
+              </h3>
               <p className="text-gray-600 text-center mb-6">
-                Are you sure you want to delete this listing? This action cannot be undone.
+                Are you sure you want to delete this listing? This action cannot
+                be undone.
               </p>
               <div className="flex justify-center space-x-4">
                 <button
@@ -1653,7 +1893,7 @@ export default function Dashboard() {
                 </button>
                 <button
                   type="button"
-                  onClick={handleDeleteAnimal}
+                  onClick={() => handleDeleteAnimal()}
                   className="px-4 py-2 bg-red-600 text-white rounded-lg shadow-sm hover:bg-red-700"
                 >
                   Delete
@@ -1671,91 +1911,14 @@ export default function Dashboard() {
             toast.type === "success" ? "bg-green-600" : "bg-red-600"
           } text-white flex items-center`}
         >
-          {toast.type === "success" ? <FaCheckCircle className="mr-2" /> : <FaExclamationCircle className="mr-2" />}
+          {toast.type === "success" ? (
+            <FaCheckCircle className="mr-2" />
+          ) : (
+            <FaExclamationCircle className="mr-2" />
+          )}
           {toast.message}
         </div>
       )}
     </div>
-  )
-}
-
-// AnimalCard Component
-const AnimalCardComponent = ({ animal, onEdit, onDelete }) => {
-  return (
-    <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-      <div className="relative h-48">
-        {animal.images && animal.images.length > 0 ? (
-          <img
-            src={animal.images[0] || "/placeholder.svg"}
-            alt={`${animal.breed} ${animal.subcategory}`}
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-            <FaImage className="text-gray-400 text-4xl" />
-          </div>
-        )}
-        <div className="absolute top-3 left-3">
-          <span
-            className={`text-xs font-medium px-2 py-1 rounded-full ${
-              animal.category === "dairy"
-                ? "bg-blue-100 text-blue-800"
-                : animal.category === "meat"
-                  ? "bg-red-100 text-red-800"
-                  : "bg-yellow-100 text-yellow-800"
-            }`}
-          >
-            {animal.category}
-          </span>
-        </div>
-      </div>
-
-      <div className="p-4">
-        <div className="flex justify-between items-start mb-2">
-          <h3 className="font-semibold text-gray-900 capitalize">
-            {animal.breed} {animal.subcategory}
-          </h3>
-          <div className="text-lg font-bold text-green-700">Rs. {animal.price.toLocaleString()}</div>
-        </div>
-
-        <div className="text-sm text-gray-600 mb-4">
-          <div className="flex flex-wrap gap-y-1">
-            {animal.weight && (
-              <div className="mr-4 flex items-center">
-                <FaWeight className="mr-1 text-gray-500" />
-                {animal.weight} KG
-              </div>
-            )}
-            {animal.age && (
-              <div className="mr-4 flex items-center">
-                <FaCalendarAlt className="mr-1 text-gray-500" />
-                {animal.age}{" "}
-                {animal.subcategory === "calf" || animal.subcategory === "heifer" || animal.subcategory === "bull"
-                  ? "Months"
-                  : "Years"}
-              </div>
-            )}
-            {animal.location && (
-              <div className="flex items-center">
-                <FaMapMarkerAlt className="mr-1 text-gray-500" />
-                {animal.location}
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div className="flex justify-between items-center pt-2 border-t border-gray-100">
-          <div className="text-xs text-gray-500">Posted {new Date(animal.createdAt).toLocaleDateString()}</div>
-          <div className="flex space-x-2">
-            <button onClick={onEdit} className="p-1.5 text-blue-600 hover:bg-blue-50 rounded">
-              <FaEdit />
-            </button>
-            <button onClick={onDelete} className="p-1.5 text-red-600 hover:bg-red-50 rounded">
-              <FaTrashAlt />
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
+  );
 }

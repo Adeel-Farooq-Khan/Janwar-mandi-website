@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export default function ListingsGrid() {
   const listings = [
     {
@@ -99,7 +101,7 @@ export default function ListingsGrid() {
             className="rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-transform duration-300 transform hover:-translate-y-1 bg-white"
           >
             <div className="h-[295px] overflow-hidden">
-              <img
+              <Image
                 src={item.image || "/placeholder.svg"}
                 alt="Animal listing"
                 className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
