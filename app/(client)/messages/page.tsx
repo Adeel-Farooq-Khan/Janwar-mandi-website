@@ -51,6 +51,7 @@ export default function MessagesPage() {
                   activeConversation === id ? "bg-blue-50" : ""
                 }`}
                 onClick={() => setActiveConversation(id)}
+
               >
                 <div className="w-12 h-12 bg-gray-200 rounded-full mr-3" />
                 <div className="flex-1 min-w-0">
