@@ -1,6 +1,7 @@
 import AppDownload from "@/components/AppDownload";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
+import Image from "next/image";
 
 function AboutUS() {
   return (
@@ -71,7 +72,7 @@ function AboutUS() {
       </section>
 
       <div className="flex justify-center items-center my-5 px-4 sm:px-0">  
-  <img src="/whychose.png" alt="Why Choose" className="w-full max-w-[800px] h-auto" />  
+  <Image src="/whychose.png" alt="Why Choose" className="w-full max-w-[800px] h-auto" />  
 </div>  
       <AppDownload />
       <Footer />
