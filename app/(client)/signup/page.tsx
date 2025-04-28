@@ -109,16 +109,19 @@ export default function Signup() {
   const handleGoogleSignup = async () => {
     setError("");
     setIsLoading(true);
-
+  
     try {
       const result = await signInWithPopup(auth, googleProvider);
-      // The signed-in user info
       const user = result.user;
       console.log("Google sign in successful", user);
       router.push("/dashboard");
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Google sign in error", error);
-      setError(error.message || "Failed to sign in with Google");
+      if (error instanceof Error) {
+        setError(error.message || "Failed to sign in with Google");
+      } else {
+        setError("Failed to sign in with Google");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -127,16 +130,19 @@ export default function Signup() {
   const handleFacebookSignup = async () => {
     setError("");
     setIsLoading(true);
-
+  
     try {
       const result = await signInWithPopup(auth, facebookProvider);
-      // The signed-in user info
       const user = result.user;
       console.log("Facebook sign in successful", user);
       router.push("/dashboard");
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Facebook sign in error", error);
-      setError(error.message || "Failed to sign in with Facebook");
+      if (error instanceof Error) {
+        setError(error.message || "Failed to sign in with Facebook");
+      } else {
+        setError("Failed to sign in with Facebook");
+      }
     } finally {
       setIsLoading(false);
     }

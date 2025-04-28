@@ -19,9 +19,14 @@ import {
   GoogleAuthProvider,
   FacebookAuthProvider,
   signInWithEmailAndPassword,
-  sendPasswordResetEmail,
+  
   onAuthStateChanged,
 } from "firebase/auth";
+// import { useState } from "react";
+// import { useRouter } from "next/navigation";
+// import { signInWithEmailAndPassword, sendPasswordResetEmail, signInWithPopup, FacebookAuthProvider, GoogleAuthProvider } from "firebase/auth";
+// import { auth } from "@/lib/firebase";
+import { FirebaseError } from "firebase/app";
 
 // Firebase configuration - replace with your Firebase project config
 const firebaseConfig = {
@@ -36,22 +41,28 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const googleProvider = new GoogleAuthProvider();
-const facebookProvider = new FacebookAuthProvider();
+// const googleProvider = new GoogleAuthProvider();
+// const facebookProvider = new FacebookAuthProvider();
 
 export default function Login() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading] = useState(false);
   const [error, setError] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [resetEmailSent, setResetEmailSent] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
-  const [resetLoading, setResetLoading] = useState(false);
+  const [resetLoading] = useState(false);
   const [resetError, setResetError] = useState("");
+  // const router = useRouter();
+  // const [email, setEmail] = useState("");
+  // const [password, setPassword] = useState("");
+  // const [error, setError] = useState("");
+  // const [forgotPassword, setForgotPassword] = useState(false);
+  const [, setLoading] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -66,74 +77,73 @@ export default function Login() {
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
     setError("");
-    setIsLoading(true);
 
     try {
-      // Sign in with Firebase
       await signInWithEmailAndPassword(auth, email, password);
-
-      // Redirect will be handled by the onAuthStateChanged listener
-    } catch (error: any) {
+      router.push("/");
+    } catch (error: unknown) {
       console.error("Email/password login error:", error);
 
-      // Translate Firebase error messages to user-friendly messages
-      if (
-        error.code === "auth/user-not-found" ||
-        error.code === "auth/wrong-password"
-      ) {
-        setError("Invalid email or password");
-      } else if (error.code === "auth/too-many-requests") {
-        setError(
-          "Too many failed login attempts. Please try again later or reset your password"
-        );
+      if (error instanceof FirebaseError) {
+        if (
+          error.code === "auth/user-not-found" ||
+          error.code === "auth/wrong-password"
+        ) {
+          setError("Invalid email or password");
+        } else if (error.code === "auth/too-many-requests") {
+          setError("Too many failed login attempts. Please try again later or reset your password.");
+        } else {
+          setError(error.message || "Failed to sign in");
+        }
       } else {
-        setError(error.message || "Failed to sign in");
+        setError("An unexpected error occurred");
       }
-
-      setIsLoading(false);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleGoogleLogin = async () => {
+    setLoading(true);
     setError("");
-    setIsLoading(true);
 
     try {
-      await signInWithPopup(auth, googleProvider);
-      // Redirect will be handled by the onAuthStateChanged listener
-    } catch (error: any) {
-      console.error("Google sign in error:", error);
-      setError(error.message || "Failed to sign in with Google");
-      setIsLoading(false);
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider);
+      router.push("/");
+    } catch (error: unknown) {
+      console.error("Google login error:", error);
+
+      if (error instanceof FirebaseError) {
+        setError(error.message || "Failed to sign in with Google");
+      } else {
+        setError("An unexpected error occurred");
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleFacebookLogin = async () => {
+    setLoading(true);
     setError("");
-    setIsLoading(true);
 
     try {
-      // Add OAuth redirect domain in Facebook developer console
-      // This fixes the "domain isn't included in the app's domains" error
-      facebookProvider.setCustomParameters({
-        display: "popup",
-      });
+      const provider = new FacebookAuthProvider();
+      await signInWithPopup(auth, provider);
+      router.push("/");
+    } catch (error: unknown) {
+      console.error("Facebook login error:", error);
 
-      await signInWithPopup(auth, facebookProvider);
-      // Redirect will be handled by the onAuthStateChanged listener
-    } catch (error: any) {
-      console.error("Facebook sign in error:", error);
-
-      if (error.code === "auth/account-exists-with-different-credential") {
-        setError(
-          "An account already exists with the same email address but different sign-in credentials. Sign in using the provider associated with this email address."
-        );
-      } else {
+      if (error instanceof FirebaseError) {
         setError(error.message || "Failed to sign in with Facebook");
+      } else {
+        setError("An unexpected error occurred");
       }
-
-      setIsLoading(false);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -141,25 +151,35 @@ export default function Login() {
     setShowPassword(!showPassword);
   };
 
-  const handleForgotPassword = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setResetError("");
-    setResetLoading(true);
+  // const handleForgotPassword = async () => {
+  //   if (!email) {
+  //     setError("Please enter your email address");
+  //     return;
+  //   }
 
-    try {
-      await sendPasswordResetEmail(auth, resetEmail);
-      setResetEmailSent(true);
-    } catch (error: any) {
-      console.error("Password reset error:", error);
-      if (error.code === "auth/user-not-found") {
-        setResetError("No account found with this email address");
-      } else {
-        setResetError(error.message || "Failed to send password reset email");
-      }
-    } finally {
-      setResetLoading(false);
-    }
-  };
+  //   setLoading(true);
+  //   setError("");
+
+  //   try {
+  //     await sendPasswordResetEmail(auth, email);
+  //     setError("Password reset email sent. Check your inbox.");
+  //     setForgotPassword(false);
+  //   } catch (error: unknown) {
+  //     console.error("Password reset error:", error);
+
+  //     if (error instanceof FirebaseError) {
+  //       if (error.code === "auth/user-not-found") {
+  //         setError("No user found with this email");
+  //       } else {
+  //         setError(error.message || "Failed to send reset email");
+  //       }
+  //     } else {
+  //       setError("An unexpected error occurred");
+  //     }
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   const toggleForgotPassword = () => {
     setShowForgotPassword(!showForgotPassword);
@@ -346,8 +366,10 @@ export default function Login() {
                     Back to Login
                   </button>
                 </div>
-              ) : (
-                <form onSubmit={handleForgotPassword}>
+              ) 
+              : 
+              (
+                <form >
                   <p className="mb-6 text-gray-600">
                     Enter your email address and we&apos;ll send you a link to
                     reset your password.
@@ -382,7 +404,8 @@ export default function Login() {
                     {resetLoading ? "Sending..." : "Send Reset Link"}
                   </button>
                 </form>
-              )}
+              )
+              }
             </div>
           </div>
         </div>
