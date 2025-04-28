@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
-import  Animal from '../../../models/Animal';
-import { connectToDB } from "../../../lib/mongodb"; // ✅ CORRECT NAME
-import { verifyToken } from '../../../lib/verifyToken';
+import  Animal from '../../../../models/Animal';
+import { connectToDB } from "../../../../lib/mongodb"; // ✅ CORRECT NAME
+import { verifyToken } from '../../../../lib/verifyToken';
 
 
 export async function POST(req) {
@@ -49,6 +49,7 @@ export async function POST(req) {
 
     return NextResponse.json({ message: 'Animal listing created successfully', animal }, { status: 201 });
   } catch (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    // Handle error (if token is invalid or missing)
+    return NextResponse.json({ error: error.message }, { status: 401 });
   }
 }
