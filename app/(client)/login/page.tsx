@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image"; // Import Next.js Image component
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {
   FaGoogle,
@@ -12,6 +12,32 @@ import {
   FaEye,
   FaEyeSlash,
 } from "react-icons/fa";
+import { initializeApp } from "firebase/app";
+import {
+  getAuth,
+  signInWithPopup,
+  GoogleAuthProvider,
+  FacebookAuthProvider,
+  signInWithEmailAndPassword,
+  sendPasswordResetEmail,
+  onAuthStateChanged,
+} from "firebase/auth";
+
+// Firebase configuration - replace with your Firebase project config
+const firebaseConfig = {
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const googleProvider = new GoogleAuthProvider();
+const facebookProvider = new FacebookAuthProvider();
 
 export default function Login() {
   const router = useRouter();
@@ -27,86 +53,112 @@ export default function Login() {
   const [resetLoading, setResetLoading] = useState(false);
   const [resetError, setResetError] = useState("");
 
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is signed in, redirect to dashboard
+        router.push("/dashboard");
+      }
+    });
+
+    return () => unsubscribe();
+  }, [router]);
+
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError("");
+    setIsLoading(true);
 
     try {
-      setIsLoading(true);
+      // Sign in with Firebase
+      await signInWithEmailAndPassword(auth, email, password);
 
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      });
+      // Redirect will be handled by the onAuthStateChanged listener
+    } catch (error: any) {
+      console.error("Email/password login error:", error);
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error || "Something went wrong");
-      }
-
-      // Store token in localStorage
-      localStorage.setItem("token", data.token);
-
-      // Redirect to dashboard
-      router.push("/dashboard");
-    } catch (error) {
-      if (error instanceof Error) {
-        setError(error.message);
+      // Translate Firebase error messages to user-friendly messages
+      if (
+        error.code === "auth/user-not-found" ||
+        error.code === "auth/wrong-password"
+      ) {
+        setError("Invalid email or password");
+      } else if (error.code === "auth/too-many-requests") {
+        setError(
+          "Too many failed login attempts. Please try again later or reset your password"
+        );
       } else {
-        setError("An unknown error occurred");
+        setError(error.message || "Failed to sign in");
       }
-    } finally {
+
       setIsLoading(false);
     }
   };
 
-  const handleGoogleLogin = () => {
+  const handleGoogleLogin = async () => {
     setError("");
     setIsLoading(true);
 
-    // Mock Google login
-    setTimeout(() => {
+    try {
+      await signInWithPopup(auth, googleProvider);
+      // Redirect will be handled by the onAuthStateChanged listener
+    } catch (error: any) {
+      console.error("Google sign in error:", error);
+      setError(error.message || "Failed to sign in with Google");
       setIsLoading(false);
-      console.log("Logged in with Google");
-      // Redirect to dashboard after successful Google login
-      router.push("/dashboard");
-    }, 1500);
+    }
   };
 
-  const handleFacebookLogin = () => {
+  const handleFacebookLogin = async () => {
     setError("");
     setIsLoading(true);
 
-    // Mock Facebook login
-    setTimeout(() => {
+    try {
+      // Add OAuth redirect domain in Facebook developer console
+      // This fixes the "domain isn't included in the app's domains" error
+      facebookProvider.setCustomParameters({
+        display: "popup",
+      });
+
+      await signInWithPopup(auth, facebookProvider);
+      // Redirect will be handled by the onAuthStateChanged listener
+    } catch (error: any) {
+      console.error("Facebook sign in error:", error);
+
+      if (error.code === "auth/account-exists-with-different-credential") {
+        setError(
+          "An account already exists with the same email address but different sign-in credentials. Sign in using the provider associated with this email address."
+        );
+      } else {
+        setError(error.message || "Failed to sign in with Facebook");
+      }
+
       setIsLoading(false);
-      console.log("Logged in with Facebook");
-      // Redirect to dashboard after successful Facebook login
-      router.push("/dashboard");
-    }, 1500);
+    }
   };
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleForgotPassword = (e: React.FormEvent) => {
+  const handleForgotPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     setResetError("");
     setResetLoading(true);
 
-    // Mock password reset functionality
-    setTimeout(() => {
+    try {
+      await sendPasswordResetEmail(auth, resetEmail);
       setResetEmailSent(true);
+    } catch (error: any) {
+      console.error("Password reset error:", error);
+      if (error.code === "auth/user-not-found") {
+        setResetError("No account found with this email address");
+      } else {
+        setResetError(error.message || "Failed to send password reset email");
+      }
+    } finally {
       setResetLoading(false);
-      console.log("Password reset email sent to:", resetEmail);
-    }, 1500);
+    }
   };
 
   const toggleForgotPassword = () => {
@@ -117,9 +169,9 @@ export default function Login() {
   };
 
   return (
-    <div className="flex w-full h-screen overflow-hidden">
+    <div className="flex flex-col lg:flex-row w-full h-full min-h-screen">
       {/* Left side - Image */}
-      <div className="relative w-1/2 h-full overflow-hidden">
+      <div className="relative w-full lg:w-1/2 h-64 lg:h-full">
         <Image
           src="/signup-image.jpg"
           alt="Login"
@@ -140,7 +192,7 @@ export default function Login() {
       </div>
 
       {/* Right side - Form */}
-      <div className="w-1/2 h-full flex items-center justify-center bg-white p-8 overflow-y-auto">
+      <div className="w-full lg:w-1/2 flex items-center justify-center bg-white p-6 lg:p-8 overflow-y-auto">
         <div className="w-full max-w-md p-4">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-gray-800 mb-2">Login</h1>
@@ -156,6 +208,7 @@ export default function Login() {
           {/* Social login buttons */}
           <div className="flex flex-col gap-4 mb-6">
             <button
+              type="button"
               className="flex items-center justify-center py-3 px-4 rounded-lg font-medium transition-all border border-gray-200 bg-white text-gray-800 hover:bg-gray-50 disabled:opacity-70 disabled:cursor-not-allowed"
               onClick={handleGoogleLogin}
               disabled={isLoading}
@@ -165,6 +218,7 @@ export default function Login() {
             </button>
 
             <button
+              type="button"
               className="flex items-center justify-center py-3 px-4 rounded-lg font-medium transition-all border border-gray-200 bg-white text-gray-800 hover:bg-gray-50 disabled:opacity-70 disabled:cursor-not-allowed"
               onClick={handleFacebookLogin}
               disabled={isLoading}
@@ -295,8 +349,8 @@ export default function Login() {
               ) : (
                 <form onSubmit={handleForgotPassword}>
                   <p className="mb-6 text-gray-600">
-                    Enter your email address and we&apos;ll send you a link to reset
-                    your password.
+                    Enter your email address and we&apos;ll send you a link to
+                    reset your password.
                   </p>
 
                   {resetError && (

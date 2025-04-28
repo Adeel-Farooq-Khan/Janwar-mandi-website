@@ -13,12 +13,10 @@ interface Animal {
   userId: string;
   userEmail: string;
   favorite: boolean;
-  color: string;  // Make color a required field
+  color: string;
   age?: string;
   weight?: string;
 }
-
-
 
 interface AnimalCardProps {
   animal: Animal;
@@ -44,6 +42,8 @@ const AnimalCard: React.FC<AnimalCardProps> = ({
         <Image
           src={animal.imageBase64}
           alt={animal.title}
+          width={400}
+          height={300}
           className="w-full h-full object-cover"
         />
 
