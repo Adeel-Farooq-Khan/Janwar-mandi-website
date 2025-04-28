@@ -72,7 +72,7 @@ function AboutUS() {
       </section>
 
       <div className="flex justify-center items-center my-5 px-4 sm:px-0">  
-  <Image src="/whychose.png" alt="Why Choose" className="w-full max-w-[800px] h-auto" />  
+  <Image src="/whychose.png" alt="Why Choose" className="w-full max-w-[800px] h-auto" height={10} width={800}/>  
 </div>  
       <AppDownload />
       <Footer />
