@@ -105,8 +105,8 @@ export default function Navbar() {
               <div key={link.href} className="relative category-dropdown">
                 {link.dropdown ? (
                   <>
-                    <button
-                      onClick={() => setDropdownOpen(!dropdownOpen)}
+                    <Link
+                      href={link.href}
                       className={`font-semibold flex items-center gap-1 cursor-pointer ${
                         isScrolled ? "text-black" : "text-white"
                       } ${
@@ -122,10 +122,14 @@ export default function Navbar() {
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setDropdownOpen(!dropdownOpen);
+                        }}
                       >
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                       </svg>
-                    </button>
+                    </Link>
                     {dropdownOpen && (
                       <div className="absolute top-full left-0 mt-1 bg-white shadow-lg rounded-md overflow-hidden min-w-max z-50">
                         {link.items.map((item) => (
@@ -171,29 +175,37 @@ export default function Navbar() {
               {navLinks.map((link) =>
                 link.dropdown ? (
                   <div key={link.href} className="flex flex-col">
-                    <button
-                      onClick={() => {
-                        const element = document.getElementById(`mobile-dropdown-${link.label}`);
-                        if (element) element.classList.toggle("hidden");
-                      }}
-                      className={`text-black font-medium text-base flex justify-between items-center ${
-                        pathname === link.href || pathname?.startsWith(link.href + "/") ? "text-orange-600 font-semibold" : ""
-                      }`}
-                    >
-                      {link.label}
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-4 w-4"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
+                    <div className="flex justify-between items-center">
+                      <Link
+                        href={link.href}
+                        onClick={() => setIsOpen(false)}
+                        className={`text-black font-medium text-base ${
+                          pathname === link.href || pathname?.startsWith(link.href + "/") ? "text-orange-600 font-semibold" : ""
+                        }`}
                       >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </button>
+                        {link.label}
+                      </Link>
+                      <button
+                        onClick={() => {
+                          const element = document.getElementById(`mobile-dropdown-${link.label}`);
+                          if (element) element.classList.toggle("hidden");
+                        }}
+                        className="focus:outline-none"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-4 w-4"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </button>
+                    </div>
                     <div
                       id={`mobile-dropdown-${link.label}`}
-                      className={`pl-4 mt-2 ${isOpen ? "flex" : "hidden"} flex-col gap-2`}
+                      className="pl-4 mt-2 hidden flex-col gap-2"
                     >
                       {link.items.map((item) => (
                         <Link
