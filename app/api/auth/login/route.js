@@ -1,4 +1,5 @@
 // app/api/auth/login/route.js
+export const runtime = "nodejs";
 import User from "../../../../models/User";
 import { connectToDB } from "../../../../lib/mongodb";
 import bcrypt from "bcryptjs";
@@ -7,6 +8,7 @@ import jwt from "jsonwebtoken";
 export async function POST(req) {
   try {
     const { email, password } = await req.json();
+    
      console.log({email});
     // ✅ Field presence check
 
