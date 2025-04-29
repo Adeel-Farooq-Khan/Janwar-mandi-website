@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image"; // Import Next.js Image component
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {
   FaGoogle,
@@ -29,9 +29,10 @@ export default function Login() {
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+  
     try {
       setIsLoading(true);
+      setError("");
 
       const res = await fetch("/api/auth/login", {
         method: "POST",
@@ -50,10 +51,14 @@ export default function Login() {
         throw new Error(data.error || "Something went wrong");
       }
 
-      // Store token in localStorage
-      localStorage.setItem("token", data.token);
+      // Store token in localStorage if rememberMe is checked
+      if (rememberMe) {
+        localStorage.setItem("token", data.token);
+      } else {
+        sessionStorage.setItem("token", data.token);
+      }
 
-      // Redirect to dashboard
+      // Redirect to dashboard or home page
       router.push("/dashboard");
     } catch (error) {
       if (error instanceof Error) {
@@ -69,26 +74,22 @@ export default function Login() {
   const handleGoogleLogin = () => {
     setError("");
     setIsLoading(true);
-
+    
     // Mock Google login
     setTimeout(() => {
       setIsLoading(false);
       console.log("Logged in with Google");
-      // Redirect to dashboard after successful Google login
-      router.push("/dashboard");
     }, 1500);
   };
 
   const handleFacebookLogin = () => {
     setError("");
     setIsLoading(true);
-
+    
     // Mock Facebook login
     setTimeout(() => {
       setIsLoading(false);
       console.log("Logged in with Facebook");
-      // Redirect to dashboard after successful Facebook login
-      router.push("/dashboard");
     }, 1500);
   };
 
@@ -96,17 +97,38 @@ export default function Login() {
     setShowPassword(!showPassword);
   };
 
-  const handleForgotPassword = (e: React.FormEvent) => {
+  const handleForgotPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     setResetError("");
     setResetLoading(true);
 
-    // Mock password reset functionality
-    setTimeout(() => {
+    try {
+      const res = await fetch("/api/auth/forgot-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: resetEmail,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to send reset email");
+      }
+
       setResetEmailSent(true);
+    } catch (error) {
+      if (error instanceof Error) {
+        setResetError(error.message);
+      } else {
+        setResetError("An unknown error occurred");
+      }
+    } finally {
       setResetLoading(false);
-      console.log("Password reset email sent to:", resetEmail);
-    }, 1500);
+    }
   };
 
   const toggleForgotPassword = () => {
@@ -118,10 +140,8 @@ export default function Login() {
 
   return (
     <div className="flex flex-col lg:flex-row w-full h-full min-h-screen">
-
       {/* Left side - Image */}
       <div className="relative w-full lg:w-1/2 h-64 lg:h-full">
-
         <Image
           src="/signup-image.jpg"
           alt="Login"
@@ -143,7 +163,6 @@ export default function Login() {
 
       {/* Right side - Form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center bg-white p-6 lg:p-8 overflow-y-auto">
-
         <div className="w-full max-w-md p-4">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-gray-800 mb-2">Login</h1>
@@ -159,6 +178,7 @@ export default function Login() {
           {/* Social login buttons */}
           <div className="flex flex-col gap-4 mb-6">
             <button
+              type="button"
               className="flex items-center justify-center py-3 px-4 rounded-lg font-medium transition-all border border-gray-200 bg-white text-gray-800 hover:bg-gray-50 disabled:opacity-70 disabled:cursor-not-allowed"
               onClick={handleGoogleLogin}
               disabled={isLoading}
@@ -168,6 +188,7 @@ export default function Login() {
             </button>
 
             <button
+              type="button"
               className="flex items-center justify-center py-3 px-4 rounded-lg font-medium transition-all border border-gray-200 bg-white text-gray-800 hover:bg-gray-50 disabled:opacity-70 disabled:cursor-not-allowed"
               onClick={handleFacebookLogin}
               disabled={isLoading}
@@ -298,8 +319,8 @@ export default function Login() {
               ) : (
                 <form onSubmit={handleForgotPassword}>
                   <p className="mb-6 text-gray-600">
-                    Enter your email address and we&apos;ll send you a link to reset
-                    your password.
+                    Enter your email address and we&apos;ll send you a link to
+                    reset your password.
                   </p>
 
                   {resetError && (

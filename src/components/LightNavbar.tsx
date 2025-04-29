@@ -73,7 +73,7 @@ export default function LightNavbar() {
         {/* Top Bar */}
         <div className="hidden sm:flex justify-between items-center px-6 py-2 font-bold text-black">
           <div className="flex items-center gap-2 text-sm">
-            <Image src="/mobile.png" alt="Mobile Icon" className="h-4 w-4" />
+            <Image src="/mobile.png" alt="Mobile Icon" className="h-4 w-4" width={4} height={8} />
             <span>Download App via SMS</span>
           </div>
           <div className="flex gap-4">
@@ -88,9 +88,9 @@ export default function LightNavbar() {
 
         {/* Mobile Top Bar */}
         <div className="sm:hidden flex flex-col items-center justify-center py-2">
-          <Image src="/newlogo.png" alt="JM Logo" className="h-12 mb-2" />
+          <Image src="/newlogo.png" alt="JM Logo" className="h-12 mb-2"width={48} height={48} />
           <div className="flex items-center gap-2 text-gray-700 text-sm">
-            <Image src="/mobile.png" alt="Mobile Icon" className="h-4 w-4" />
+            <Image src="/mobile.png" alt="Mobile Icon" className="h-4 w-4" width={4} height={8} />
             <span>Download App via SMS</span>
           </div>
         </div>
@@ -99,7 +99,7 @@ export default function LightNavbar() {
         <nav className="main-nav flex justify-between items-center px-6 py-4 w-full relative">
           {/* Logo (Desktop Only) */}
           <Link href="/" className="hidden sm:block">
-            <Image src="/newlogo.png" alt="JM Logo" className="h-12" />
+            <Image src="/newlogo.png" alt="JM Logo" className="h-12" width={48} height={48}/>
           </Link>
 
           {/* Hamburger Icon */}
