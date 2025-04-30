@@ -1,6 +1,8 @@
 "use client";
 
 import { FaUserCircle, FaSignOutAlt } from "react-icons/fa";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import type { User } from "../types/index";
 
 interface DashboardNavbarProps {
@@ -16,10 +18,38 @@ const DashboardNavbar = ({
   toggleProfileMenu,
   handleSignOut,
 }: DashboardNavbarProps) => {
+  const router = useRouter();
+
+  const onSignOut = async () => {
+    try {
+      await handleSignOut();
+      // Redirect to login page after successful sign out
+      router.push("/login");
+    } catch (error) {
+      console.error("Failed to sign out:", error);
+    }
+  };
+
   return (
     <nav className="bg-green-700 p-4 text-white">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
-        <div className="text-lg font-semibold">Animal Management Dashboard</div>
+        <div className="flex items-center space-x-6">
+          <div className="text-lg font-semibold">Janwar Mandi</div>
+          <div className="hidden sm:flex space-x-4 gap-0">
+            <Link 
+              href="/dashboard/animals" 
+              className="hover:text-green-200 transition-colors mr-4 ml-64"
+            >
+              My Animals
+            </Link>
+            <Link 
+              href="/dashboard/messages" 
+              className="hover:text-green-200 transition-colors"
+            >
+              Messages
+            </Link>
+          </div>
+        </div>
         <div className="relative">
           <button
             onClick={toggleProfileMenu}
@@ -36,15 +66,15 @@ const DashboardNavbar = ({
                 aria-orientation="vertical"
                 aria-labelledby="options-menu"
               >
-                <a
-                  href="#"
+                <Link
+                  href="/dashboard/settings"
                   className="block px-4 py-2 text-sm hover:bg-gray-100"
                   role="menuitem"
                 >
                   Account Settings
-                </a>
+                </Link>
                 <button
-                  onClick={handleSignOut}
+                  onClick={onSignOut}
                   className="flex items-center px-4 py-2 text-sm hover:bg-gray-100 w-full text-left"
                   role="menuitem"
                 >
