@@ -9,8 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@types/npm": "^7.19.3",
     "bcryptjs": "^3.0.2",
     "firebase": "^11.6.1",
+    "jose": "^6.0.10",
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.503.0",
     "mongoose": "^8.13.2",
