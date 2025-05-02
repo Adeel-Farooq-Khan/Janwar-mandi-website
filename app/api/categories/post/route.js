@@ -1,9 +1,7 @@
-
 import { NextResponse } from 'next/server';
 import { connectToDB } from "../../../../lib/mongodb";
 import Category from "../../../../models/Category";
 import { verifyToken } from '../../../../lib/verifyToken';
-
 
 export async function POST(req) {
   try {

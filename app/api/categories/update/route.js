@@ -4,7 +4,6 @@ import { connectToDB } from "../../../../lib/mongodb";
 import Category from '../../../../models/Category';
 import { verifyToken } from '../../../../lib/verifyToken';
 
-
 export async function PUT(req) {
   try {
     // 🔐 Verify token
