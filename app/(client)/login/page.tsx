@@ -41,12 +41,16 @@ export default function Login() {
         body: JSON.stringify({ email, password }),
       });
 
-      const text = await res.text();
+
+      const contentType = res.headers.get("Content-Type");
       let data;
-      try {
-        data = JSON.parse(text);
-      } catch {
-        throw new Error(text || "Invalid JSON response from server");
+
+      if (contentType && contentType.includes("application/json")) {
+        data = await res.json();
+      } else {
+        const text = await res.text();
+        throw new Error(text || "Invalid response from server");
+
       }
 
       if (!res.ok) {
