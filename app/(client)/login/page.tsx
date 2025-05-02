@@ -41,6 +41,7 @@ export default function Login() {
         body: JSON.stringify({ email, password }),
       });
 
+
       const contentType = res.headers.get("Content-Type");
       let data;
 
@@ -49,6 +50,7 @@ export default function Login() {
       } else {
         const text = await res.text();
         throw new Error(text || "Invalid response from server");
+
       }
 
       if (!res.ok) {
