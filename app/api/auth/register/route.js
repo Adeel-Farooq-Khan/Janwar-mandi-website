@@ -3,6 +3,7 @@ import User from "../../../../models/User";
 import bcrypt from "bcryptjs";
 import { connectToDB } from "../../../../lib/mongodb";
 
+
 export async function POST(req) {
   try {
     const { username, email, password, confirmPassword } = await req.json();

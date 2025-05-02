@@ -1,5 +1,5 @@
 import { connectDB } from "@/utils/db";
-import Category from "@/models/Category";
+import Category from "./../../../../models/Category";
 
 export async function PUT(req) {
   await connectDB();

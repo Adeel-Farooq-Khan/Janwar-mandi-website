@@ -14,7 +14,7 @@ export default function AdminLogin() {
 
   // Local hardcoded admin credentials
   const localUser = {
-    email: "admin@example.com",
+    email: "admin@gmail.com",
     password: "admin1234",
   }
 
