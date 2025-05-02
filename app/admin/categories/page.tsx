@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import AdminLayout from "@/components/AdminLayout"
-import { FaPlus, FaSave, FaEdit, FaTrash, FaBan, FaCheck } from "react-icons/fa"
+import { FaPlus, FaSave, FaEdit, FaTrash, FaBan } from "react-icons/fa"
 
 const CategoriesPage = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
