@@ -8,7 +8,6 @@ import {
   FaGoogle,
   FaFacebook,
   FaEnvelope,
-  
   FaLock,
   FaEye,
   FaEyeSlash,
@@ -42,12 +41,11 @@ export default function Login() {
         body: JSON.stringify({ email, password }),
       });
 
+      const text = await res.text();
       let data;
       try {
-        data = await res.json();
+        data = JSON.parse(text);
       } catch {
-        // Handle non-JSON response
-        const text = await res.text();
         throw new Error(text || "Invalid JSON response from server");
       }
 
