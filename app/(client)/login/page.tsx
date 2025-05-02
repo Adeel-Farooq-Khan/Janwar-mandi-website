@@ -29,7 +29,6 @@ export default function Login() {
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-  
     try {
       setIsLoading(true);
       setError("");
@@ -39,13 +38,17 @@ export default function Login() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
+        body: JSON.stringify({ email, password }),
       });
 
-      const data = await res.json();
+      let data;
+      try {
+        data = await res.json();
+      } catch {
+        // Handle non-JSON response
+        const text = await res.text();
+        throw new Error(text || "Invalid JSON response from server");
+      }
 
       if (!res.ok) {
         throw new Error(data.error || "Something went wrong");
@@ -74,7 +77,7 @@ export default function Login() {
   const handleGoogleLogin = () => {
     setError("");
     setIsLoading(true);
-    
+
     // Mock Google login
     setTimeout(() => {
       setIsLoading(false);
@@ -85,7 +88,7 @@ export default function Login() {
   const handleFacebookLogin = () => {
     setError("");
     setIsLoading(true);
-    
+
     // Mock Facebook login
     setTimeout(() => {
       setIsLoading(false);
