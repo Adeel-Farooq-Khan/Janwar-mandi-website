@@ -1,5 +1,7 @@
 "use client";
 
+import type React from "react";
+
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -33,6 +35,8 @@ export default function Login() {
       setIsLoading(true);
       setError("");
 
+      console.log("Attempting login with:", { email, password: "***" });
+
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: {
@@ -41,21 +45,31 @@ export default function Login() {
         body: JSON.stringify({ email, password }),
       });
 
+      console.log("Response status:", res.status);
 
-      const contentType = res.headers.get("Content-Type");
+      // Get response data
       let data;
-
-      if (contentType && contentType.includes("application/json")) {
+      try {
         data = await res.json();
-      } else {
+        console.log("Response data:", data);
+      } catch (parseError) {
+        // Log the parse error to the console for debugging purposes
+        console.error("Parse error:", parseError);
         const text = await res.text();
-        throw new Error(text || "Invalid response from server");
-
+        console.error("Failed to parse JSON response:", text);
+        throw new Error("Invalid response format from server");
       }
 
       if (!res.ok) {
-        throw new Error(data.error || "Something went wrong");
+        throw new Error(data.error || "Authentication failed");
       }
+
+      if (!data.token) {
+        console.error("No token in response:", data);
+        throw new Error("No authentication token received");
+      }
+
+      console.log("Login successful, storing token");
 
       // Store token in localStorage if rememberMe is checked
       if (rememberMe) {
@@ -64,9 +78,15 @@ export default function Login() {
         sessionStorage.setItem("token", data.token);
       }
 
+      // Store user data if available
+      if (data.user) {
+        localStorage.setItem("user", JSON.stringify(data.user));
+      }
+
       // Redirect to dashboard or home page
       router.push("/dashboard");
     } catch (error) {
+      console.error("Login error:", error);
       if (error instanceof Error) {
         setError(error.message);
       } else {
@@ -77,26 +97,40 @@ export default function Login() {
     }
   };
 
-  const handleGoogleLogin = () => {
+  const handleGoogleLogin = async () => {
     setError("");
     setIsLoading(true);
 
-    // Mock Google login
-    setTimeout(() => {
+    try {
+      // Redirect to the Google auth endpoint
+      window.location.href = "/api/auth/google";
+    } catch (error) {
+      console.error("Google login error:", error);
       setIsLoading(false);
-      console.log("Logged in with Google");
-    }, 1500);
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError("Failed to initiate Google login");
+      }
+    }
   };
 
-  const handleFacebookLogin = () => {
+  const handleFacebookLogin = async () => {
     setError("");
     setIsLoading(true);
 
-    // Mock Facebook login
-    setTimeout(() => {
+    try {
+      // Redirect to the Facebook auth endpoint
+      window.location.href = "/api/auth/facebook";
+    } catch (error) {
+      console.error("Facebook login error:", error);
       setIsLoading(false);
-      console.log("Logged in with Facebook");
-    }, 1500);
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError("Failed to initiate Facebook login");
+      }
+    }
   };
 
   const togglePasswordVisibility = () => {
