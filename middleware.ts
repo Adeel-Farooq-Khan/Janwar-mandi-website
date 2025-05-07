@@ -14,8 +14,18 @@ const publicPaths = [
   "/terms",
   "/contactus",
   "/about",
-];
+  "/admin/admindashboard",
+  "/admin/animals",
+  "/admin/breeds",
+  "/admin/categories",
+  "/admin/categories/dairy",
+  "/admin/categories/meat",
+  "/admin/categories/qurbani",
+  "/admin/users",
+  "/admin/adminlogin",
 
+  /^\/categories\/dairy\/[^/]+$/,
+];
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
@@ -31,7 +41,10 @@ export async function middleware(request: NextRequest) {
   }
 
   if (
-    publicPaths.some((path) => pathname === path || pathname.startsWith("/api/auth/"))
+    publicPaths.some((path) =>
+      typeof path === "string" ? pathname === path : path.test(pathname)
+    ) ||
+    pathname.startsWith("/api/auth/")
   ) {
     return NextResponse.next();
   }
