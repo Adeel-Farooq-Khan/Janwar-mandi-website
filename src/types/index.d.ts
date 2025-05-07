@@ -1,6 +1,13 @@
 export interface User {
-  id: string;
-  name: string;
-  email: string;
-  // Add other fields as necessary
+  id?: string
+  _id?: string
+  name?: string
+  email: string
+  photoURL?: string
+  bio?: string
+  phone?: string
+  address?: string
+  city?: string
+  country?: string
+  role?: string
 }

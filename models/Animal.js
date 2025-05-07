@@ -58,7 +58,7 @@ const AnimalSchema = new mongoose.Schema({
   },
   pregnancyMonth: {
     type: String,
-    enum: ['1 to 4 Months', '3 to 6 Months', '6 to 9 Months', 'N/A'],
+    enum: ['1 to 3 Months', '3 to 6 Months', '6 to 9 Months', 'N/A'],
   },
   lactation: {
     type: Number,
