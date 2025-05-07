@@ -340,29 +340,19 @@ function LoginContent() {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row w-full h-full min-h-screen">
-      {/* Left side - Image */}
+    <div className="flex h-screen w-full">
+      {/* Left side - Image (50% width) */}
       <div className="relative w-full lg:w-1/2 h-64 lg:h-full">
-        <Image
-          src="/signup-image.jpg"
-          alt="Login"
-          fill
-          className="object-cover"
-          priority
-        />
+        <Image src="/signup-image.jpg" alt="Login" fill className="object-cover" priority />
         <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black/50 flex items-center justify-center p-8">
-          <div className="text-white text-center max-w-4/5">
-            <h1 className="text-4xl font-bold mb-4 drop-shadow-md">
-              Welcome Back
-            </h1>
-            <p className="text-xl opacity-90 drop-shadow">
-              Sign in to continue your journey with us
-            </p>
+          <div className="text-white text-center">
+            <h1 className="text-4xl font-bold mb-4 drop-shadow-md">Welcome Back</h1>
+            <p className="text-xl opacity-90 drop-shadow">Sign in to continue your journey with us</p>
           </div>
         </div>
       </div>
 
-      {/* Right side - Form */}
+      {/* Right side - Form (50% width) */}
       <div className="w-full lg:w-1/2 flex items-center justify-center bg-white p-6 lg:p-8 overflow-y-auto">
         <div className="w-full max-w-md p-4">
           <div className="text-center mb-8">
@@ -370,11 +360,7 @@ function LoginContent() {
             <p className="text-gray-600">Please sign in to your account</p>
           </div>
 
-          {error && (
-            <div className="bg-red-100 text-red-500 p-3 rounded-lg mb-6 text-sm">
-              {error}
-            </div>
-          )}
+          {error && <div className="bg-red-100 text-red-500 p-3 rounded-lg mb-6 text-sm">{error}</div>}
 
           {/* Social login buttons */}
           <div className="flex flex-col gap-4 mb-6">
@@ -416,7 +402,7 @@ function LoginContent() {
                 type="email"
                 placeholder="Email address"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {}}
                 required
                 disabled={isLoading}
                 className="w-full py-3 pl-11 pr-4 border border-gray-200 rounded-lg text-base transition-all focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10"
@@ -431,7 +417,7 @@ function LoginContent() {
                 type={showPassword ? "text" : "password"}
                 placeholder="Password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {}}
                 required
                 disabled={isLoading}
                 className="w-full py-3 pl-11 pr-10 border border-gray-200 rounded-lg text-base transition-all focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10"
@@ -450,16 +436,12 @@ function LoginContent() {
                 <input
                   type="checkbox"
                   checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
+                  onChange={(e) => {}}
                   className="rounded text-blue-500 focus:ring-blue-500"
                 />
                 <span>Remember me</span>
               </label>
-              <button
-                type="button"
-                onClick={toggleForgotPassword}
-                className="text-blue-500 hover:underline"
-              >
+              <button type="button" onClick={toggleForgotPassword} className="text-blue-500 hover:underline">
                 Forgot password?
               </button>
             </div>
@@ -476,90 +458,15 @@ function LoginContent() {
           <div className="text-center mt-8 text-sm text-gray-500">
             <p>
               Don&apos;t have an account?{" "}
-              <Link
-                href="/signup"
-                className="text-blue-500 font-medium hover:underline"
-              >
+              <Link href="/signup" className="text-blue-500 font-medium hover:underline">
                 Sign up
               </Link>
             </p>
           </div>
         </div>
       </div>
-
-      {/* Forgot Password Modal */}
-      {showForgotPassword && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg w-11/12 max-w-lg shadow-lg overflow-hidden">
-            <div className="flex justify-between items-center p-6 border-b border-gray-100">
-              <h2 className="text-2xl font-semibold text-gray-800">
-                Reset Password
-              </h2>
-              <button
-                className="text-3xl text-gray-400 hover:text-gray-700 transition-colors"
-                onClick={toggleForgotPassword}
-              >
-                &times;
-              </button>
-            </div>
-
-            <div className="p-6">
-              {resetEmailSent ? (
-                <div className="text-center py-4">
-                  <p className="text-green-700 mb-6">
-                    Password reset email sent! Check your inbox for further
-                    instructions.
-                  </p>
-                  <button
-                    className="py-3 px-4 bg-blue-500 text-white border-none rounded-lg font-medium cursor-pointer transition-colors hover:bg-blue-600"
-                    onClick={toggleForgotPassword}
-                  >
-                    Back to Login
-                  </button>
-                </div>
-              ) : (
-                <form onSubmit={handleForgotPassword}>
-                  <p className="mb-6 text-gray-600">
-                    Enter your email address and we&apos;ll send you a link to
-                    reset your password.
-                  </p>
-
-                  {resetError && (
-                    <div className="bg-red-100 text-red-500 p-3 rounded-lg mb-6 text-sm">
-                      {resetError}
-                    </div>
-                  )}
-
-                  <div className="relative flex items-center mb-6">
-                    <div className="absolute left-4 text-gray-500">
-                      <FaEnvelope />
-                    </div>
-                    <input
-                      type="email"
-                      placeholder="Email address"
-                      value={resetEmail}
-                      onChange={(e) => setResetEmail(e.target.value)}
-                      required
-                      disabled={resetLoading}
-                      className="w-full py-3 pl-11 pr-4 border border-gray-200 rounded-lg text-base transition-all focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10"
-                    />
-                  </div>
-
-                  <button
-                    type="submit"
-                    className="w-full py-3 px-4 bg-blue-500 text-white border-none rounded-lg font-medium cursor-pointer transition-colors hover:bg-blue-600 disabled:bg-blue-300 disabled:cursor-not-allowed"
-                    disabled={resetLoading}
-                  >
-                    {resetLoading ? "Sending..." : "Send Reset Link"}
-                  </button>
-                </form>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
     </div>
-  );
+  )
 }
 
 // The main component just wraps the content in Suspense
