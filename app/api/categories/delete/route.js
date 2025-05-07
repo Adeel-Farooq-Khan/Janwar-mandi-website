@@ -4,7 +4,6 @@ import Category from '../../../../models/Category';
 import { verifyToken } from '../../../../lib/verifyToken';
 import { NextResponse } from "next/server";
 
-
 export async function DELETE(req) {
   try {
     // 🔐 Authenticate the request
