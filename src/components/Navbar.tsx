@@ -8,9 +8,10 @@ import Image from "next/image";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState<string | null>(null); // Track active dropdown
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
+  const [openMobileDropdown, setOpenMobileDropdown] = useState<string | null>(null); // Active dropdown in mobile view
 
   useEffect(() => {
     const handleScroll = () => {
@@ -31,7 +32,7 @@ export default function Navbar() {
         !(event.target as Element).closest(".category-dropdown") &&
         dropdownOpen
       ) {
-        setDropdownOpen(false);
+        setDropdownOpen(null); // Close dropdown when clicking outside
       }
     };
 
@@ -108,31 +109,8 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Mobile: Logo + Download */}
-        <div className="sm:hidden flex flex-col items-center justify-center w-full pb-3 border-gray-300">
-          <Image
-            src="/newlogo.png"
-            alt="JM Logo"
-            className="h-12 mb-2"
-            width={48}
-            height={48}
-          />
-          <div className="flex items-center gap-2 text-sm">
-            <Image
-              src="/mobile.png"
-              alt="Mobile Icon"
-              className="h-4 w-4"
-              width={16}
-              height={16}
-            />
-            <span className="text-black font-semibold">
-              Download App via SMS
-            </span>
-          </div>
-        </div>
-
         {/* Main Navigation */}
-        <nav className="main-nav flex justify-between items-center px-32 py-4 w-full transition-all duration-300 relative">
+        <nav className="main-nav flex justify-between items-center px-6 sm:px-8 md:px-32 py-4 w-full relative">
           {/* Logo */}
           <Link href="/" className="hidden sm:block">
             <Image
@@ -146,10 +124,10 @@ export default function Navbar() {
 
           {/* Hamburger (Mobile) */}
           <div
-            className={`hamburger block md:hidden cursor-pointer text-2xl absolute right-6  ${
-              isScrolled ? "text-black" : "text-black"
+            className={`hamburger md:hidden cursor-pointer text-2xl absolute top-4 right-4 z-50 ${
+              isScrolled ? "text-black" : "text-white"
             }`}
-            onClick={() => setIsOpen(!isOpen)}
+            onClick={() => setIsOpen(!isOpen)} // Toggle state here
           >
             ☰
           </div>
@@ -159,31 +137,27 @@ export default function Navbar() {
             {navLinks.map((link) => (
               <div key={link.href} className="relative category-dropdown">
                 {link.dropdown ? (
-                  <>
-                    <Link
-                      href={link.href}
-                      className={`font-semibold flex items-center gap-1 cursor-pointer ${
+                  <div className="relative group">
+                    <button
+                      onClick={() => setDropdownOpen((prev) => (prev === link.href ? null : link.href))}
+                      className={`font-semibold flex items-center gap-1 ${
                         isScrolled ? "text-black" : "text-white"
                       } ${
                         pathname === link.href ||
                         pathname?.startsWith(link.href + "/")
                           ? "text-orange-500 font-bold"
                           : ""
-                      } hover:text-yellow-400 transition-colors`}
+                      } hover:text-yellow-400 transition-colors duration-200`}
                     >
                       {link.label}
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className={`h-4 w-4 transition-transform ${
-                          dropdownOpen ? "rotate-180" : ""
+                        className={`h-4 w-4 transition-transform duration-200 ${
+                          dropdownOpen === link.href ? "rotate-180" : ""
                         }`}
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setDropdownOpen(!dropdownOpen);
-                        }}
                       >
                         <path
                           strokeLinecap="round"
@@ -192,22 +166,25 @@ export default function Navbar() {
                           d="M19 9l-7 7-7-7"
                         />
                       </svg>
-                    </Link>
-                    {dropdownOpen && (
-                      <div className="absolute top-full left-0 mt-1 bg-white shadow-lg rounded-md overflow-hidden min-w-max z-50">
-                        {link.items.map((item) => (
-                          <Link
-                            key={item.href}
-                            href={item.href}
-                            className="block px-4 py-2 text-black hover:bg-gray-100 whitespace-nowrap"
-                            onClick={() => setDropdownOpen(false)}
-                          >
-                            {item.label}
-                          </Link>
-                        ))}
-                      </div>
-                    )}
-                  </>
+                    </button>
+
+                    {/* Dropdown */}
+                    <div
+                      className={`absolute top-full left-0 mt-2 bg-white shadow-xl rounded-lg min-w-[180px] border border-gray-200 opacity-0 ${
+                        dropdownOpen === link.href ? "opacity-100" : ""
+                      } transition-all duration-300 ease-in-out z-50`}
+                    >
+                      {link.items.map((item) => (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          className="block px-4 py-2 text-sm text-gray-800 hover:bg-yellow-100 hover:text-orange-600 transition-colors duration-200 whitespace-nowrap"
+                        >
+                          {item.label}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
                 ) : (
                   <Link
                     href={link.href}
@@ -230,107 +207,92 @@ export default function Navbar() {
             Explore Animals
           </Button>
 
-          {/* Mobile Sidebar Menu */}
-          <div
-            className={`nav-links md:hidden fixed top-0 right-0 h-full w-64 bg-white shadow-lg flex flex-col justify-start items-start px-6 py-8 space-y-4 z-50 transition-transform ${
-              isOpen ? "translate-x-0" : "translate-x-full"
-            }`}
-          >
-            <div className="flex flex-col gap-4 w-full">
-              {navLinks.map((link) =>
-                link.dropdown ? (
-                  <div key={link.href} className="flex flex-col">
-                    <div className="flex justify-between items-center">
-                      <Link
-                        href={link.href}
-                        onClick={() => setIsOpen(false)}
-                        className={`text-black font-medium text-base ${
-                          pathname === link.href ||
-                          pathname?.startsWith(link.href + "/")
-                            ? "text-orange-600 font-semibold"
-                            : ""
-                        }`}
-                      >
-                        {link.label}
-                      </Link>
-                      <button
-                        onClick={() => {
-                          const element = document.getElementById(
-                            `mobile-dropdown-${link.label}`
-                          );
-                          if (element) element.classList.toggle("hidden");
-                        }}
-                        className="focus:outline-none"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-4 w-4"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M19 9l-7 7-7-7"
-                          />
-                        </svg>
-                      </button>
-                    </div>
-                    <div
-                      id={`mobile-dropdown-${link.label}`}
-                      className="pl-4 mt-2 hidden flex-col gap-2"
-                    >
-                      {link.items.map((item) => (
-                        <Link
-                          key={item.href}
-                          href={item.href}
-                          onClick={() => setIsOpen(false)}
-                          className={`text-black font-medium text-sm ${
-                            pathname === item.href ? "text-orange-600" : ""
-                          }`}
-                        >
-                          {item.label}
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                ) : (
+        </nav>
+      </div>
+
+      {/* Mobile Sidebar Menu */}
+      <div
+        className={`nav-links md:hidden fixed top-0 right-0 h-full w-64 bg-white shadow-xl flex flex-col px-6 py-8 space-y-4 z-50 transition-transform ${
+          isOpen ? "translate-x-0" : "translate-x-full"
+        }`}
+      >
+        <div className="flex flex-col gap-4 w-full">
+          {navLinks.map((link) =>
+            link.dropdown ? (
+              <div key={link.href} className="w-full">
+                <div className="flex justify-between items-center">
                   <Link
-                    key={link.href}
                     href={link.href}
                     onClick={() => setIsOpen(false)}
-                    className={`text-black font-medium text-base ${
-                      pathname === link.href
-                        ? "text-orange-600 font-semibold"
+                    className={`text-black font-semibold text-base ${
+                      pathname === link.href ||
+                      pathname?.startsWith(link.href + "/")
+                        ? "text-orange-600"
                         : ""
                     }`}
                   >
                     {link.label}
                   </Link>
-                )
-              )}
-            </div>
+                  <button
+                    onClick={() =>
+                      setOpenMobileDropdown((prev) =>
+                        prev === link.href ? null : link.href
+                      )
+                    }
+                    className="focus:outline-none"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className={`h-5 w-5 transform transition-transform duration-200 ${
+                        openMobileDropdown === link.href ? "rotate-180" : ""
+                      }`}
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
+                  </button>
+                </div>
 
-            <div className="mt-6 w-full border-t pt-4 flex flex-col gap-3">
+                {/* Dropdown Content */}
+                <div
+                  className={`mt-2 transition-all duration-300 overflow-hidden ${
+                    openMobileDropdown === link.href
+                      ? "max-h-60 opacity-100"
+                      : "max-h-0 opacity-0"
+                  }`}
+                >
+                  {link.items.map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className="block py-2 pl-8 text-sm text-gray-800 hover:bg-yellow-100 hover:text-orange-600"
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            ) : (
               <Link
-                href="/signup"
-                className="w-full border border-green-700 text-green-700 font-semibold py-2 rounded-md text-center hover:bg-green-100"
+                key={link.href}
+                href={link.href}
                 onClick={() => setIsOpen(false)}
+                className={`font-semibold text-base text-black ${
+                  pathname === link.href ? "text-orange-600" : ""
+                }`}
               >
-                Sign Up
+                {link.label}
               </Link>
-              <Link
-                href="/login"
-                className="w-full border border-blue-700 text-blue-700 font-semibold py-2 rounded-md text-center hover:bg-blue-100"
-                onClick={() => setIsOpen(false)}
-              >
-                Sign In
-              </Link>
-            </div>
-          </div>
-        </nav>
+            )
+          )}
+        </div>
       </div>
     </div>
   );

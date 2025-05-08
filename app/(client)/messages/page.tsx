@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { ArrowLeft, Send } from "lucide-react";
-import DashboardNavbar from "@/components/Dashboardnavbar";
+
 
 export default function MessagesPage() {
   const [activeConversation, setActiveConversation] = useState<number | null>(
@@ -20,21 +20,16 @@ export default function MessagesPage() {
   const [newMessage, setNewMessage] = useState("");
 
   // Mock user data and handlers for DashboardNavbar
-  const user = { id: "1", name: "John Doe", email: "johndoe@example.com" };
-  const [showProfileMenu, setShowProfileMenu] = useState(false);
-  const toggleProfileMenu = () => setShowProfileMenu(!showProfileMenu);
-  const handleSignOut = async () => {
-    console.log("Sign out clicked");
-  };
+  // const user = { id: "1", name: "John Doe", email: "johndoe@example.com" };
+  // const [showProfileMenu, setShowProfileMenu] = useState(false);
+  // const toggleProfileMenu = () => setShowProfileMenu(!showProfileMenu);
+  // const handleSignOut = async () => {
+  //   console.log("Sign out clicked");
+  // };
 
   return (
     <div className="flex flex-col h-screen bg-gray-100">
-      <DashboardNavbar
-        user={user}
-        showProfileMenu={showProfileMenu}
-        toggleProfileMenu={toggleProfileMenu}
-        handleSignOut={handleSignOut}
-      />
+    
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
         <div className="w-80 bg-white border-r border-gray-200 hidden md:flex flex-col">

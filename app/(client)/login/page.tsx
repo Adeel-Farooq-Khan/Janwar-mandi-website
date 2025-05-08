@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   FaGoogle,
   FaFacebook,
@@ -12,9 +12,35 @@ import {
   FaEye,
   FaEyeSlash,
 } from "react-icons/fa";
+import { initializeApp } from "firebase/app";
+import {
+  getAuth,
+  signInWithPopup,
+  GoogleAuthProvider,
+  FacebookAuthProvider,
+} from "firebase/auth";
 
-export default function Login() {
+// Initialize Firebase (only for social logins)
+const firebaseConfig = {
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+};
+
+// Initialize Firebase only on client side
+const app =
+  typeof window !== "undefined" ? initializeApp(firebaseConfig) : null;
+const auth = app ? getAuth(app) : null;
+const googleProvider = new GoogleAuthProvider();
+const facebookProvider = new FacebookAuthProvider();
+
+// Create a wrapper component that uses useSearchParams within Suspense
+function LoginContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -27,12 +53,31 @@ export default function Login() {
   const [resetLoading, setResetLoading] = useState(false);
   const [resetError, setResetError] = useState("");
 
-  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+  // Check for error in URL params
+  useEffect(() => {
+    const errorParam = searchParams.get("error");
+    if (errorParam === "session_expired") {
+      setError("Your session has expired. Please log in again.");
+    }
+  }, [searchParams]);
+
+  // Function to set cookies
+  const setCookie = (name: string, value: string, days: number) => {
+    const expires = new Date();
+    expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+    document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
+  };
+
+  // Email/Password login (using your MongoDB API)
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       setIsLoading(true);
       setError("");
 
+      console.log("Attempting login with:", { email, password: "***" });
+
+      // Call your existing API endpoint
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: {
@@ -41,32 +86,51 @@ export default function Login() {
         body: JSON.stringify({ email, password }),
       });
 
+      console.log("Response status:", res.status);
 
-      const contentType = res.headers.get("Content-Type");
+      // Get response data
       let data;
-
-      if (contentType && contentType.includes("application/json")) {
+      try {
         data = await res.json();
-      } else {
+        console.log("Response data:", data);
+      } catch (parseError) {
+        console.error("Parse error:", parseError);
         const text = await res.text();
-        throw new Error(text || "Invalid response from server");
-
+        console.error("Failed to parse JSON response:", text);
+        throw new Error("Invalid response format from server");
       }
 
       if (!res.ok) {
-        throw new Error(data.error || "Something went wrong");
+        throw new Error(data.error || "Authentication failed");
       }
 
-      // Store token in localStorage if rememberMe is checked
+      if (!data.token) {
+        console.error("No token in response:", data);
+        throw new Error("No authentication token received");
+      }
+
+      console.log("Login successful, storing token");
+
+      // Set token in cookie for middleware
+      setCookie("token", data.token, rememberMe ? 7 : 1);
+
+      // Store token in localStorage/sessionStorage as before
       if (rememberMe) {
         localStorage.setItem("token", data.token);
       } else {
         sessionStorage.setItem("token", data.token);
       }
 
-      // Redirect to dashboard or home page
-      router.push("/dashboard");
+      // Store user data if available
+      if (data.user) {
+        localStorage.setItem("user", JSON.stringify(data.user));
+      }
+
+      // Get redirect path from URL or default to dashboard
+      const redirectTo = searchParams.get("from") || "/dashboard";
+      router.push(redirectTo);
     } catch (error) {
+      console.error("Login error:", error);
       if (error instanceof Error) {
         setError(error.message);
       } else {
@@ -77,26 +141,156 @@ export default function Login() {
     }
   };
 
-  const handleGoogleLogin = () => {
-    setError("");
-    setIsLoading(true);
+  // Google login (using Firebase)
+  const handleGoogleLogin = async () => {
+    try {
+      setIsLoading(true);
+      setError("");
 
-    // Mock Google login
-    setTimeout(() => {
+      if (!auth) {
+        throw new Error("Firebase auth not initialized");
+      }
+
+      // Sign in with Google popup
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+
+      // Get Firebase ID token
+      const firebaseToken = await user.getIdToken();
+
+      // Exchange Firebase token for your JWT token
+      const response = await fetch("/api/auth/social-login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          provider: "google",
+          token: firebaseToken,
+          uid: user.uid,
+          email: user.email,
+          displayName: user.displayName,
+          photoURL: user.photoURL,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          errorData.error || "Failed to authenticate with Google"
+        );
+      }
+
+      const data = await response.json();
+
+      // Set token in cookie for middleware
+      setCookie("token", data.token, 7);
+
+      // Store token in localStorage
+      localStorage.setItem("token", data.token);
+
+      // Store user data
+      if (data.user) {
+        localStorage.setItem("user", JSON.stringify(data.user));
+      }
+
+      // Get redirect path from URL or default to dashboard
+      const redirectTo = searchParams.get("from") || "/dashboard";
+      router.push(redirectTo);
+    } catch (error) {
+      console.error("Google login error:", error);
+
+      // If user cancelled the popup
+      if (
+        error instanceof Error &&
+        "code" in error &&
+        error.code === "auth/popup-closed-by-user"
+      ) {
+        setError("Login cancelled");
+      } else if (error instanceof Error) {
+        setError(error.message || "Failed to sign in with Google");
+      } else {
+        setError("An unknown error occurred");
+      }
+    } finally {
       setIsLoading(false);
-      console.log("Logged in with Google");
-    }, 1500);
+    }
   };
 
-  const handleFacebookLogin = () => {
-    setError("");
-    setIsLoading(true);
+  // Facebook login (using Firebase)
+  const handleFacebookLogin = async () => {
+    try {
+      setIsLoading(true);
+      setError("");
 
-    // Mock Facebook login
-    setTimeout(() => {
+      if (!auth) {
+        throw new Error("Firebase auth not initialized");
+      }
+
+      // Sign in with Facebook popup
+      const result = await signInWithPopup(auth, facebookProvider);
+      const user = result.user;
+
+      // Get Firebase ID token
+      const firebaseToken = await user.getIdToken();
+
+      // Exchange Firebase token for your JWT token
+      const response = await fetch("/api/auth/social-login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          provider: "facebook",
+          token: firebaseToken,
+          uid: user.uid,
+          email: user.email,
+          displayName: user.displayName,
+          photoURL: user.photoURL,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          errorData.error || "Failed to authenticate with Facebook"
+        );
+      }
+
+      const data = await response.json();
+
+      // Set token in cookie for middleware
+      setCookie("token", data.token, 7);
+
+      // Store token in localStorage
+      localStorage.setItem("token", data.token);
+
+      // Store user data
+      if (data.user) {
+        localStorage.setItem("user", JSON.stringify(data.user));
+      }
+
+      // Get redirect path from URL or default to dashboard
+      const redirectTo = searchParams.get("from") || "/dashboard";
+      router.push(redirectTo);
+    } catch (error) {
+      console.error("Facebook login error:", error);
+
+      // If user cancelled the popup
+      if (
+        error instanceof Error &&
+        "code" in error &&
+        error.code === "auth/popup-closed-by-user"
+      ) {
+        setError("Login cancelled");
+      } else if (error instanceof Error) {
+        setError(error.message || "Failed to sign in with Facebook");
+      } else {
+        setError("An unknown error occurred");
+      }
+    } finally {
       setIsLoading(false);
-      console.log("Logged in with Facebook");
-    }, 1500);
+    }
   };
 
   const togglePasswordVisibility = () => {
@@ -109,6 +303,7 @@ export default function Login() {
     setResetLoading(true);
 
     try {
+      // Call your existing forgot password API
       const res = await fetch("/api/auth/forgot-password", {
         method: "POST",
         headers: {
@@ -147,25 +342,15 @@ export default function Login() {
   return (
     <div className="flex flex-col lg:flex-row w-full h-full min-h-screen">
       {/* Left side - Image */}
-      <div className="relative w-full lg:w-1/2 h-64 lg:h-full">
-        <Image
-          src="/signup-image.jpg"
-          alt="Login"
-          fill
-          className="object-cover"
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black/50 flex items-center justify-center p-8">
-          <div className="text-white text-center max-w-4/5">
-            <h1 className="text-4xl font-bold mb-4 drop-shadow-md">
-              Welcome Back
-            </h1>
-            <p className="text-xl opacity-90 drop-shadow">
-              Sign in to continue your journey with us
-            </p>
-          </div>
-        </div>
-      </div>
+      <div className="relative w-full lg:w-1/2 h-64 lg:h-screen">
+              <Image src="/signup-image.jpg" alt="Login" fill className="object-cover" priority />
+              <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black/50 flex items-center justify-center p-8">
+                <div className="text-white text-center max-w-md">
+                  <h1 className="text-4xl font-bold mb-4 drop-shadow-md">Welcome Back</h1>
+                  <p className="text-xl opacity-90 drop-shadow">Sign in to continue your journey with us</p>
+                </div>
+              </div>
+            </div>
 
       {/* Right side - Form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center bg-white p-6 lg:p-8 overflow-y-auto">
@@ -364,5 +549,14 @@ export default function Login() {
         </div>
       )}
     </div>
+  );
+}
+
+// The main component just wraps the content in Suspense
+export default function Login() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LoginContent />
+    </Suspense>
   );
 }

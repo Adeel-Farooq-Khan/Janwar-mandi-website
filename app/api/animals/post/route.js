@@ -1,15 +1,18 @@
 import { NextResponse } from "next/server";
 import { connectToDB } from "../../../../lib/mongodb";
 import Animal from "../../../../models/Animal";
+import { verifyToken } from '../../../../lib/verifyToken';
 
-export async function GET() {
+
+export async function POST(req) {
   try {
     await connectToDB();
-    const animals = await Animal.find()
-      .populate("category")
-      .populate("subcategory")
-      .populate("breed");
-    return NextResponse.json(animals, { status: 200 });
+    await verifyToken(req);
+
+    const data = await req.json();
+    const animal = await Animal.create(data);
+
+    return NextResponse.json(animal, { status: 201 });
   } catch (err) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }

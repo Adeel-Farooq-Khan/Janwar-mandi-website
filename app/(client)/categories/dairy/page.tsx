@@ -121,7 +121,7 @@ export default function DairyCowPage() {
       <div className="pt-32 px-4 container mx-auto">
         <h1 className="text-3xl font-bold mb-6 text-center text-green-800">Dairy Cows</h1>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 pb-8  md:grid-cols-2 lg:grid-cols-3 gap-6">
           {dairyCows.map((cow) => (
             <div
               key={cow.id}
