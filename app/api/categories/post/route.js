@@ -5,17 +5,14 @@ import { verifyToken } from '../../../../lib/verifyToken';
 
 export async function POST(req) {
   try {
-    verifyToken(req);
-    await connectToDB();
-    
-    const { name } = await req.json();
-    if (!name) {
-      return new NextResponse("Category name is required", { status: 400 });
-    }
+    await connectToDB ();
+    await verifyToken(req);
 
-    const category = await Category.create({ name });
-    return NextResponse.json(category);
-  } catch (error) {
-    return new NextResponse(error.message, { status: 500 });
+    const { name } = await req.json();
+    const newCategory = await Category.create({ name });
+
+    return NextResponse.json(newCategory, { status: 201 });
+  } catch (err) {
+    return NextResponse.json({ error: err.message }, { status: 401 });
   }
 }
