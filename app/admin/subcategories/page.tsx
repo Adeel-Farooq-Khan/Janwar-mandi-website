@@ -76,13 +76,13 @@ const SubcategoriesPage = () => {
 
   return (
     <AdminLayout>
-      <div className="pb-8">
+      <div className="pb-8 p-4 md:p-6">
         {/* Page Header */}
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-semibold">Manage Subcategories</h1>
+        <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6">
+          <h1 className="text-2xl font-semibold mb-4 md:mb-0">Manage Subcategories</h1>
           <button
             onClick={handleAddSubcategoryClick}
-            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded flex items-center gap-2"
+            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded flex items-center gap-2 w-full md:w-auto justify-center md:justify-start"
           >
             <FaPlus /> Add Subcategory
           </button>
@@ -94,17 +94,18 @@ const SubcategoriesPage = () => {
             <thead>
               <tr className="bg-gray-100">
                 <th className="px-4 py-2 text-left">Subcategory</th>
-            
-                <th className="px-4 py-2 text-left">Category</th>
+                <th className="px-4 py-2 text-left hidden md:table-cell">Category</th>
                 <th className="px-4 py-2 text-left">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
               {subcategories.map((subcategory) => (
                 <tr key={subcategory.id} className="hover:bg-gray-50">
-                  <td className="px-4 py-2">{subcategory.name}</td>
-               
                   <td className="px-4 py-2">
+                    {subcategory.name}
+                    <div className="text-xs text-gray-500 md:hidden">Category: {subcategory.categoryName}</div>
+                  </td>
+                  <td className="px-4 py-2 hidden md:table-cell">
                     <span className="inline-block px-2 py-1 rounded text-sm font-semibold bg-blue-100 text-blue-800">
                       {subcategory.categoryName}
                     </span>
@@ -126,9 +127,9 @@ const SubcategoriesPage = () => {
         </div>
       </div>
 
-      {/* Modal for Adding Subcategory */}
+      {/* Modal for Adding Subcategory - Make responsive */}
       {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center z-50">
+        <div className="fixed inset-0 flex items-center justify-center z-50 p-4 bg-black bg-opacity-50">
           <div className="bg-white rounded-lg shadow-xl w-full max-w-md mx-auto border border-gray-200">
             <div className="flex justify-between items-center border-b p-4">
               <h2 className="text-xl font-semibold text-gray-800">Add New Subcategory</h2>
@@ -174,8 +175,6 @@ const SubcategoriesPage = () => {
                   required
                 />
               </div>
-
-    
 
               {/* Submit Button */}
               <div className="flex justify-end gap-2 pt-4 border-t">

@@ -1,7 +1,7 @@
-"use client";
+"use client"
 
-import AdminLayout from "@/components/AdminLayout";
-import Image from "next/image";
+import AdminLayout from "@/components/AdminLayout"
+import Image from "next/image"
 import {
   FaPlus,
   FaSearch,
@@ -16,8 +16,8 @@ import {
   FaUser,
   FaMapMarkerAlt,
   FaInfoCircle,
-} from "react-icons/fa";
-import { useState, useRef, useEffect } from "react";
+} from "react-icons/fa"
+import { useState, useRef, useEffect } from "react"
 
 // Sample data for animals
 const sampleAnimals = [
@@ -44,8 +44,7 @@ const sampleAnimals = [
       location: "Gulberg, Lahore",
     },
     dateAdded: "2025-04-30",
-    description:
-      "A healthy dairy cow with good milk production history. Well maintained and vaccinated regularly.",
+    description: "A healthy dairy cow with good milk production history. Well maintained and vaccinated regularly.",
     images: ["/card1.png", "/card2.png", "/card1.png"],
   },
   {
@@ -71,8 +70,7 @@ const sampleAnimals = [
       location: "DHA, Karachi",
     },
     dateAdded: "2025-04-28",
-    description:
-      "Premium Qurbani bull with excellent health and appearance. Perfect for upcoming Eid.",
+    description: "Premium Qurbani bull with excellent health and appearance. Perfect for upcoming Eid.",
     images: ["/card1.png", "/card1.png"],
   },
   {
@@ -98,141 +96,132 @@ const sampleAnimals = [
       location: "F-10, Islamabad",
     },
     dateAdded: "2025-04-25",
-    description:
-      "Young healthy goat from premium breed. Good for meat production.",
+    description: "Young healthy goat from premium breed. Good for meat production.",
     images: ["/card1.png", "/card1.png", "/card1.png", "/card1.png"],
   },
-];
+]
 
 // Sample data for filters
-const categories = ["Dairy", "Meat", "Qurbani"];
+const categories = ["Dairy", "Meat", "Qurbani"]
 const subcategories = {
   Dairy: ["Cow", "Buffalo", "Heifer", "Calf"],
   Meat: ["Goat", "Sheep"],
   Qurbani: ["Bull", "Camel", "Goat"],
-};
+}
 const breeds = {
   Cow: ["Australian", "Sahiwal", "Holstein", "Jersey"],
   Buffalo: ["Nili Ravi", "Murrah", "Kundi"],
   Goat: ["Beetal", "Teddy", "Kamori"],
   Bull: ["Sahiwal", "Cholistani", "Dhanni"],
   Camel: ["Marrecha", "Brela", "Dhatti"],
-};
+}
 
 type Animal = {
-  id: number;
-  image: string;
-  title: string;
-  price: number;
-  category: string;
-  subcategory: string;
-  breed: string;
-  lactation: string;
-  pregnancyStatus: string;
-  teats: number;
-  location: string;
-  teeth: number;
-  age: string;
-  weight: string;
-  gender: string;
+  id: number
+  image: string
+  title: string
+  price: number
+  category: string
+  subcategory: string
+  breed: string
+  lactation: string
+  pregnancyStatus: string
+  teats: number
+  location: string
+  teeth: number
+  age: string
+  weight: string
+  gender: string
   seller: {
-    name: string;
-    email: string;
-    phone: string;
-    location: string;
-  };
-  dateAdded: string;
-  description: string;
-  images: string[];
-};
+    name: string
+    email: string
+    phone: string
+    location: string
+  }
+  dateAdded: string
+  description: string
+  images: string[]
+}
 
 export default function AnimalsPage() {
-  const [showAddAnimalForm, setShowAddAnimalForm] = useState(false);
-  const [showDetailsModal, setShowDetailsModal] = useState(false);
-  const [selectedAnimal, setSelectedAnimal] = useState<Animal | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedSubcategory, setSelectedSubcategory] = useState("");
-  const [selectedBreed, setSelectedBreed] = useState("");
-  const [availableSubcategories, setAvailableSubcategories] = useState<
-    string[]
-  >([]);
-  const [availableBreeds, setAvailableBreeds] = useState<string[]>([]);
-  const [actionMenuOpen, setActionMenuOpen] = useState<number | null>(null);
-  const actionMenuRef = useRef<HTMLDivElement>(null);
-  const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [showAddAnimalForm, setShowAddAnimalForm] = useState(false)
+  const [showDetailsModal, setShowDetailsModal] = useState(false)
+  const [selectedAnimal, setSelectedAnimal] = useState<Animal | null>(null)
+  const [selectedCategory, setSelectedCategory] = useState("")
+  const [selectedSubcategory, setSelectedSubcategory] = useState("")
+  const [selectedBreed, setSelectedBreed] = useState("")
+  const [availableSubcategories, setAvailableSubcategories] = useState<string[]>([])
+  const [availableBreeds, setAvailableBreeds] = useState<string[]>([])
+  const [actionMenuOpen, setActionMenuOpen] = useState<number | null>(null)
+  const actionMenuRef = useRef<HTMLDivElement>(null)
+  const [activeImageIndex, setActiveImageIndex] = useState(0)
 
   // Update available subcategories when category changes
   useEffect(() => {
     if (selectedCategory) {
-      setAvailableSubcategories(
-        subcategories[selectedCategory as keyof typeof subcategories] || []
-      );
-      setSelectedSubcategory("");
-      setSelectedBreed("");
-      setAvailableBreeds([]);
+      setAvailableSubcategories(subcategories[selectedCategory as keyof typeof subcategories] || [])
+      setSelectedSubcategory("")
+      setSelectedBreed("")
+      setAvailableBreeds([])
     } else {
-      setAvailableSubcategories([]);
-      setSelectedSubcategory("");
-      setSelectedBreed("");
-      setAvailableBreeds([]);
+      setAvailableSubcategories([])
+      setSelectedSubcategory("")
+      setSelectedBreed("")
+      setAvailableBreeds([])
     }
-  }, [selectedCategory]);
+  }, [selectedCategory])
 
   // Update available breeds when subcategory changes
   useEffect(() => {
     if (selectedSubcategory) {
-      setAvailableBreeds(
-        breeds[selectedSubcategory as keyof typeof breeds] || []
-      );
-      setSelectedBreed("");
+      setAvailableBreeds(breeds[selectedSubcategory as keyof typeof breeds] || [])
+      setSelectedBreed("")
     } else {
-      setAvailableBreeds([]);
-      setSelectedBreed("");
+      setAvailableBreeds([])
+      setSelectedBreed("")
     }
-  }, [selectedSubcategory]);
+  }, [selectedSubcategory])
 
   // Close action menu when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (
-        actionMenuRef.current &&
-        !actionMenuRef.current.contains(event.target as Node)
-      ) {
-        setActionMenuOpen(null);
+      if (actionMenuRef.current && !actionMenuRef.current.contains(event.target as Node)) {
+        setActionMenuOpen(null)
       }
     }
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside)
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [])
 
   const toggleAddAnimalForm = () => {
-    setShowAddAnimalForm(!showAddAnimalForm);
-  };
+    setShowAddAnimalForm(!showAddAnimalForm)
+  }
 
   const toggleActionMenu = (id: number) => {
-    setActionMenuOpen(actionMenuOpen === id ? null : id);
-  };
+    setActionMenuOpen(actionMenuOpen === id ? null : id)
+  }
 
   const openDetailsModal = (animal: Animal) => {
-    setSelectedAnimal(animal);
-    setActiveImageIndex(0);
-    setShowDetailsModal(true);
-    setActionMenuOpen(null);
-  };
+    setSelectedAnimal(animal)
+    setActiveImageIndex(0)
+    setShowDetailsModal(true)
+    setActionMenuOpen(null)
+  }
 
   const closeDetailsModal = () => {
-    setShowDetailsModal(false);
-    setSelectedAnimal(null);
-  };
+    setShowDetailsModal(false)
+    setSelectedAnimal(null)
+  }
 
   return (
     <AdminLayout>
-      <div className="p-6 bg-white">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-semibold">Manage Animals</h1>
-          <div className="mt-4 md:mt-0">
+      {/* Make the animals page responsive */}
+      <div className="p-4 md:p-6 bg-white">
+        <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6">
+          <h1 className="text-2xl md:text-3xl font-semibold mb-4 md:mb-0">Manage Animals</h1>
+          <div>
             <button
               onClick={toggleAddAnimalForm}
               className="px-4 py-2 bg-green-700 text-white rounded-lg flex items-center shadow-sm hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-700"
@@ -245,15 +234,11 @@ export default function AnimalsPage() {
 
         {/* Improved Filters */}
         <div className="mb-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Search Filter */}
             <div className="flex items-center border border-gray-300 p-2 rounded-lg">
               <FaSearch className="text-gray-500" />
-              <input
-                type="text"
-                placeholder="Search animals..."
-                className="ml-2 outline-none w-full"
-              />
+              <input type="text" placeholder="Search animals..." className="ml-2 outline-none w-full" />
             </div>
 
             {/* Category Filter */}
@@ -323,13 +308,11 @@ export default function AnimalsPage() {
             </div>
 
             <input type="date" className="border p-2 rounded-lg" />
-            <button className="px-4 py-2 bg-blue-500 text-white rounded-lg">
-              Apply Filters
-            </button>
+            <button className="px-4 py-2 bg-blue-500 text-white rounded-lg">Apply Filters</button>
           </div>
         </div>
 
-        {/* Improved Table for Animals */}
+        {/* Improved Table for Animals - with responsive handling */}
         <div className="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
           <table className="w-full table-auto">
             <thead>
@@ -337,12 +320,12 @@ export default function AnimalsPage() {
                 <th className="p-3 text-left">Image</th>
                 <th className="p-3 text-left">Title</th>
                 <th className="p-3 text-left">Price</th>
-                <th className="p-3 text-left">Category</th>
-                <th className="p-3 text-left">Subcategory</th>
-                <th className="p-3 text-left">Breed</th>
-                <th className="p-3 text-left">Age</th>
-                <th className="p-3 text-left">Weight</th>
-                <th className="p-3 text-left">Gender</th>
+                <th className="p-3 text-left hidden md:table-cell">Category</th>
+                <th className="p-3 text-left hidden md:table-cell">Subcategory</th>
+                <th className="p-3 text-left hidden lg:table-cell">Breed</th>
+                <th className="p-3 text-left hidden lg:table-cell">Age</th>
+                <th className="p-3 text-left hidden lg:table-cell">Weight</th>
+                <th className="p-3 text-left hidden lg:table-cell">Gender</th>
                 <th className="p-3 text-left">Actions</th>
               </tr>
             </thead>
@@ -360,35 +343,33 @@ export default function AnimalsPage() {
                   </td>
                   <td className="p-3">
                     <div className="font-medium">{animal.title}</div>
-                  </td>
-                  <td className="p-3">
-                    <div className="font-medium">
-                      Rs. {animal.price.toLocaleString()}
+                    <div className="text-sm text-gray-500 md:hidden">
+                      {animal.category} - {animal.subcategory}
                     </div>
                   </td>
                   <td className="p-3">
+                    <div className="font-medium">Rs. {animal.price.toLocaleString()}</div>
+                  </td>
+                  <td className="p-3 hidden md:table-cell">
                     <span className="inline-block px-2 py-1 rounded text-xs font-semibold bg-blue-100 text-blue-800">
                       {animal.category}
                     </span>
                   </td>
-                  <td className="p-3">
+                  <td className="p-3 hidden md:table-cell">
                     <span className="inline-block px-2 py-1 rounded text-xs font-semibold bg-green-100 text-green-800">
                       {animal.subcategory}
                     </span>
                   </td>
-                  <td className="p-3">
+                  <td className="p-3 hidden lg:table-cell">
                     <span className="inline-block px-2 py-1 rounded text-xs font-semibold bg-purple-100 text-purple-800">
                       {animal.breed}
                     </span>
                   </td>
-                  <td className="p-3">{animal.age}</td>
-                  <td className="p-3">{animal.weight}</td>
-                  <td className="p-3">{animal.gender}</td>
+                  <td className="p-3 hidden lg:table-cell">{animal.age}</td>
+                  <td className="p-3 hidden lg:table-cell">{animal.weight}</td>
+                  <td className="p-3 hidden lg:table-cell">{animal.gender}</td>
                   <td className="p-3 relative">
-                    <button
-                      onClick={() => toggleActionMenu(animal.id)}
-                      className="p-2 rounded-full hover:bg-gray-200"
-                    >
+                    <button onClick={() => toggleActionMenu(animal.id)} className="p-2 rounded-full hover:bg-gray-200">
                       <FaEllipsisV />
                     </button>
 
@@ -430,13 +411,8 @@ export default function AnimalsPage() {
         <div className="fixed inset-0 flex items-center justify-center z-50 p-4 overflow-y-auto">
           <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto relative">
             <div className="border-b px-6 py-4 flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-gray-800">
-                Add New Animal
-              </h2>
-              <button
-                onClick={toggleAddAnimalForm}
-                className="text-gray-500 hover:text-gray-700"
-              >
+              <h2 className="text-xl font-semibold text-gray-800">Add New Animal</h2>
+              <button onClick={toggleAddAnimalForm} className="text-gray-500 hover:text-gray-700">
                 <FaTimes />
               </button>
             </div>
@@ -444,14 +420,10 @@ export default function AnimalsPage() {
             <form className="p-6">
               {/* Basic Information */}
               <div className="mb-6">
-                <h3 className="text-lg font-medium text-gray-800 mb-4">
-                  Basic Information
-                </h3>
+                <h3 className="text-lg font-medium text-gray-800 mb-4">Basic Information</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   <div className="flex-1 min-w-[200px]">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Category*
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Category*</label>
                     <select
                       name="category"
                       required
@@ -464,9 +436,7 @@ export default function AnimalsPage() {
                     </select>
                   </div>
                   <div className="flex-1 min-w-[200px]">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Subcategory*
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Subcategory*</label>
                     <select
                       name="subcategory"
                       required
@@ -477,9 +447,7 @@ export default function AnimalsPage() {
                     </select>
                   </div>
                   <div className="flex-1 min-w-[200px]">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Breed*
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Breed*</label>
                     <select
                       name="breed"
                       required
@@ -490,9 +458,7 @@ export default function AnimalsPage() {
                     </select>
                   </div>
                   <div className="flex-1 min-w-[200px]">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Price (Rs.)*
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Price (Rs.)*</label>
                     <input
                       type="number"
                       required
@@ -501,9 +467,7 @@ export default function AnimalsPage() {
                     />
                   </div>
                   <div className="flex-1 min-w-[200px]">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Age*
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Age*</label>
                     <input
                       type="text"
                       required
@@ -512,9 +476,7 @@ export default function AnimalsPage() {
                     />
                   </div>
                   <div className="flex-1 min-w-[200px]">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Weight*
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Weight*</label>
                     <input
                       type="text"
                       required
@@ -523,9 +485,7 @@ export default function AnimalsPage() {
                     />
                   </div>
                   <div className="flex-1 min-w-[200px]">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Gender*
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Gender*</label>
                     <select
                       name="gender"
                       required
@@ -541,9 +501,7 @@ export default function AnimalsPage() {
 
               {/* Animal Details (Dynamic Fields can be added here) */}
               <div className="mb-6">
-                <h3 className="text-lg font-medium text-gray-800 mb-4">
-                  Animal Details
-                </h3>
+                <h3 className="text-lg font-medium text-gray-800 mb-4">Animal Details</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {/* Dynamic fields will be added based on selected category */}
                 </div>
@@ -551,14 +509,10 @@ export default function AnimalsPage() {
 
               {/* Additional Information */}
               <div className="mb-6">
-                <h3 className="text-lg font-medium text-gray-800 mb-4">
-                  Additional Information
-                </h3>
+                <h3 className="text-lg font-medium text-gray-800 mb-4">Additional Information</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="col-span-1 md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Description
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
                     <textarea
                       rows={4}
                       placeholder="Provide additional details about your animal"
@@ -567,9 +521,7 @@ export default function AnimalsPage() {
                   </div>
 
                   <div className="flex-1">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Location*
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Location*</label>
                     <select
                       required
                       className="w-full p-3 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-green-700 focus:ring-2 focus:ring-green-700/10"
@@ -583,9 +535,7 @@ export default function AnimalsPage() {
 
               {/* Image Upload */}
               <div className="mb-6">
-                <h3 className="text-lg font-medium text-gray-800 mb-4">
-                  Images
-                </h3>
+                <h3 className="text-lg font-medium text-gray-800 mb-4">Images</h3>
                 <div className="border-2 border-gray-300 p-6 rounded-lg">
                   <label
                     htmlFor="image-upload"
@@ -594,12 +544,7 @@ export default function AnimalsPage() {
                     <FaCloudUploadAlt className="text-lg" />
                     <span>Upload Images</span>
                   </label>
-                  <input
-                    type="file"
-                    id="image-upload"
-                    className="hidden"
-                    multiple
-                  />
+                  <input type="file" id="image-upload" className="hidden" multiple />
                 </div>
               </div>
 
@@ -611,10 +556,7 @@ export default function AnimalsPage() {
                 >
                   Cancel
                 </button>
-                <button
-                  type="submit"
-                  className="px-6 py-2 bg-green-700 text-white rounded-lg"
-                >
+                <button type="submit" className="px-6 py-2 bg-green-700 text-white rounded-lg">
                   Add Animal
                 </button>
               </div>
@@ -628,13 +570,8 @@ export default function AnimalsPage() {
         <div className="fixed inset-0 flex items-center  shadow-2xl justify-center z-50 p-4 overflow-y-auto ">
           <div className="bg-white rounded-lg shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-y-auto relative">
             <div className="border-b px-6 py-4 flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-gray-800">
-                {selectedAnimal.title}
-              </h2>
-              <button
-                onClick={closeDetailsModal}
-                className="text-gray-500 hover:text-gray-700"
-              >
+              <h2 className="text-xl font-semibold text-gray-800">{selectedAnimal.title}</h2>
+              <button onClick={closeDetailsModal} className="text-gray-500 hover:text-gray-700">
                 <FaTimes />
               </button>
             </div>
@@ -643,15 +580,9 @@ export default function AnimalsPage() {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Left Column - Images */}
                 <div>
-                  <div
-                    className="mb-4 relative rounded-lg overflow-hidden"
-                    style={{ height: "300px" }}
-                  >
+                  <div className="mb-4 relative rounded-lg overflow-hidden" style={{ height: "300px" }}>
                     <Image
-                      src={
-                        selectedAnimal.images[activeImageIndex] ||
-                        "/placeholder.svg"
-                      }
+                      src={selectedAnimal.images[activeImageIndex] || "/placeholder.svg" || "/placeholder.svg"}
                       alt={selectedAnimal.title}
                       fill
                       className="object-cover"
@@ -661,27 +592,23 @@ export default function AnimalsPage() {
                   {/* Thumbnails */}
                   {selectedAnimal.images.length > 1 && (
                     <div className="flex gap-2 overflow-x-auto pb-2">
-                      {selectedAnimal.images.map(
-                        (img: string, index: number) => (
-                          <div
-                            key={index}
-                            className={`cursor-pointer rounded-md overflow-hidden border-2 ${
-                              activeImageIndex === index
-                                ? "border-blue-500"
-                                : "border-transparent"
-                            }`}
-                            onClick={() => setActiveImageIndex(index)}
-                          >
-                            <Image
-                              src={img || "/placeholder.svg"}
-                              alt={`Thumbnail ${index + 1}`}
-                              width={60}
-                              height={60}
-                              className="object-cover"
-                            />
-                          </div>
-                        )
-                      )}
+                      {selectedAnimal.images.map((img: string, index: number) => (
+                        <div
+                          key={index}
+                          className={`cursor-pointer rounded-md overflow-hidden border-2 ${
+                            activeImageIndex === index ? "border-blue-500" : "border-transparent"
+                          }`}
+                          onClick={() => setActiveImageIndex(index)}
+                        >
+                          <Image
+                            src={img || "/placeholder.svg"}
+                            alt={`Thumbnail ${index + 1}`}
+                            width={60}
+                            height={60}
+                            className="object-cover"
+                          />
+                        </div>
+                      ))}
                     </div>
                   )}
 
@@ -701,41 +628,30 @@ export default function AnimalsPage() {
                         {selectedAnimal.breed}
                       </span>
                     </div>
-                    <div className="text-gray-600">
-                      {selectedAnimal.description}
-                    </div>
+                    <div className="text-gray-600">{selectedAnimal.description}</div>
                   </div>
 
                   {/* Seller Information */}
                   <div className="mt-6 bg-gray-50 p-4 rounded-lg">
                     <h3 className="text-lg font-medium mb-3 flex items-center">
-                      <FaUser className="mr-2 text-gray-500" /> Seller
-                      Information
+                      <FaUser className="mr-2 text-gray-500" /> Seller Information
                     </h3>
                     <div className="space-y-2">
                       <div className="flex items-center">
                         <span className="w-24 text-gray-600">Name:</span>
-                        <span className="font-medium">
-                          {selectedAnimal.seller.name}
-                        </span>
+                        <span className="font-medium">{selectedAnimal.seller.name}</span>
                       </div>
                       <div className="flex items-center">
                         <span className="w-24 text-gray-600">Email:</span>
-                        <span className="font-medium">
-                          {selectedAnimal.seller.email}
-                        </span>
+                        <span className="font-medium">{selectedAnimal.seller.email}</span>
                       </div>
                       <div className="flex items-center">
                         <span className="w-24 text-gray-600">Phone:</span>
-                        <span className="font-medium">
-                          {selectedAnimal.seller.phone}
-                        </span>
+                        <span className="font-medium">{selectedAnimal.seller.phone}</span>
                       </div>
                       <div className="flex items-center">
                         <span className="w-24 text-gray-600">Location:</span>
-                        <span className="font-medium">
-                          {selectedAnimal.seller.location}
-                        </span>
+                        <span className="font-medium">{selectedAnimal.seller.location}</span>
                       </div>
                     </div>
                   </div>
@@ -744,16 +660,13 @@ export default function AnimalsPage() {
                 {/* Right Column - Details */}
                 <div>
                   <h3 className="text-lg font-medium mb-4 flex items-center">
-                    <FaInfoCircle className="mr-2 text-gray-500" /> Animal
-                    Details
+                    <FaInfoCircle className="mr-2 text-gray-500" /> Animal Details
                   </h3>
 
                   <div className="grid grid-cols-2 gap-4">
                     {/* Basic Details */}
                     <div className="col-span-2 bg-gray-50 p-4 rounded-lg">
-                      <h4 className="font-medium mb-2 text-gray-700">
-                        Basic Information
-                      </h4>
+                      <h4 className="font-medium mb-2 text-gray-700">Basic Information</h4>
                       <div className="grid grid-cols-2 gap-y-2">
                         <div className="flex items-center">
                           <span className="w-24 text-gray-600">Age:</span>
@@ -776,22 +689,16 @@ export default function AnimalsPage() {
 
                     {/* Category Specific Details */}
                     <div className="col-span-2 bg-gray-50 p-4 rounded-lg">
-                      <h4 className="font-medium mb-2 text-gray-700">
-                        Category Specific Details
-                      </h4>
+                      <h4 className="font-medium mb-2 text-gray-700">Category Specific Details</h4>
                       <div className="grid grid-cols-2 gap-y-2">
                         {selectedAnimal.category === "Dairy" && (
                           <>
                             <div className="flex items-center">
-                              <span className="w-24 text-gray-600">
-                                Lactation:
-                              </span>
+                              <span className="w-24 text-gray-600">Lactation:</span>
                               <span>{selectedAnimal.lactation}</span>
                             </div>
                             <div className="flex items-center">
-                              <span className="w-24 text-gray-600">
-                                Pregnancy:
-                              </span>
+                              <span className="w-24 text-gray-600">Pregnancy:</span>
                               <span>{selectedAnimal.pregnancyStatus}</span>
                             </div>
                             <div className="flex items-center">
@@ -813,9 +720,7 @@ export default function AnimalsPage() {
 
                     {/* Location */}
                     <div className="col-span-2 bg-gray-50 p-4 rounded-lg">
-                      <h4 className="font-medium mb-2 text-gray-700">
-                        Location
-                      </h4>
+                      <h4 className="font-medium mb-2 text-gray-700">Location</h4>
                       <div className="flex items-center">
                         <FaMapMarkerAlt className="text-gray-500 mr-2" />
                         <span>{selectedAnimal.location}</span>
@@ -824,9 +729,7 @@ export default function AnimalsPage() {
 
                     {/* Date Added */}
                     <div className="col-span-2 bg-gray-50 p-4 rounded-lg">
-                      <h4 className="font-medium mb-2 text-gray-700">
-                        Listing Information
-                      </h4>
+                      <h4 className="font-medium mb-2 text-gray-700">Listing Information</h4>
                       <div className="flex items-center">
                         <span className="w-24 text-gray-600">Date Added:</span>
                         <span>{selectedAnimal.dateAdded}</span>
@@ -838,10 +741,7 @@ export default function AnimalsPage() {
             </div>
 
             <div className="border-t px-6 py-4 flex justify-end">
-              <button
-                onClick={closeDetailsModal}
-                className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg mr-2"
-              >
+              <button onClick={closeDetailsModal} className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg mr-2">
                 Close
               </button>
               <button className="px-4 py-2 bg-yellow-500 text-white rounded-lg">
@@ -852,5 +752,5 @@ export default function AnimalsPage() {
         </div>
       )}
     </AdminLayout>
-  );
+  )
 }

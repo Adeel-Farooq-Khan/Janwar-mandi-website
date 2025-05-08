@@ -209,10 +209,12 @@ export default function UsersPage() {
 
   return (
     <AdminLayout>
-      <div className="p-6">
+      <div className="p-4 sm:p-6">
         <div className="mb-6">
-          <h1 className="text-3xl font-semibold text-gray-800">Manage Users & Subscriptions</h1>
-          <p className="text-gray-600 mt-1">View and manage user subscriptions and posting privileges</p>
+          <h1 className="text-2xl sm:text-3xl font-semibold text-gray-800">Manage Users & Subscriptions</h1>
+          <p className="text-sm sm:text-base text-gray-600 mt-1">
+            View and manage user subscriptions and posting privileges
+          </p>
         </div>
 
         <div className="mb-6 flex flex-col sm:flex-row gap-4">
@@ -259,37 +261,37 @@ export default function UsersPage() {
                 <tr>
                   <th
                     scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
                     User
                   </th>
                   <th
                     scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell"
                   >
                     Contact
                   </th>
                   <th
                     scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
                     Subscription
                   </th>
                   <th
                     scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell"
                   >
                     Listings
                   </th>
                   <th
                     scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell"
                   >
                     Time Remaining
                   </th>
                   <th
                     scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
                     Actions
                   </th>
@@ -307,25 +309,26 @@ export default function UsersPage() {
 
                     return (
                       <tr key={user.id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap">
+                        <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
-                            <div className="flex-shrink-0 h-10 w-10 rounded-full bg-green-100 flex items-center justify-center text-green-800 font-semibold">
+                            <div className="flex-shrink-0 h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-green-100 flex items-center justify-center text-green-800 font-semibold">
                               {user.displayName.charAt(0).toUpperCase()}
                             </div>
-                            <div className="ml-4">
+                            <div className="ml-3 sm:ml-4">
                               <div className="text-sm font-medium text-gray-900">{user.displayName}</div>
-                              <div className="text-sm text-gray-500">
+                              <div className="text-xs sm:text-sm text-gray-500">
                                 Joined {new Date(user.createdAt).toLocaleDateString()}
                               </div>
+                              <div className="text-xs text-gray-500 sm:hidden">{user.email}</div>
                             </div>
                           </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
+                        <td className="px-4 sm:px-6 py-4 whitespace-nowrap hidden sm:table-cell">
                           <div className="text-sm text-gray-900">{user.email}</div>
                           <div className="text-sm text-gray-500">{user.phone || "—"}</div>
                           <div className="text-sm text-gray-500">{user.location || "—"}</div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
+                        <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
                           {editingUser === user.id ? (
                             <div className="flex items-center space-x-2">
                               <select
@@ -362,10 +365,17 @@ export default function UsersPage() {
                                 {user.subscription.type.charAt(0).toUpperCase() + user.subscription.type.slice(1)}
                                 {!user.subscription.paymentVerified && " (Pending)"}
                               </span>
+                              <div className="text-xs mt-1 md:hidden">
+                                <span
+                                  className={`${daysRemaining <= 0 ? "text-red-500" : daysRemaining <= 3 ? "text-orange-500" : "text-green-500"}`}
+                                >
+                                  {daysRemaining > 0 ? `${daysRemaining} days` : "Expired"}
+                                </span>
+                              </div>
                             </div>
                           )}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
+                        <td className="px-4 sm:px-6 py-4 whitespace-nowrap hidden md:table-cell">
                           <div className="text-sm text-gray-900">
                             {user.subscription.listingsUsed} / {user.subscription.listingsTotal}
                           </div>
@@ -378,7 +388,7 @@ export default function UsersPage() {
                             ></div>
                           </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
+                        <td className="px-4 sm:px-6 py-4 whitespace-nowrap hidden sm:table-cell">
                           {daysRemaining > 0 ? (
                             <div className="flex items-center">
                               <FaClock
@@ -394,7 +404,7 @@ export default function UsersPage() {
                             <span className="text-red-500 font-medium">Expired</span>
                           )}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm font-medium">
                           <div className="flex space-x-2">
                             <button
                               onClick={() => {
@@ -422,7 +432,7 @@ export default function UsersPage() {
                   })
                 ) : (
                   <tr>
-                    <td colSpan={6} className="px-6 py-4 text-center text-gray-500">
+                    <td colSpan={6} className="px-4 sm:px-6 py-4 text-center text-gray-500">
                       No users found matching your criteria
                     </td>
                   </tr>

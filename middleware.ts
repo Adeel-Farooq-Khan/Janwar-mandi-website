@@ -18,9 +18,7 @@ const publicPaths = [
   "/admin/animals",
   "/admin/breeds",
   "/admin/categories",
-  "/admin/categories/dairy",
-  "/admin/categories/meat",
-  "/admin/categories/qurbani",
+  "/admin/subcategories",
   "/admin/users",
   "/admin/adminlogin",
 

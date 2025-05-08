@@ -52,7 +52,7 @@ const CategoriesPage = () => {
 
   // const handleBreedChange = (index: number, value: string) => {
   //   const updatedBreeds = [...breeds]
-  //   updatedBreeds[index] = value
+  //   updatedBreeds.splice(index, 1)
   //   setBreeds(updatedBreeds)
   // }
 
@@ -82,13 +82,14 @@ const CategoriesPage = () => {
 
   return (
     <AdminLayout>
-      <div className="admin-categories-page pb-8">
+      {/* Make the categories page responsive */}
+      <div className="admin-categories-page p-4 md:p-6 pb-8">
         {/* Page Header */}
-        <div className="admin-page-header flex justify-between items-center mb-6">
-          <h1 className="admin-page-title text-2xl font-semibold">Manage Categories</h1>
+        <div className="admin-page-header flex flex-col md:flex-row md:justify-between md:items-center mb-6">
+          <h1 className="admin-page-title text-2xl font-semibold mb-4 md:mb-0">Manage Categories</h1>
           <button
             onClick={handleAddCategoryClick}
-            className="admin-add-button bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded flex items-center gap-2"
+            className="admin-add-button bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded flex items-center gap-2 w-full md:w-auto justify-center md:justify-start"
           >
             <FaPlus /> Add Category
           </button>
@@ -100,7 +101,7 @@ const CategoriesPage = () => {
             <thead>
               <tr className="bg-gray-100">
                 <th className="px-4 py-2 text-left">Label</th>
-                <th className="px-4 py-2 text-left">Description</th>
+                <th className="px-4 py-2 text-left hidden md:table-cell">Description</th>
                 <th className="px-4 py-2 text-left">Status</th>
                 <th className="px-4 py-2 text-left">Actions</th>
               </tr>
@@ -108,8 +109,11 @@ const CategoriesPage = () => {
             <tbody className="divide-y divide-gray-200">
               {/* Dummy Categories Data */}
               <tr className="hover:bg-gray-50">
-                <td className="px-4 py-2">Dairy</td>
-                <td className="px-4 py-2">Dairy products category</td>
+                <td className="px-4 py-2">
+                  Dairy
+                  <div className="text-xs text-gray-500 md:hidden">Dairy products category</div>
+                </td>
+                <td className="px-4 py-2 hidden md:table-cell">Dairy products category</td>
                 <td className="px-4 py-2">
                   <span className="inline-block px-2 py-1 rounded text-sm font-semibold bg-[#e8f5e9] text-[#2e7d32]">
                     Active
@@ -130,8 +134,11 @@ const CategoriesPage = () => {
                 </td>
               </tr>
               <tr className="hover:bg-gray-50">
-                <td className="px-4 py-2">Meat</td>
-                <td className="px-4 py-2">Meat products category</td>
+                <td className="px-4 py-2">
+                  Meat
+                  <div className="text-xs text-gray-500 md:hidden">Meat products category</div>
+                </td>
+                <td className="px-4 py-2 hidden md:table-cell">Meat products category</td>
                 <td className="px-4 py-2">
                   <span className="inline-block px-2 py-1 rounded text-sm font-semibold bg-[#e8f5e9] text-[#2e7d32]">
                     Active
@@ -152,8 +159,11 @@ const CategoriesPage = () => {
                 </td>
               </tr>
               <tr className="hover:bg-gray-50">
-                <td className="px-4 py-2">Qurbani</td>
-                <td className="px-4 py-2">Qurbani category</td>
+                <td className="px-4 py-2">
+                  Qurbani
+                  <div className="text-xs text-gray-500 md:hidden">Qurbani category</div>
+                </td>
+                <td className="px-4 py-2 hidden md:table-cell">Qurbani category</td>
                 <td className="px-4 py-2">
                   <span className="inline-block px-2 py-1 rounded text-sm font-semibold bg-[#e8f5e9] text-[#2e7d32]">
                     Active
@@ -178,9 +188,9 @@ const CategoriesPage = () => {
         </div>
       </div>
 
-      {/* Modal for Adding Category */}
+      {/* Modal for Adding Category - Make responsive */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
           <div className="bg-white rounded-lg shadow-xl w-full max-w-md mx-auto border border-gray-200">
             <div className="flex justify-between items-center border-b p-4">
               <h2 className="text-xl font-semibold text-gray-800">Add New Category</h2>
@@ -221,78 +231,6 @@ const CategoriesPage = () => {
                   placeholder="Enter category description (optional)"
                 />
               </div>
-
-              {/* Subcategories */}
-              {/* <div className="form-group">
-                <div className="flex justify-between items-center mb-2">
-                  <label className="block text-sm font-medium text-gray-700">Subcategories</label>
-                  <button
-                    type="button"
-                    onClick={addSubcategoryField}
-                    className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 px-2 py-1 rounded flex items-center gap-1"
-                  >
-                    <FaPlus size={10} /> Add
-                  </button>
-                </div>
-                <div className="space-y-2 max-h-[150px] overflow-y-auto pr-1">
-                  {subcategories.map((subcategory, index) => (
-                    <div key={index} className="flex items-center gap-2">
-                      <input
-                        type="text"
-                        value={subcategory}
-                        onChange={(e) => handleSubcategoryChange(index, e.target.value)}
-                        className="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                        placeholder={`Subcategory ${index + 1}`}
-                      />
-                      {subcategories.length > 1 && (
-                        <button
-                          type="button"
-                          onClick={() => removeSubcategoryField(index)}
-                          className="text-gray-400 hover:text-red-500 p-1"
-                        >
-                          <FaTimes size={14} />
-                        </button>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div> */}
-
-              {/* Breeds */}
-              {/* <div className="form-group">
-                <div className="flex justify-between items-center mb-2">
-                  <label className="block text-sm font-medium text-gray-700">Breeds</label>
-                  <button
-                    type="button"
-                    onClick={addBreedField}
-                    className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 px-2 py-1 rounded flex items-center gap-1"
-                  >
-                    <FaPlus size={10} /> Add
-                  </button>
-                </div>
-                <div className="space-y-2 max-h-[150px] overflow-y-auto pr-1">
-                  {breeds.map((breed, index) => (
-                    <div key={index} className="flex items-center gap-2">
-                      <input
-                        type="text"
-                        value={breed}
-                        onChange={(e) => handleBreedChange(index, e.target.value)}
-                        className="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                        placeholder={`Breed ${index + 1}`}
-                      />
-                      {breeds.length > 1 && (
-                        <button
-                          type="button"
-                          onClick={() => removeBreedField(index)}
-                          className="text-gray-400 hover:text-red-500 p-1"
-                        >
-                          <FaTimes size={14} />
-                        </button>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div> */}
 
               {/* Submit Button */}
               <div className="flex justify-end gap-2 pt-4 border-t">
