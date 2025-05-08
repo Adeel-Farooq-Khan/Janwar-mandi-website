@@ -16,6 +16,7 @@ import {
   FaUser,
   FaMapMarkerAlt,
   FaInfoCircle,
+  FaChevronDown,
 } from "react-icons/fa"
 import { useState, useRef, useEffect } from "react"
 
@@ -156,6 +157,22 @@ export default function AnimalsPage() {
   const actionMenuRef = useRef<HTMLDivElement>(null)
   const [activeImageIndex, setActiveImageIndex] = useState(0)
 
+  // Dropdown states
+  const [categoryDropdownOpen, setCategoryDropdownOpen] = useState(false)
+  const [subcategoryDropdownOpen, setSubcategoryDropdownOpen] = useState(false)
+  const [breedDropdownOpen, setBreedDropdownOpen] = useState(false)
+  const [timeDropdownOpen, setTimeDropdownOpen] = useState(false)
+
+  // Refs for dropdowns
+  const categoryDropdownRef = useRef<HTMLDivElement>(null)
+  const subcategoryDropdownRef = useRef<HTMLDivElement>(null)
+  const breedDropdownRef = useRef<HTMLDivElement>(null)
+  const timeDropdownRef = useRef<HTMLDivElement>(null)
+
+  // Handle responsive dropdown width
+  const [dropdownWidth, setDropdownWidth] = useState("200px")
+  const [dropdownRight, setDropdownRight] = useState("0")
+
   // Update available subcategories when category changes
   useEffect(() => {
     if (selectedCategory) {
@@ -188,11 +205,41 @@ export default function AnimalsPage() {
       if (actionMenuRef.current && !actionMenuRef.current.contains(event.target as Node)) {
         setActionMenuOpen(null)
       }
+
+      // Close dropdowns when clicking outside
+      if (categoryDropdownRef.current && !categoryDropdownRef.current.contains(event.target as Node)) {
+        setCategoryDropdownOpen(false)
+      }
+      if (subcategoryDropdownRef.current && !subcategoryDropdownRef.current.contains(event.target as Node)) {
+        setSubcategoryDropdownOpen(false)
+      }
+      if (breedDropdownRef.current && !breedDropdownRef.current.contains(event.target as Node)) {
+        setBreedDropdownOpen(false)
+      }
+      if (timeDropdownRef.current && !timeDropdownRef.current.contains(event.target as Node)) {
+        setTimeDropdownOpen(false)
+      }
     }
     document.addEventListener("mousedown", handleClickOutside)
     return () => {
       document.removeEventListener("mousedown", handleClickOutside)
     }
+  }, [])
+
+  useEffect(() => {
+    function handleResize() {
+      if (window.innerWidth < 640) {
+        setDropdownWidth("180px")
+        setDropdownRight("0")
+      } else {
+        setDropdownWidth("200px")
+        setDropdownRight("0")
+      }
+    }
+
+    handleResize()
+    window.addEventListener("resize", handleResize)
+    return () => window.removeEventListener("resize", handleResize)
   }, [])
 
   const toggleAddAnimalForm = () => {
@@ -213,6 +260,21 @@ export default function AnimalsPage() {
   const closeDetailsModal = () => {
     setShowDetailsModal(false)
     setSelectedAnimal(null)
+  }
+
+  const selectCategory = (category: string) => {
+    setSelectedCategory(category)
+    setCategoryDropdownOpen(false)
+  }
+
+  const selectSubcategory = (subcategory: string) => {
+    setSelectedSubcategory(subcategory)
+    setSubcategoryDropdownOpen(false)
+  }
+
+  const selectBreed = (breed: string) => {
+    setSelectedBreed(breed)
+    setBreedDropdownOpen(false)
   }
 
   return (
@@ -236,79 +298,164 @@ export default function AnimalsPage() {
         <div className="mb-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Search Filter */}
-            <div className="flex items-center border border-gray-300 p-2 rounded-lg">
+            <div className="flex items-center border border-gray-300 p-2 rounded-lg focus-within:ring-2 focus-within:ring-green-500 focus-within:border-green-500 transition-all duration-200">
               <FaSearch className="text-gray-500" />
               <input type="text" placeholder="Search animals..." className="ml-2 outline-none w-full" />
             </div>
 
-            {/* Category Filter */}
-            <div className="flex items-center border border-gray-300 p-2 rounded-lg">
-              <FaFilter className="text-gray-500" />
-              <select
-                className="ml-2 outline-none w-full"
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
+            {/* Category Filter - Custom Dropdown */}
+            <div ref={categoryDropdownRef} className="relative">
+              <div
+                onClick={() => setCategoryDropdownOpen(!categoryDropdownOpen)}
+                className="flex items-center justify-between border border-gray-300 p-2 rounded-lg cursor-pointer hover:border-green-500 transition-all duration-200"
               >
-                <option value="">All Categories</option>
-                {categories.map((category) => (
-                  <option key={category} value={category}>
-                    {category}
-                  </option>
-                ))}
-              </select>
+                <div className="flex items-center">
+                  <FaFilter className="text-gray-500 mr-2" />
+                  <span className="text-gray-700">{selectedCategory || "All Categories"}</span>
+                </div>
+                <FaChevronDown
+                  className={`text-gray-500 transition-transform duration-200 ${categoryDropdownOpen ? "transform rotate-180" : ""}`}
+                />
+              </div>
+
+              {categoryDropdownOpen && (
+                <div className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto animate-in fade-in zoom-in-95 duration-100">
+                  <div
+                    className="p-2 hover:bg-blue-100 cursor-pointer transition-colors duration-150 text-gray-700"
+                    onClick={() => selectCategory("")}
+                  >
+                    All Categories
+                  </div>
+                  {categories.map((category) => (
+                    <div
+                      key={category}
+                      className="p-2 hover:bg-blue-100 cursor-pointer transition-colors duration-150 text-gray-700"
+                      onClick={() => selectCategory(category)}
+                    >
+                      {category}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
-            {/* Subcategory Filter */}
-            <div className="flex items-center border border-gray-300 p-2 rounded-lg">
-              <FaFilter className="text-gray-500" />
-              <select
-                className="ml-2 outline-none w-full"
-                value={selectedSubcategory}
-                onChange={(e) => setSelectedSubcategory(e.target.value)}
-                disabled={!selectedCategory}
+            {/* Subcategory Filter - Custom Dropdown */}
+            <div ref={subcategoryDropdownRef} className="relative">
+              <div
+                onClick={() => selectedCategory && setSubcategoryDropdownOpen(!subcategoryDropdownOpen)}
+                className={`flex items-center justify-between border border-gray-300 p-2 rounded-lg ${selectedCategory ? "cursor-pointer hover:border-green-500" : "opacity-70 cursor-not-allowed"} transition-all duration-200`}
               >
-                <option value="">All Subcategories</option>
-                {availableSubcategories.map((subcategory) => (
-                  <option key={subcategory} value={subcategory}>
-                    {subcategory}
-                  </option>
-                ))}
-              </select>
+                <div className="flex items-center">
+                  <FaFilter className="text-gray-500 mr-2" />
+                  <span className="text-gray-700">{selectedSubcategory || "All Subcategories"}</span>
+                </div>
+                <FaChevronDown
+                  className={`text-gray-500 transition-transform duration-200 ${subcategoryDropdownOpen ? "transform rotate-180" : ""}`}
+                />
+              </div>
+
+              {subcategoryDropdownOpen && (
+                <div className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto animate-in fade-in zoom-in-95 duration-100">
+                  <div
+                    className="p-2 hover:bg-blue-100 cursor-pointer transition-colors duration-150 text-gray-700"
+                    onClick={() => selectSubcategory("")}
+                  >
+                    All Subcategories
+                  </div>
+                  {availableSubcategories.map((subcategory) => (
+                    <div
+                      key={subcategory}
+                      className="p-2 hover:bg-blue-100 cursor-pointer transition-colors duration-150 text-gray-700"
+                      onClick={() => selectSubcategory(subcategory)}
+                    >
+                      {subcategory}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
-            {/* Breed Filter */}
-            <div className="flex items-center border border-gray-300 p-2 rounded-lg">
-              <FaFilter className="text-gray-500" />
-              <select
-                className="ml-2 outline-none w-full"
-                value={selectedBreed}
-                onChange={(e) => setSelectedBreed(e.target.value)}
-                disabled={!selectedSubcategory}
+            {/* Breed Filter - Custom Dropdown */}
+            <div ref={breedDropdownRef} className="relative">
+              <div
+                onClick={() => selectedSubcategory && setBreedDropdownOpen(!breedDropdownOpen)}
+                className={`flex items-center justify-between border border-gray-300 p-2 rounded-lg ${selectedSubcategory ? "cursor-pointer hover:border-green-500" : "opacity-70 cursor-not-allowed"} transition-all duration-200`}
               >
-                <option value="">All Breeds</option>
-                {availableBreeds.map((breed) => (
-                  <option key={breed} value={breed}>
-                    {breed}
-                  </option>
-                ))}
-              </select>
+                <div className="flex items-center">
+                  <FaFilter className="text-gray-500 mr-2" />
+                  <span className="text-gray-700">{selectedBreed || "All Breeds"}</span>
+                </div>
+                <FaChevronDown
+                  className={`text-gray-500 transition-transform duration-200 ${breedDropdownOpen ? "transform rotate-180" : ""}`}
+                />
+              </div>
+
+              {breedDropdownOpen && (
+                <div className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto animate-in fade-in zoom-in-95 duration-100">
+                  <div
+                    className="p-2 hover:bg-blue-100 cursor-pointer transition-colors duration-150 text-gray-700"
+                    onClick={() => selectBreed("")}
+                  >
+                    All Breeds
+                  </div>
+                  {availableBreeds.map((breed) => (
+                    <div
+                      key={breed}
+                      className="p-2 hover:bg-blue-100 cursor-pointer transition-colors duration-150 text-gray-700"
+                      onClick={() => selectBreed(breed)}
+                    >
+                      {breed}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 
           <div className="mt-4 flex flex-wrap items-center gap-4">
-            <div className="flex items-center border border-gray-300 p-2 rounded-lg">
-              <FaCalendarAlt className="text-gray-500" />
-              <select className="ml-2 outline-none">
-                <option value="all">All Time</option>
-                <option value="today">Today</option>
-                <option value="week">Last 7 Days</option>
-                <option value="month">Last 30 Days</option>
-                <option value="specific">Specific Date</option>
-              </select>
+            {/* Time Filter - Custom Dropdown */}
+            <div ref={timeDropdownRef} className="relative">
+              <div
+                onClick={() => setTimeDropdownOpen(!timeDropdownOpen)}
+                className="flex items-center justify-between border border-gray-300 p-2 rounded-lg cursor-pointer hover:border-green-500 transition-all duration-200 min-w-[150px]"
+              >
+                <div className="flex items-center">
+                  <FaCalendarAlt className="text-gray-500 mr-2" />
+                  <span className="text-gray-700">All Time</span>
+                </div>
+                <FaChevronDown
+                  className={`text-gray-500 transition-transform duration-200 ${timeDropdownOpen ? "transform rotate-180" : ""}`}
+                />
+              </div>
+
+              {timeDropdownOpen && (
+                <div className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto animate-in fade-in zoom-in-95 duration-100">
+                  <div className="p-2 hover:bg-blue-100 cursor-pointer transition-colors duration-150 text-gray-700">
+                    All Time
+                  </div>
+                  <div className="p-2 hover:bg-blue-100 cursor-pointer transition-colors duration-150 text-gray-700">
+                    Today
+                  </div>
+                  <div className="p-2 hover:bg-blue-100 cursor-pointer transition-colors duration-150 text-gray-700">
+                    Last 7 Days
+                  </div>
+                  <div className="p-2 hover:bg-blue-100 cursor-pointer transition-colors duration-150 text-gray-700">
+                    Last 30 Days
+                  </div>
+                  <div className="p-2 hover:bg-blue-100 cursor-pointer transition-colors duration-150 text-gray-700">
+                    Specific Date
+                  </div>
+                </div>
+              )}
             </div>
 
-            <input type="date" className="border p-2 rounded-lg" />
-            <button className="px-4 py-2 bg-blue-500 text-white rounded-lg">Apply Filters</button>
+            <input
+              type="date"
+              className="border p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200"
+            />
+            <button className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all duration-200 shadow-sm hover:shadow-md">
+              Apply Filters
+            </button>
           </div>
         </div>
 
@@ -369,30 +516,39 @@ export default function AnimalsPage() {
                   <td className="p-3 hidden lg:table-cell">{animal.weight}</td>
                   <td className="p-3 hidden lg:table-cell">{animal.gender}</td>
                   <td className="p-3 relative">
-                    <button onClick={() => toggleActionMenu(animal.id)} className="p-2 rounded-full hover:bg-gray-200">
-                      <FaEllipsisV />
+                    <button
+                      onClick={() => toggleActionMenu(animal.id)}
+                      className="p-2 rounded-full hover:bg-gray-200 transition-all duration-300"
+                    >
+                      <FaEllipsisV className="text-lg" />
                     </button>
 
                     {/* Action menu */}
                     {actionMenuOpen === animal.id && (
                       <div
                         ref={actionMenuRef}
-                        className="absolute right-0 top-full mt-1 bg-white shadow-lg rounded-lg border border-gray-200 z-10"
+                        className="absolute right-0 top-0 mt-10 bg-white shadow-xl rounded-lg border border-gray-200 z-10 transform origin-top-right transition-all duration-200 ease-in-out animate-in fade-in"
+                        style={{
+                          maxHeight: "300px",
+                          overflowY: "auto",
+                          width: dropdownWidth,
+                          right: dropdownRight,
+                        }}
                       >
                         <div className="p-1">
-                          <button className="flex items-center gap-2 w-full text-left px-3 py-2 text-sm hover:bg-gray-100 rounded">
-                            <FaEdit className="text-yellow-500" />
+                          <button className="flex items-center gap-2 w-full text-left px-4 py-3 text-base font-medium hover:bg-gray-100 rounded-md transition-all duration-200 hover:scale-105 hover:shadow-sm">
+                            <FaEdit className="text-yellow-500 text-lg" />
                             <span>Edit</span>
                           </button>
-                          <button className="flex items-center gap-2 w-full text-left px-3 py-2 text-sm hover:bg-gray-100 rounded">
-                            <FaTrash className="text-red-500" />
+                          <button className="flex items-center gap-2 w-full text-left px-4 py-3 text-base font-medium hover:bg-gray-100 rounded-md transition-all duration-200 hover:scale-105 hover:shadow-sm">
+                            <FaTrash className="text-red-500 text-lg" />
                             <span>Delete</span>
                           </button>
                           <button
                             onClick={() => openDetailsModal(animal)}
-                            className="flex items-center gap-2 w-full text-left px-3 py-2 text-sm hover:bg-gray-100 rounded"
+                            className="flex items-center gap-2 w-full text-left px-4 py-3 text-base font-medium hover:bg-gray-100 rounded-md transition-all duration-200 hover:scale-105 hover:shadow-sm"
                           >
-                            <FaEye className="text-green-500" />
+                            <FaEye className="text-green-500 text-lg" />
                             <span>View Details</span>
                           </button>
                         </div>
