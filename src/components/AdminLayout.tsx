@@ -1,6 +1,6 @@
-// In AdminLayout.tsx
 "use client"
- 
+
+import type React from "react"
 import {
   FaUserCircle,
   FaPaw,
@@ -8,16 +8,19 @@ import {
   FaThList,
   FaCog,
   FaTachometerAlt,
-  FaChevronDown,
-  FaChevronUp,
+  FaSignOutAlt,
+  FaLayerGroup,
 } from "react-icons/fa"
-import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-    const router = useRouter()
-    const [isCategoryOpen, setCategoryOpen] = useState(false)
+  const router = useRouter()
+
+  const handleSignOut = () => {
+    // You can add any sign-out logic here (clear tokens, etc.)
+    router.push("/admin/adminlogin")
+  }
 
   return (
     <div className="h-screen flex">
@@ -40,46 +43,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <FaUsers /> <span className="max-md:hidden">Users</span>
           </Link>
 
-      {/* Categories Dropdown */}
-<div className="w-full">
-  <div
-    onClick={() => router.push("/admin/categories")}
-    className="flex items-center justify-between cursor-pointer hover:text-gray-300"
-  >
-    <div className="flex items-center gap-2">
-      <FaThList />
-      <span className="max-md:hidden">Categories</span>
-    </div>
-    <button
-      onClick={(e) => {
-        e.stopPropagation() // Prevent route push when arrow is clicked
-        setCategoryOpen((prev) => !prev)
-      }}
-      className="text-sm ml-auto"
-    >
-      {isCategoryOpen ? <FaChevronUp /> : <FaChevronDown />}
-    </button>
-  </div>
+          {/* Categories Link (without dropdown) */}
+          <Link href="/admin/categories" className="flex items-center gap-2 hover:text-gray-300">
+            <FaThList /> <span className="max-md:hidden">Categories</span>
+          </Link>
 
-  {/* Dropdown Submenu */}
-  <div
-    className={`overflow-hidden transition-all duration-300 ease-in-out ${
-      isCategoryOpen ? "max-h-60 opacity-100 mt-2" : "max-h-0 opacity-0"
-    }`}
-  >
-    <div className="ml-6 flex flex-col gap-2 text-sm text-gray-200">
-      <Link href="/admin/categories/dairy" className="hover:text-white">
-        Dairy
-      </Link>
-      <Link href="/admin/categories/meat" className="hover:text-white">
-        Meat
-      </Link>
-      <Link href="/admin/categories/qurbani" className="hover:text-white">
-        Qurbani
-      </Link>
-    </div>
-  </div>
-</div>
+          {/* New Subcategories Link */}
+          <Link href="/admin/subcategories" className="flex items-center gap-2 hover:text-gray-300">
+            <FaLayerGroup /> <span className="max-md:hidden">Subcategories</span>
+          </Link>
 
           <Link href="/admin/breeds" className="flex items-center gap-2 hover:text-gray-300">
             <FaCog /> <span className="max-md:hidden">Breeds</span>
@@ -92,9 +64,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <header className="fixed top-0 left-[250px] max-md:left-[60px] right-0 h-16 bg-white shadow flex items-center justify-between px-6 z-30 border-b">
           <h1 className="text-xl font-semibold text-gray-800">Admin Dashboard</h1>
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 cursor-pointer">
+            <div className="flex items-center gap-2">
               <FaUserCircle className="text-2xl text-gray-500" />
               <span className="text-gray-700 font-medium max-md:hidden">Admin User</span>
+              <button onClick={handleSignOut} className="ml-4 flex items-center gap-1 text-red-500 hover:text-red-700">
+                <FaSignOutAlt />
+                <span className="max-md:hidden">Sign Out</span>
+              </button>
             </div>
           </div>
         </header>

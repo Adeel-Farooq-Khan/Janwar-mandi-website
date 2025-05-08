@@ -21,7 +21,6 @@ import {
   FaCloudUploadAlt,
   FaCheck,
 } from "react-icons/fa"
-import DashboardNavbar from "@/components/Dashboardnavbar"
 import Image from "next/image"
 
 // Mock subscription plans
@@ -215,7 +214,7 @@ const MOCK_ANIMALS = [
     gender: "Male",
     teeth: "4",
     description: "Healthy bull suitable for Qurbani. Well-fed and cared for.",
-    images: ["/api/placeholder/400/300"],
+    images: ["/card1.png"],
     userId: "user123",
     userEmail: "user@example.com",
     userName: "Demo User",
@@ -311,7 +310,7 @@ const AnimalCardComponent = ({ animal, onEdit, onDelete }: AnimalCardProps) => {
 }
 
 export default function Dashboard() {
-  const [showProfileMenu, setShowProfileMenu] = useState(false)
+  // const [] = useState(false)
   const [user, setUser] = useState(MOCK_USER)
   const [loading, setLoading] = useState(true)
   const [showAddAnimalForm, setShowAddAnimalForm] = useState(false)
@@ -396,23 +395,23 @@ export default function Dashboard() {
     }
   }, [selectedFilter, animals])
 
-  const handleSignOut = async () => {
-    try {
-      setLoading(true) // Show loader while signing out
-      // Simulate sign out process
-      setTimeout(() => {
-        alert("Signed out successfully!")
-        setLoading(false)
-      }, 500)
-    } catch (error) {
-      console.error("Error signing out:", error)
-      setLoading(false)
-    }
-  }
+  // const handleSignOut = async () => {
+  //   try {
+  //     setLoading(true) // Show loader while signing out
+  //     // Simulate sign out process
+  //     setTimeout(() => {
+  //       alert("Signed out successfully!")
+  //       setLoading(false)
+  //     }, 500)
+  //   } catch (error) {
+  //     console.error("Error signing out:", error)
+  //     setLoading(false)
+  //   }
+  // }
 
-  const toggleProfileMenu = () => {
-    setShowProfileMenu(!showProfileMenu)
-  }
+  // const toggleProfileMenu = () => {
+  //   setShowProfileMenu(!showProfileMenu)
+  // }
 
   const handleAddAnimalClick = () => {
     // Check if user can add more animals based on subscription
@@ -1300,13 +1299,8 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="bg-gray-50 min-h-screen">
-      <DashboardNavbar
-        user={user}
-        showProfileMenu={showProfileMenu}
-        toggleProfileMenu={toggleProfileMenu}
-        handleSignOut={handleSignOut}
-      />
+    <div className=" min-h-screen">
+    
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Dashboard Header */}
