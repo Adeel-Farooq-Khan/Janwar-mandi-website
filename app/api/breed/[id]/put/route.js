@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { connectToDB } from "../../../../lib/mongodb";
-import Breed from "../../../../models/Breed";
-import { verifyToken } from '../../../../lib/verifyToken';
+import { connectToDB } from "../../../../../lib/mongodb";
+import Breed from "../../../../../models/Breed";
+import { verifyToken } from '../../../../../lib/verifyToken';
 
 export async function PUT(req, { params }) {
   try {

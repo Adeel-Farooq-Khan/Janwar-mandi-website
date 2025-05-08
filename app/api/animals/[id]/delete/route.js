@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { connectToDB } from "../../../../../lib/mongodb";
-import Animal from "../../../../models/Animal";
-import { verifyToken } from '../../../../../lib/verifyToken';
+import Animal from "../../../../../models/Animal";
+import { verifyToken } from "../../../../../lib/verifyToken";
 
 export async function DELETE(req, { params }) {
   try {
