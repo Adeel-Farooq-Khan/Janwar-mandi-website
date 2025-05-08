@@ -1,16 +1,16 @@
-"use client";
+"use client"
 
-import AdminLayout from "@/components/AdminLayout";
-import { FaPlus, FaEdit, FaTrash, FaSave } from "react-icons/fa";
-import Link from "next/link";
-import type React from "react";
-import { useState, useEffect, useMemo } from "react";
+import AdminLayout from "@/components/AdminLayout"
+import { FaPlus, FaEdit, FaTrash, FaSave } from "react-icons/fa"
+import Link from "next/link"
+import type React from "react"
+import { useState, useEffect, useMemo } from "react"
 
 export default function BreedsPage() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [breedName, setBreedName] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedSubcategory, setSelectedSubcategory] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [breedName, setBreedName] = useState("")
+  const [selectedCategory, setSelectedCategory] = useState("")
+  const [selectedSubcategory, setSelectedSubcategory] = useState("")
   const [breeds, setBreeds] = useState([
     { name: "Angus", category: "Dairy", subcategory: "Cow", totalAnimals: 35 },
     {
@@ -61,14 +61,14 @@ export default function BreedsPage() {
       subcategory: "Cow",
       totalAnimals: 28,
     },
-  ]);
+  ])
 
   // Sample data for categories and subcategories
   const categories = [
     { id: "1", name: "Dairy" },
     { id: "2", name: "Meat" },
     { id: "3", name: "Qurbani" },
-  ];
+  ]
 
   const memoizedSubcategories = useMemo(
     () => ({
@@ -88,51 +88,42 @@ export default function BreedsPage() {
         { id: "9", name: "Goat" },
       ],
     }),
-    []
-  );
+    [],
+  )
 
-  const [availableSubcategories, setAvailableSubcategories] = useState<
-    Array<{ id: string; name: string }>
-  >([]);
+  const [availableSubcategories, setAvailableSubcategories] = useState<Array<{ id: string; name: string }>>([])
 
   // Update available subcategories when category changes
   useEffect(() => {
     if (selectedCategory) {
-      setAvailableSubcategories(
-        memoizedSubcategories[
-          selectedCategory as keyof typeof memoizedSubcategories
-        ] || []
-      );
-      setSelectedSubcategory("");
+      setAvailableSubcategories(memoizedSubcategories[selectedCategory as keyof typeof memoizedSubcategories] || [])
+      setSelectedSubcategory("")
     } else {
-      setAvailableSubcategories([]);
-      setSelectedSubcategory("");
+      setAvailableSubcategories([])
+      setSelectedSubcategory("")
     }
-  }, [selectedCategory, memoizedSubcategories]);
+  }, [selectedCategory, memoizedSubcategories])
 
   // Open modal for adding breed
   const openModal = () => {
-    setIsModalOpen(true);
-    setBreedName("");
-    setSelectedCategory("");
-    setSelectedSubcategory("");
-  };
+    setIsModalOpen(true)
+    setBreedName("")
+    setSelectedCategory("")
+    setSelectedSubcategory("")
+  }
 
   // Close breed modal
   const closeModal = () => {
-    setIsModalOpen(false);
-  };
+    setIsModalOpen(false)
+  }
 
   // Handle form submission for adding breed
   const handleAddBreed = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!breedName || !selectedCategory || !selectedSubcategory) return;
+    e.preventDefault()
+    if (!breedName || !selectedCategory || !selectedSubcategory) return
 
-    const categoryName =
-      categories.find((c) => c.id === selectedCategory)?.name || "";
-    const subcategoryName =
-      availableSubcategories.find((s) => s.id === selectedSubcategory)?.name ||
-      "";
+    const categoryName = categories.find((c) => c.id === selectedCategory)?.name || ""
+    const subcategoryName = availableSubcategories.find((s) => s.id === selectedSubcategory)?.name || ""
 
     setBreeds([
       ...breeds,
@@ -142,21 +133,20 @@ export default function BreedsPage() {
         subcategory: subcategoryName,
         totalAnimals: 0,
       },
-    ]);
-    closeModal();
-  };
+    ])
+    closeModal()
+  }
 
   return (
     <AdminLayout>
-      <div className="admin-breeds-page pb-8">
+      {/* Make the breeds page responsive */}
+      <div className="admin-breeds-page p-4 md:p-6 pb-8">
         {/* Page Header */}
-        <div className="admin-page-header flex justify-between items-center mb-6">
-          <h1 className="admin-page-title text-2xl font-semibold">
-            Manage Breeds
-          </h1>
+        <div className="admin-page-header flex flex-col md:flex-row md:justify-between md:items-center mb-6">
+          <h1 className="admin-page-title text-2xl font-semibold mb-4 md:mb-0">Manage Breeds</h1>
           <button
             onClick={openModal}
-            className="admin-add-button bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded flex items-center gap-2"
+            className="admin-add-button bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded flex items-center gap-2 w-full md:w-auto justify-center md:justify-start"
           >
             <FaPlus /> Add Breed
           </button>
@@ -168,27 +158,32 @@ export default function BreedsPage() {
             <thead>
               <tr className="bg-gray-100">
                 <th className="px-4 py-2 text-left">Breed Name</th>
-                <th className="px-4 py-2 text-left">Category</th>
-                <th className="px-4 py-2 text-left">Subcategory</th>
-                <th className="px-4 py-2 text-left">Total Animals</th>
+                <th className="px-4 py-2 text-left hidden md:table-cell">Category</th>
+                <th className="px-4 py-2 text-left hidden md:table-cell">Subcategory</th>
+                <th className="px-4 py-2 text-left hidden sm:table-cell">Total Animals</th>
                 <th className="px-4 py-2 text-left">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
               {breeds.map((breed, index) => (
                 <tr key={index} className="hover:bg-gray-50">
-                  <td className="px-4 py-2">{breed.name}</td>
                   <td className="px-4 py-2">
+                    {breed.name}
+                    <div className="text-xs text-gray-500 md:hidden">
+                      {breed.category} - {breed.subcategory}
+                    </div>
+                  </td>
+                  <td className="px-4 py-2 hidden md:table-cell">
                     <span className="inline-block px-2 py-1 rounded text-xs font-semibold bg-blue-100 text-blue-800">
                       {breed.category}
                     </span>
                   </td>
-                  <td className="px-4 py-2">
+                  <td className="px-4 py-2 hidden md:table-cell">
                     <span className="inline-block px-2 py-1 rounded text-xs font-semibold bg-green-100 text-green-800">
                       {breed.subcategory}
                     </span>
                   </td>
-                  <td className="px-4 py-2">{breed.totalAnimals}</td>
+                  <td className="px-4 py-2 hidden sm:table-cell">{breed.totalAnimals}</td>
                   <td className="px-4 py-2">
                     <div className="admin-actions flex gap-2">
                       <Link
@@ -209,18 +204,13 @@ export default function BreedsPage() {
         </div>
       </div>
 
-      {/* Modal for Adding Breed */}
+      {/* Modal for Adding Breed - Make responsive */}
       {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center z-50">
+        <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg shadow-xl w-full max-w-md mx-auto border border-gray-200">
             <div className="flex justify-between items-center border-b p-4">
-              <h2 className="text-xl font-semibold text-gray-800">
-                Add New Breed
-              </h2>
-              <button
-                className="text-gray-500 hover:text-gray-700 transition-colors"
-                onClick={closeModal}
-              >
+              <h2 className="text-xl font-semibold text-gray-800">Add New Breed</h2>
+              <button className="text-gray-500 hover:text-gray-700 transition-colors" onClick={closeModal}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="20"
@@ -241,10 +231,7 @@ export default function BreedsPage() {
             <form onSubmit={handleAddBreed} className="p-4 space-y-4">
               {/* Step 1: Select Category */}
               <div className="form-group">
-                <label
-                  htmlFor="category"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
+                <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1">
                   Category <span className="text-red-500">*</span>
                 </label>
                 <select
@@ -266,10 +253,7 @@ export default function BreedsPage() {
               {/* Step 2: Select Subcategory (only shown if category is selected) */}
               {selectedCategory && (
                 <div className="form-group">
-                  <label
-                    htmlFor="subcategory"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
+                  <label htmlFor="subcategory" className="block text-sm font-medium text-gray-700 mb-1">
                     Subcategory <span className="text-red-500">*</span>
                   </label>
                   <select
@@ -292,10 +276,7 @@ export default function BreedsPage() {
               {/* Step 3: Enter Breed Name (only shown if subcategory is selected) */}
               {selectedSubcategory && (
                 <div className="form-group">
-                  <label
-                    htmlFor="breedName"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
+                  <label htmlFor="breedName" className="block text-sm font-medium text-gray-700 mb-1">
                     Breed Name <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -322,9 +303,7 @@ export default function BreedsPage() {
                 <button
                   type="submit"
                   className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-md flex items-center gap-2"
-                  disabled={
-                    !breedName || !selectedCategory || !selectedSubcategory
-                  }
+                  disabled={!breedName || !selectedCategory || !selectedSubcategory}
                 >
                   <FaSave /> Save Breed
                 </button>
@@ -334,5 +313,5 @@ export default function BreedsPage() {
         </div>
       )}
     </AdminLayout>
-  );
+  )
 }
