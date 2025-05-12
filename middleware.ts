@@ -21,6 +21,7 @@ const publicPaths = [
   "/admin/subcategories",
   "/admin/users",
   "/admin/adminlogin",
+  "/admin/adminsettings",
 
   /^\/categories\/dairy\/[^/]+$/,
 ];
