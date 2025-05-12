@@ -1,8 +1,8 @@
-"use client";
+"use client"
 
-import type React from "react";
+import type React from "react"
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from "react"
 import {
   FaPlus,
   FaTimes,
@@ -20,9 +20,8 @@ import {
   FaSpinner,
   FaCloudUploadAlt,
   FaCheck,
-} from "react-icons/fa";
-import DashboardNavbar from "@/components/Dashboardnavbar";
-import Image from "next/image";
+} from "react-icons/fa"
+import Image from "next/image"
 
 // Mock subscription plans
 const SUBSCRIPTION_PLANS = [
@@ -42,11 +41,7 @@ const SUBSCRIPTION_PLANS = [
     duration: "1 month",
     listings: 3,
     description: "Upload up to 3 animals per month",
-    features: [
-      "3 listings per month",
-      "30 days visibility",
-      "Priority support",
-    ],
+    features: ["3 listings per month", "30 days visibility", "Priority support"],
   },
   {
     id: "gold",
@@ -64,13 +59,9 @@ const SUBSCRIPTION_PLANS = [
     duration: "1 month",
     listings: 19,
     description: "Upload up to 19 animals per month",
-    features: [
-      "19 listings per month",
-      "Premium placement",
-      "Dedicated support",
-    ],
+    features: ["19 listings per month", "Premium placement", "Dedicated support"],
   },
-];
+]
 
 // Main categories and subcategories
 const CATEGORIES = {
@@ -104,7 +95,7 @@ const CATEGORIES = {
       { value: "bachra-bachri", label: "Bachra/Bachri" },
     ],
   },
-};
+}
 
 // Combined list for filtering
 const FILTER_CATEGORIES = [
@@ -113,16 +104,12 @@ const FILTER_CATEGORIES = [
   { value: "meat", label: "All Meat" },
   { value: "qurbani", label: "All Qurbani" },
   ...Object.keys(CATEGORIES).flatMap((mainCat) =>
-    CATEGORIES[mainCat as keyof typeof CATEGORIES].subcategories.map(
-      (subCat: { value: string; label: string }) => ({
-        value: `${mainCat}-${subCat.value}`,
-        label: `${CATEGORIES[mainCat as keyof typeof CATEGORIES].label} - ${
-          subCat.label
-        }`,
-      })
-    )
+    CATEGORIES[mainCat as keyof typeof CATEGORIES].subcategories.map((subCat: { value: string; label: string }) => ({
+      value: `${mainCat}-${subCat.value}`,
+      label: `${CATEGORIES[mainCat as keyof typeof CATEGORIES].label} - ${subCat.label}`,
+    })),
   ),
-];
+]
 
 // Breeds list
 const COW_BREEDS = [
@@ -144,7 +131,7 @@ const COW_BREEDS = [
   "Red Sindhi",
   "Sahiwal",
   "Tharparker",
-];
+]
 
 // Locations list
 const LOCATIONS = [
@@ -167,7 +154,7 @@ const LOCATIONS = [
   "Jhang, Punjab",
   "Sheikhupura, Punjab",
   "Kasur, Punjab",
-];
+]
 
 // Mock user data
 const MOCK_USER = {
@@ -178,7 +165,7 @@ const MOCK_USER = {
   subscription: "silver", // free, silver, gold, platinum
   listingsUsed: 0,
   subscriptionEndDate: new Date(2025, 5, 1), // Example end date
-};
+}
 
 // Mock animals data
 const MOCK_ANIMALS = [
@@ -202,8 +189,7 @@ const MOCK_ANIMALS = [
     teats: 4,
     pregnancyStatus: "Yes",
     pregnancyDuration: "3 to 6 Months",
-    description:
-      "High quality dairy cow producing 20 liters of milk daily. Vaccinated and healthy.",
+    description: "High quality dairy cow producing 20 liters of milk daily. Vaccinated and healthy.",
     images: ["/3cowsimg.png", "/api/placeholder/400/300"],
     userId: "user123",
     userEmail: "user@example.com",
@@ -228,20 +214,20 @@ const MOCK_ANIMALS = [
     gender: "Male",
     teeth: "4",
     description: "Healthy bull suitable for Qurbani. Well-fed and cared for.",
-    images: ["/api/placeholder/400/300"],
+    images: ["/card1.png"],
     userId: "user123",
     userEmail: "user@example.com",
     userName: "Demo User",
     userContact: "+92 300 1234567",
     createdAt: new Date(2024, 3, 5),
   },
-];
+]
 
 // Define AnimalCardComponent outside of the main component
 interface AnimalCardProps {
-  animal: (typeof MOCK_ANIMALS)[0];
-  onEdit: () => void;
-  onDelete: () => void;
+  animal: (typeof MOCK_ANIMALS)[0]
+  onEdit: () => void
+  onDelete: () => void
 }
 
 const AnimalCardComponent = ({ animal, onEdit, onDelete }: AnimalCardProps) => {
@@ -267,8 +253,8 @@ const AnimalCardComponent = ({ animal, onEdit, onDelete }: AnimalCardProps) => {
               animal.category === "dairy"
                 ? "bg-blue-100 text-blue-800"
                 : animal.category === "meat"
-                ? "bg-red-100 text-red-800"
-                : "bg-yellow-100 text-yellow-800"
+                  ? "bg-red-100 text-red-800"
+                  : "bg-yellow-100 text-yellow-800"
             }`}
           >
             {animal.category}
@@ -281,9 +267,7 @@ const AnimalCardComponent = ({ animal, onEdit, onDelete }: AnimalCardProps) => {
           <h3 className="font-semibold text-gray-900 capitalize">
             {animal.breed} {animal.subcategory}
           </h3>
-          <div className="text-lg font-bold text-green-700">
-            Rs. {animal.price.toLocaleString()}
-          </div>
+          <div className="text-lg font-bold text-green-700">Rs. {animal.price.toLocaleString()}</div>
         </div>
 
         <div className="text-sm text-gray-600 mb-4">
@@ -310,40 +294,32 @@ const AnimalCardComponent = ({ animal, onEdit, onDelete }: AnimalCardProps) => {
         </div>
 
         <div className="flex justify-between items-center pt-2 border-t border-gray-100">
-          <div className="text-xs text-gray-500">
-            Posted {new Date(animal.createdAt).toLocaleDateString()}
-          </div>
+          <div className="text-xs text-gray-500">Posted {new Date(animal.createdAt).toLocaleDateString()}</div>
           <div className="flex space-x-2">
-            <button
-              onClick={onEdit}
-              className="p-1.5 text-blue-600 hover:bg-blue-50 rounded"
-            >
+            <button onClick={onEdit} className="p-1.5 text-blue-600 hover:bg-blue-50 rounded">
               <FaEdit />
             </button>
-            <button
-              onClick={onDelete}
-              className="p-1.5 text-red-600 hover:bg-red-50 rounded"
-            >
+            <button onClick={onDelete} className="p-1.5 text-red-600 hover:bg-red-50 rounded">
               <FaTrashAlt />
             </button>
           </div>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 export default function Dashboard() {
-  const [showProfileMenu, setShowProfileMenu] = useState(false);
-  const [user, setUser] = useState(MOCK_USER);
-  const [loading, setLoading] = useState(true);
-  const [showAddAnimalForm, setShowAddAnimalForm] = useState(false);
-  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
-  const [animals, setAnimals] = useState<typeof MOCK_ANIMALS>([]);
-  const [filteredAnimals, setFilteredAnimals] = useState<typeof MOCK_ANIMALS>(
-    []
-  );
-  const [selectedFilter, setSelectedFilter] = useState("all");
+  // const [] = useState(false)
+  const [user, setUser] = useState(MOCK_USER)
+  const [loading, setLoading] = useState(true)
+  const [showAddAnimalForm, setShowAddAnimalForm] = useState(false)
+  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false)
+  const [animals, setAnimals] = useState<typeof MOCK_ANIMALS>([])
+  const [filteredAnimals, setFilteredAnimals] = useState<typeof MOCK_ANIMALS>([])
+  const [selectedFilter, setSelectedFilter] = useState("all")
+  // Remove this line:
+  // const [showSubscriptionDetailModal, setShowSubscriptionDetailModal] = useState(false)
 
   // Form state
   const [formData, setFormData] = useState({
@@ -374,120 +350,110 @@ export default function Dashboard() {
     // Images
     images: [] as File[],
     imageUrls: [] as string[],
-  });
+  })
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
-  const [isEditing, setIsEditing] = useState(false);
-  const [editingAnimalId, setEditingAnimalId] = useState<string | null>(null);
-  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
-  const [animalToDelete, setAnimalToDelete] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState("")
+  const [success, setSuccess] = useState("")
+  const [isEditing, setIsEditing] = useState(false)
+  const [editingAnimalId, setEditingAnimalId] = useState<string | null>(null)
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
+  const [animalToDelete, setAnimalToDelete] = useState<string | null>(null)
   const [toast, setToast] = useState<{
-    message: string;
-    type: "success" | "error";
-  } | null>(null);
+    message: string
+    type: "success" | "error"
+  } | null>(null)
 
-  const showToast = (
-    message: string,
-    type: "success" | "error" = "success"
-  ) => {
-    setToast({ message, type });
+  const showToast = (message: string, type: "success" | "error" = "success") => {
+    setToast({ message, type })
 
     // Automatically hide the toast after 3 seconds
     setTimeout(() => {
-      setToast(null);
-    }, 3000);
-  };
+      setToast(null)
+    }, 3000)
+  }
 
   useEffect(() => {
     // Simulate loading data
     setTimeout(() => {
-      setAnimals(MOCK_ANIMALS);
-      setLoading(false);
-    }, 1000);
-  }, []);
+      setAnimals(MOCK_ANIMALS)
+      setLoading(false)
+    }, 1000)
+  }, [])
 
   // Filter animals when filter or animals list changes
   useEffect(() => {
     if (selectedFilter === "all") {
-      setFilteredAnimals(animals);
+      setFilteredAnimals(animals)
     } else if (["dairy", "meat", "qurbani"].includes(selectedFilter)) {
       // Filter by main category
-      setFilteredAnimals(
-        animals.filter((animal) => animal.category === selectedFilter)
-      );
+      setFilteredAnimals(animals.filter((animal) => animal.category === selectedFilter))
     } else {
       // Filter by subcategory (format: "maincategory-subcategory")
-      const [mainCat, subCat] = selectedFilter.split("-");
-      setFilteredAnimals(
-        animals.filter(
-          (animal) =>
-            animal.category === mainCat && animal.subcategory === subCat
-        )
-      );
+      const [mainCat, subCat] = selectedFilter.split("-")
+      setFilteredAnimals(animals.filter((animal) => animal.category === mainCat && animal.subcategory === subCat))
     }
-  }, [selectedFilter, animals]);
+  }, [selectedFilter, animals])
 
-  const handleSignOut = async () => {
-    try {
-      setLoading(true); // Show loader while signing out
-      // Simulate sign out process
-      setTimeout(() => {
-        alert("Signed out successfully!");
-        setLoading(false);
-      }, 500);
-    } catch (error) {
-      console.error("Error signing out:", error);
-      setLoading(false);
-    }
-  };
+  // const handleSignOut = async () => {
+  //   try {
+  //     setLoading(true) // Show loader while signing out
+  //     // Simulate sign out process
+  //     setTimeout(() => {
+  //       alert("Signed out successfully!")
+  //       setLoading(false)
+  //     }, 500)
+  //   } catch (error) {
+  //     console.error("Error signing out:", error)
+  //     setLoading(false)
+  //   }
+  // }
 
-  const toggleProfileMenu = () => {
-    setShowProfileMenu(!showProfileMenu);
-  };
+  // const toggleProfileMenu = () => {
+  //   setShowProfileMenu(!showProfileMenu)
+  // }
 
   const handleAddAnimalClick = () => {
     // Check if user can add more animals based on subscription
-    const canAddMore = checkSubscriptionLimits();
+    const canAddMore = checkSubscriptionLimits()
 
     if (canAddMore) {
-      setShowAddAnimalForm(true);
-      resetForm();
+      setShowAddAnimalForm(true)
+      resetForm()
     } else {
-      setShowSubscriptionModal(true);
+      setShowSubscriptionModal(true)
     }
-  };
+  }
 
   const checkSubscriptionLimits = () => {
     // Free users can add 1 listing if they haven't used it yet
     if (user.subscription === "free" && user.listingsUsed >= 1) {
-      return false;
+      return false
     }
 
     // Check limits for other subscription types
-    const plan = SUBSCRIPTION_PLANS.find((p) => p.id === user.subscription);
-    if (!plan) return false;
+    const plan = SUBSCRIPTION_PLANS.find((p) => p.id === user.subscription)
+    if (!plan) return false
 
-    return user.listingsUsed < plan.listings;
-  };
+    return user.listingsUsed < plan.listings
+  }
 
   const toggleAddAnimalForm = () => {
-    setShowAddAnimalForm(!showAddAnimalForm);
+    setShowAddAnimalForm(!showAddAnimalForm)
     if (!showAddAnimalForm) {
       if (!isEditing) {
-        resetForm();
+        resetForm()
       }
     } else {
-      resetForm();
-      setIsEditing(false);
-      setEditingAnimalId(null);
+      resetForm()
+      setIsEditing(false)
+      setEditingAnimalId(null)
     }
-  };
+  }
 
   const closeSubscriptionModal = () => {
-    setShowSubscriptionModal(false);
-  };
+    setShowSubscriptionModal(false)
+  }
 
   const resetForm = () => {
     setFormData({
@@ -514,89 +480,83 @@ export default function Dashboard() {
       contactNumber: "",
       images: [],
       imageUrls: [],
-    });
-    setError("");
-    setSuccess("");
-  };
+    })
+    setError("")
+    setSuccess("")
+  }
 
-  const handleInputChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >
-  ) => {
-    const { name, value } = e.target;
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target
     setFormData({
       ...formData,
       [name]: value,
-    });
-  };
+    })
+  }
 
   const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const category = e.target.value;
+    const category = e.target.value
     setFormData({
       ...formData,
       category: category,
       subcategory: "", // Reset subcategory when category changes
-    });
-  };
+    })
+  }
 
   const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedFilter(e.target.value);
-  };
+    setSelectedFilter(e.target.value)
+  }
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files) return;
+    const files = e.target.files
+    if (!files) return
 
     // Check if adding these files would exceed the 5 image limit
     if (formData.images.length + files.length > 5) {
-      setError("Maximum 5 images allowed");
-      return;
+      setError("Maximum 5 images allowed")
+      return
     }
 
     // Check file sizes
-    const oversizedFiles = Array.from(files).filter(
-      (file) => file.size > 5 * 1024 * 1024
-    );
+    const oversizedFiles = Array.from(files).filter((file) => file.size > 5 * 1024 * 1024)
 
     if (oversizedFiles.length > 0) {
-      setError("Images must be less than 5MB each");
-      return;
+      setError("Images must be less than 5MB each")
+      return
     }
 
     // Add the new files
-    const newImages = [...formData.images, ...Array.from(files)];
+    const newImages = [...formData.images, ...Array.from(files)]
 
     // Generate preview URLs
-    const newImageUrls = [...formData.imageUrls];
+    const newImageUrls = [...formData.imageUrls]
     Array.from(files).forEach((file) => {
-      const url = URL.createObjectURL(file);
-      newImageUrls.push(url);
-    });
+      const url = URL.createObjectURL(file)
+      newImageUrls.push(url)
+    })
 
     setFormData({
       ...formData,
       images: newImages,
       imageUrls: newImageUrls,
-    });
+    })
 
-    setError(""); // Clear any previous errors
-  };
+    setError("") // Clear any previous errors
+  }
 
   const handleRemoveImage = (index: number) => {
-    const newImages = [...formData.images];
-    const newImageUrls = [...formData.imageUrls];
+    const newImages = [...formData.images]
+    const newImageUrls = [...formData.imageUrls]
 
     // Remove the image and its URL
-    newImages.splice(index, 1);
-    newImageUrls.splice(index, 1);
+    newImages.splice(index, 1)
+    newImageUrls.splice(index, 1)
 
     setFormData({
       ...formData,
       images: newImages,
       imageUrls: newImageUrls,
-    });
-  };
+    })
+  }
 
   const handleEditAnimal = (animal: (typeof MOCK_ANIMALS)[0]) => {
     // Convert the animal data to match the form structure
@@ -624,44 +584,44 @@ export default function Dashboard() {
       contactNumber: animal.userContact || "", // Ensure contactNumber is set
       images: [], // Cannot copy files directly
       imageUrls: animal.images || [], // Use existing image URLs
-    });
+    })
 
-    setIsEditing(true);
-    setEditingAnimalId(animal.id);
-    setShowAddAnimalForm(true);
-  };
+    setIsEditing(true)
+    setEditingAnimalId(animal.id)
+    setShowAddAnimalForm(true)
+  }
 
   const handleDeleteAnimal = async () => {
     try {
       if (!animalToDelete) {
-        throw new Error("No animal ID provided for deletion");
+        throw new Error("No animal ID provided for deletion")
       }
 
       // Update the state
-      setAnimals(animals.filter((animal) => animal.id !== animalToDelete));
+      setAnimals(animals.filter((animal) => animal.id !== animalToDelete))
 
       // Close the confirmation modal
-      setShowDeleteConfirmation(false);
-      setAnimalToDelete(null);
+      setShowDeleteConfirmation(false)
+      setAnimalToDelete(null)
 
       // Show success message
-      showToast("Animal listing deleted successfully", "success");
+      showToast("Animal listing deleted successfully", "success")
     } catch (error) {
-      const err = error as Error;
-      console.error("Error deleting animal:", err);
-      showToast(`Failed to delete animal listing: ${err.message}`, "error");
+      const err = error as Error
+      console.error("Error deleting animal:", err)
+      showToast(`Failed to delete animal listing: ${err.message}`, "error")
     }
-  };
+  }
 
   const confirmDeleteAnimal = (animalId: string) => {
-    setAnimalToDelete(animalId);
-    setShowDeleteConfirmation(true);
-  };
+    setAnimalToDelete(animalId)
+    setShowDeleteConfirmation(true)
+  }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setError("");
-    setSuccess("");
+    e.preventDefault()
+    setError("")
+    setSuccess("")
 
     try {
       // Validate form - basic required fields
@@ -674,8 +634,8 @@ export default function Dashboard() {
         !formData.gender || // Make sure gender is required
         !formData.breed
       ) {
-        setError("Please fill in all required fields");
-        return;
+        setError("Please fill in all required fields")
+        return
       }
 
       // Create base animal data with required fields
@@ -701,7 +661,7 @@ export default function Dashboard() {
         userName: user.name,
         userContact: formData.contactNumber || "+92 300 1234567",
         createdAt: new Date(),
-      };
+      }
 
       // Add category-specific fields
       const animalData = {
@@ -712,59 +672,46 @@ export default function Dashboard() {
               lactation: Number(formData.lactation) || 0,
               teats: Number(formData.teats) || 0,
               pregnancyStatus: formData.pregnancyStatus || "No",
-              pregnancyDuration:
-                formData.pregnancyStatus === "Yes"
-                  ? formData.pregnancyDuration || ""
-                  : "",
+              pregnancyDuration: formData.pregnancyStatus === "Yes" ? formData.pregnancyDuration || "" : "",
             }
           : {}),
-        ...(["meat", "qurbani"].includes(formData.category)
-          ? { teeth: formData.teeth || "" }
-          : {}),
-      } as (typeof MOCK_ANIMALS)[0]; // Type assertion since we've validated the data
+        ...(["meat", "qurbani"].includes(formData.category) ? { teeth: formData.teeth || "" } : {}),
+      } as (typeof MOCK_ANIMALS)[0] // Type assertion since we've validated the data
 
       if (isEditing && editingAnimalId) {
         // Update existing animal
-        setAnimals(
-          animals.map((animal) =>
-            animal.id === editingAnimalId ? animalData : animal
-          )
-        );
-        setSuccess("Animal updated successfully!");
+        setAnimals(animals.map((animal) => (animal.id === editingAnimalId ? animalData : animal)))
+        setSuccess("Animal updated successfully!")
       } else {
         // Add new animal
-        setAnimals([...animals, animalData]);
-        setSuccess("Animal added successfully!");
+        setAnimals([...animals, animalData])
+        setSuccess("Animal added successfully!")
 
         // Update user's listings count
         setUser({
           ...user,
           listingsUsed: user.listingsUsed + 1,
-        });
+        })
       }
 
       // Reset form
-      resetForm();
+      resetForm()
 
       // Close form after a delay
       setTimeout(() => {
-        setShowAddAnimalForm(false);
-        setSuccess("");
-        setIsEditing(false);
-        setEditingAnimalId(null);
-      }, 2000);
+        setShowAddAnimalForm(false)
+        setSuccess("")
+        setIsEditing(false)
+        setEditingAnimalId(null)
+      }, 2000)
     } catch (error) {
-      const err = error as Error;
-      console.error("Error saving animal:", err);
-      setError(
-        `Failed to ${isEditing ? "update" : "add"} animal: ${
-          err.message || "Unknown error"
-        }`
-      );
+      const err = error as Error
+      console.error("Error saving animal:", err)
+      setError(`Failed to ${isEditing ? "update" : "add"} animal: ${err.message || "Unknown error"}`)
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false)
     }
-  };
+  }
 
   // const selectSubscriptionPlan = (planId: string) => {
   //   // In a real app, this would redirect to payment
@@ -782,20 +729,18 @@ export default function Dashboard() {
 
   const handleSubscriptionChange = (planId: string) => {
     // In a real app, this would redirect to payment
-    if (
-      window.confirm(`You selected the ${planId} plan. Proceed to payment?`)
-    ) {
+    if (window.confirm(`You selected the ${planId} plan. Proceed to payment?`)) {
       // For demo purposes, we'll just update the user's subscription
       setUser({
         ...user,
         subscription: planId,
         listingsUsed: 0,
-      });
+      })
 
-      closeSubscriptionModal();
-      showToast(`Successfully upgraded to ${planId} plan`, "success");
+      closeSubscriptionModal()
+      showToast(`Successfully upgraded to ${planId} plan`, "success")
     }
-  };
+  }
 
   // Simple loader component
   if (loading) {
@@ -808,21 +753,19 @@ export default function Dashboard() {
           Loading<span className="animate-pulse">...</span>
         </div>
       </div>
-    );
+    )
   }
 
   // Dynamic field rendering based on category and subcategory
   const renderDynamicFields = () => {
-    const { category, subcategory } = formData;
+    const { category, subcategory } = formData
 
     if (category === "dairy") {
       if (subcategory === "calf") {
         return (
           <>
             <div className="flex-1 min-w-[200px]">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Breed*
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Breed*</label>
               <select
                 name="breed"
                 value={formData.breed}
@@ -840,9 +783,7 @@ export default function Dashboard() {
             </div>
 
             <div className="flex-1 min-w-[200px]">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Age (Months)*
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Age (Months)*</label>
               <input
                 type="number"
                 name="age"
@@ -855,9 +796,7 @@ export default function Dashboard() {
             </div>
 
             <div className="flex-1 min-w-[200px]">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Weight (KG)
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Weight (KG)</label>
               <input
                 type="number"
                 name="weight"
@@ -869,9 +808,7 @@ export default function Dashboard() {
             </div>
 
             <div className="flex-1 min-w-[200px]">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Gender*
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Gender*</label>
               <select
                 name="gender"
                 value={formData.gender}
@@ -885,14 +822,12 @@ export default function Dashboard() {
               </select>
             </div>
           </>
-        );
+        )
       } else if (subcategory === "heifer") {
         return (
           <>
             <div className="flex-1 min-w-[200px]">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Breed*
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Breed*</label>
               <select
                 name="breed"
                 value={formData.breed}
@@ -910,9 +845,7 @@ export default function Dashboard() {
             </div>
 
             <div className="flex-1 min-w-[200px]">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Age (Months)*
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Age (Months)*</label>
               <input
                 type="number"
                 name="age"
@@ -925,9 +858,7 @@ export default function Dashboard() {
             </div>
 
             <div className="flex-1 min-w-[200px]">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Teeth
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Teeth</label>
               <select
                 name="teeth"
                 value={formData.teeth}
@@ -943,9 +874,7 @@ export default function Dashboard() {
             </div>
 
             <div className="flex-1 min-w-[200px]">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Weight (KG)
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Weight (KG)</label>
               <input
                 type="number"
                 name="weight"
@@ -957,9 +886,7 @@ export default function Dashboard() {
             </div>
 
             <div className="flex-1 min-w-[200px]">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Pregnancy Status*
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Pregnancy Status*</label>
               <select
                 name="pregnancyStatus"
                 value={formData.pregnancyStatus}
@@ -974,9 +901,7 @@ export default function Dashboard() {
 
             {formData.pregnancyStatus === "Yes" && (
               <div className="flex-1 min-w-[200px]">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Pregnancy Duration*
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Pregnancy Duration*</label>
                 <select
                   name="pregnancyDuration"
                   value={formData.pregnancyDuration}
@@ -992,14 +917,12 @@ export default function Dashboard() {
               </div>
             )}
           </>
-        );
+        )
       } else if (subcategory === "cow") {
         return (
           <>
             <div className="flex-1 min-w-[200px]">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Breed*
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Breed*</label>
               <select
                 name="breed"
                 value={formData.breed}
@@ -1017,9 +940,7 @@ export default function Dashboard() {
             </div>
 
             <div className="flex-1 min-w-[200px]">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Age (Years)
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Age (Years)</label>
               <input
                 type="text"
                 name="age"
@@ -1031,9 +952,7 @@ export default function Dashboard() {
             </div>
 
             <div className="flex-1 min-w-[200px]">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Weight (KG)
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Weight (KG)</label>
               <input
                 type="number"
                 name="weight"
@@ -1045,9 +964,7 @@ export default function Dashboard() {
             </div>
 
             <div className="flex-1 min-w-[200px]">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Daily Milk Quantity (Liters)*
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Daily Milk Quantity (Liters)*</label>
               <input
                 type="number"
                 name="milkQuantity"
@@ -1062,9 +979,7 @@ export default function Dashboard() {
             </div>
 
             <div className="flex-1 min-w-[200px]">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Lactation*
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Lactation*</label>
               <select
                 name="lactation"
                 value={formData.lactation}
@@ -1082,9 +997,7 @@ export default function Dashboard() {
             </div>
 
             <div className="flex-1 min-w-[200px]">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Teats*
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Teats*</label>
               <select
                 name="teats"
                 value={formData.teats}
@@ -1101,9 +1014,7 @@ export default function Dashboard() {
             </div>
 
             <div className="flex-1 min-w-[200px]">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Pregnancy Status*
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Pregnancy Status*</label>
               <select
                 name="pregnancyStatus"
                 value={formData.pregnancyStatus}
@@ -1118,9 +1029,7 @@ export default function Dashboard() {
 
             {formData.pregnancyStatus === "Yes" && (
               <div className="flex-1 min-w-[200px]">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Pregnancy Duration*
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Pregnancy Duration*</label>
                 <select
                   name="pregnancyDuration"
                   value={formData.pregnancyDuration}
@@ -1136,14 +1045,12 @@ export default function Dashboard() {
               </div>
             )}
           </>
-        );
+        )
       } else if (subcategory === "bull") {
         return (
           <>
             <div className="flex-1 min-w-[200px]">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Breed*
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Breed*</label>
               <select
                 name="breed"
                 value={formData.breed}
@@ -1161,9 +1068,7 @@ export default function Dashboard() {
             </div>
 
             <div className="flex-1 min-w-[200px]">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Age (Months)*
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Age (Months)*</label>
               <input
                 type="number"
                 name="age"
@@ -1176,9 +1081,7 @@ export default function Dashboard() {
             </div>
 
             <div className="flex-1 min-w-[200px]">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Weight (KG)*
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Weight (KG)*</label>
               <input
                 type="number"
                 name="weight"
@@ -1191,9 +1094,7 @@ export default function Dashboard() {
             </div>
 
             <div className="flex-1 min-w-[200px]">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Teeth*
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Teeth*</label>
               <select
                 name="teeth"
                 value={formData.teeth}
@@ -1210,15 +1111,13 @@ export default function Dashboard() {
               </select>
             </div>
           </>
-        );
+        )
       }
     } else if (category === "meat") {
       return (
         <>
           <div className="flex-1 min-w-[200px]">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Breed*
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Breed*</label>
             <select
               name="breed"
               value={formData.breed}
@@ -1244,9 +1143,7 @@ export default function Dashboard() {
           </div>
 
           <div className="flex-1 min-w-[200px]">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Gender*
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Gender*</label>
             <select
               name="gender"
               value={formData.gender}
@@ -1261,9 +1158,7 @@ export default function Dashboard() {
           </div>
 
           <div className="flex-1 min-w-[200px]">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Weight (KG)*
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Weight (KG)*</label>
             <input
               type="number"
               name="weight"
@@ -1276,9 +1171,7 @@ export default function Dashboard() {
           </div>
 
           <div className="flex-1 min-w-[200px]">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Age*
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Age*</label>
             <input
               type="text"
               name="age"
@@ -1291,9 +1184,7 @@ export default function Dashboard() {
           </div>
 
           <div className="flex-1 min-w-[200px]">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Teeth*
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Teeth*</label>
             <select
               name="teeth"
               value={formData.teeth}
@@ -1310,14 +1201,12 @@ export default function Dashboard() {
             </select>
           </div>
         </>
-      );
+      )
     } else if (category === "qurbani") {
       return (
         <>
           <div className="flex-1 min-w-[200px]">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Breed*
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Breed*</label>
             <select
               name="breed"
               value={formData.breed}
@@ -1346,9 +1235,7 @@ export default function Dashboard() {
           </div>
 
           <div className="flex-1 min-w-[200px]">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Gender*
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Gender*</label>
             <select
               name="gender"
               value={formData.gender}
@@ -1363,9 +1250,7 @@ export default function Dashboard() {
           </div>
 
           <div className="flex-1 min-w-[200px]">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Weight (KG)*
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Weight (KG)*</label>
             <input
               type="number"
               name="weight"
@@ -1378,9 +1263,7 @@ export default function Dashboard() {
           </div>
 
           <div className="flex-1 min-w-[200px]">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Age
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Age</label>
             <input
               type="text"
               name="age"
@@ -1392,9 +1275,7 @@ export default function Dashboard() {
           </div>
 
           <div className="flex-1 min-w-[200px]">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Teeth*
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Teeth*</label>
             <select
               name="teeth"
               value={formData.teeth}
@@ -1411,20 +1292,15 @@ export default function Dashboard() {
             </select>
           </div>
         </>
-      );
+      )
     }
 
-    return null;
-  };
+    return null
+  }
 
   return (
-    <div className="bg-gray-50 min-h-screen">
-      <DashboardNavbar
-        user={user}
-        showProfileMenu={showProfileMenu}
-        toggleProfileMenu={toggleProfileMenu}
-        handleSignOut={handleSignOut}
-      />
+    <div className=" min-h-screen">
+    
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Dashboard Header */}
@@ -1450,28 +1326,21 @@ export default function Dashboard() {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
             <div>
               <h2 className="text-lg font-medium text-gray-900">
-                Subscription:{" "}
-                <span className="capitalize">{user.subscription}</span> Plan
+                Subscription: <span className="capitalize">{user.subscription}</span> Plan
               </h2>
               <p className="text-sm text-gray-600">
                 Animals posted: {user.listingsUsed} /
-                {SUBSCRIPTION_PLANS.find(
-                  (plan) => plan.id === user.subscription
-                )?.listings || 0}
+                {SUBSCRIPTION_PLANS.find((plan) => plan.id === user.subscription)?.listings || 0}
               </p>
               {user.subscription !== "free" && (
-                <p className="text-xs text-gray-500 mt-1">
-                  Renews on {user.subscriptionEndDate.toLocaleDateString()}
-                </p>
+                <p className="text-xs text-gray-500 mt-1">Renews on {user.subscriptionEndDate.toLocaleDateString()}</p>
               )}
             </div>
             <button
               onClick={() => setShowSubscriptionModal(true)}
               className="mt-3 md:mt-0 text-sm px-3 py-1.5 border border-green-700 text-green-700 rounded hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-700"
             >
-              {user.subscription === "free"
-                ? "Upgrade Plan"
-                : "Manage Subscription"}
+              {user.subscription === "free" ? "Upgrade Plan" : "Manage Subscription"}
             </button>
           </div>
         </div>
@@ -1501,9 +1370,7 @@ export default function Dashboard() {
           <div className="bg-white shadow-sm rounded-lg p-8 text-center">
             <div className="flex flex-col items-center justify-center">
               <FaImages className="text-gray-300 text-5xl mb-4" />
-              <h3 className="text-lg font-medium text-gray-700 mb-2">
-                No animals found
-              </h3>
+              <h3 className="text-lg font-medium text-gray-700 mb-2">No animals found</h3>
               <p className="text-gray-500 mb-4">
                 {selectedFilter !== "all"
                   ? "Try changing your filter or add an animal in this category."
@@ -1540,24 +1407,17 @@ export default function Dashboard() {
               <h2 className="text-xl font-semibold text-gray-800">
                 {isEditing ? "Edit Animal Listing" : "Add New Animal"}
               </h2>
-              <button
-                onClick={toggleAddAnimalForm}
-                className="text-gray-500 hover:text-gray-700"
-              >
+              <button onClick={toggleAddAnimalForm} className="text-gray-500 hover:text-gray-700">
                 <FaTimes />
               </button>
             </div>
 
             <form onSubmit={handleSubmit} className="p-6">
               <div className="mb-6">
-                <h3 className="text-lg font-medium text-gray-800 mb-4">
-                  Basic Information
-                </h3>
+                <h3 className="text-lg font-medium text-gray-800 mb-4">Basic Information</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   <div className="flex-1 min-w-[200px]">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Category*
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Category*</label>
                     <select
                       name="category"
                       value={formData.category}
@@ -1574,9 +1434,7 @@ export default function Dashboard() {
 
                   {formData.category && (
                     <div className="flex-1 min-w-[200px]">
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Subcategory*
-                      </label>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Subcategory*</label>
                       <select
                         name="subcategory"
                         value={formData.subcategory}
@@ -1614,9 +1472,7 @@ export default function Dashboard() {
                   )}
 
                   <div className="flex-1 min-w-[200px]">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Price (Rs.)*
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Price (Rs.)*</label>
                     <input
                       type="number"
                       name="price"
@@ -1632,24 +1488,16 @@ export default function Dashboard() {
 
               {formData.category && formData.subcategory && (
                 <div className="mb-6">
-                  <h3 className="text-lg font-medium text-gray-800 mb-4">
-                    Animal Details
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {renderDynamicFields()}
-                  </div>
+                  <h3 className="text-lg font-medium text-gray-800 mb-4">Animal Details</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">{renderDynamicFields()}</div>
                 </div>
               )}
 
               <div className="mb-6">
-                <h3 className="text-lg font-medium text-gray-800 mb-4">
-                  Additional Information
-                </h3>
+                <h3 className="text-lg font-medium text-gray-800 mb-4">Additional Information</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="col-span-1 md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Description
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
                     <textarea
                       name="description"
                       value={formData.description}
@@ -1661,9 +1509,7 @@ export default function Dashboard() {
                   </div>
 
                   <div className="flex-1">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Location*
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Location*</label>
                     <select
                       name="location"
                       value={formData.location}
@@ -1681,9 +1527,7 @@ export default function Dashboard() {
                   </div>
 
                   <div className="flex-1">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Contact Number*
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Contact Number*</label>
                     <input
                       type="tel"
                       name="contactNumber"
@@ -1694,17 +1538,13 @@ export default function Dashboard() {
                       required
                       className="w-full p-3 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-green-700 focus:ring-2 focus:ring-green-700/10"
                     />
-                    <p className="text-xs text-gray-500 mt-1">
-                      Format: 03XXXXXXXXX
-                    </p>
+                    <p className="text-xs text-gray-500 mt-1">Format: 03XXXXXXXXX</p>
                   </div>
                 </div>
               </div>
 
               <div className="mb-6">
-                <h3 className="text-lg font-medium text-gray-800 mb-4">
-                  Images
-                </h3>
+                <h3 className="text-lg font-medium text-gray-800 mb-4">Images</h3>
                 <div className="grid grid-cols-1 gap-4">
                   <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
                     <input
@@ -1716,17 +1556,10 @@ export default function Dashboard() {
                       onChange={handleImageUpload}
                       className="hidden"
                     />
-                    <label
-                      htmlFor="images"
-                      className="cursor-pointer flex flex-col items-center justify-center"
-                    >
+                    <label htmlFor="images" className="cursor-pointer flex flex-col items-center justify-center">
                       <FaCloudUploadAlt className="text-4xl text-gray-400 mb-2" />
-                      <span className="text-gray-600 font-medium">
-                        Drop files here or click to upload
-                      </span>
-                      <span className="text-xs text-gray-500 mt-1">
-                        (Up to 5 images, max 5MB each)
-                      </span>
+                      <span className="text-gray-600 font-medium">Drop files here or click to upload</span>
+                      <span className="text-xs text-gray-500 mt-1">(Up to 5 images, max 5MB each)</span>
                     </label>
                   </div>
 
@@ -1799,48 +1632,70 @@ export default function Dashboard() {
 
       {/* Subscription Modal */}
       {showSubscriptionModal && (
-        <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-3xl">
+        <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4 overflow-y-auto">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
             <div className="border-b px-6 py-4 flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-gray-800">
-                Subscription Plans
-              </h2>
-              <button
-                onClick={() => setShowSubscriptionModal(false)}
-                className="text-gray-500 hover:text-gray-700"
-              >
+              <h2 className="text-xl font-semibold text-gray-800">Subscription Plans</h2>
+              <button onClick={() => setShowSubscriptionModal(false)} className="text-gray-500 hover:text-gray-700">
                 <FaTimes />
               </button>
             </div>
 
             <div className="p-6">
-              <div className="grid md:grid-cols-3 gap-6">
+              {/* Current Subscription Info */}
+              {user.subscription !== "free" && (
+                <div className="mb-6 p-4 border border-green-200 bg-green-50 rounded-lg">
+                  <h3 className="text-lg font-medium text-gray-800 mb-2">Current Subscription</h3>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-sm text-gray-600">
+                        <span className="font-medium">Plan:</span>{" "}
+                        <span className="capitalize">{user.subscription}</span>
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        <span className="font-medium">Listings:</span> {user.listingsUsed} /{" "}
+                        {SUBSCRIPTION_PLANS.find((plan) => plan.id === user.subscription)?.listings || 0}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        <span className="font-medium">Expires:</span> {user.subscriptionEndDate.toLocaleDateString()}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-600 mb-2">
+                        <span className="font-medium">Features:</span>
+                      </p>
+                      <ul className="text-sm text-gray-600 list-disc pl-5">
+                        {SUBSCRIPTION_PLANS.find((plan) => plan.id === user.subscription)?.features.map(
+                          (feature, index) => (
+                            <li key={index}>{feature}</li>
+                          ),
+                        )}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Available Plans */}
+              <h3 className="text-lg font-medium text-gray-800 mb-4">Available Plans</h3>
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {SUBSCRIPTION_PLANS.map((plan) => (
                   <div
                     key={plan.id}
                     className={`border rounded-lg p-4 flex flex-col ${
-                      user.subscription === plan.id
-                        ? "border-green-500 bg-green-50"
-                        : "border-gray-200"
+                      user.subscription === plan.id ? "border-green-500 bg-green-50" : "border-gray-200"
                     }`}
                   >
-                    <div className="text-xl font-bold mb-2 capitalize">
-                      {plan.id}
-                    </div>
-                    <div className="text-3xl font-semibold mb-4">
+                    <div className="text-xl font-bold mb-2 capitalize">{plan.name}</div>
+                    <div className="text-2xl font-semibold mb-2">
                       {plan.price > 0 ? `Rs. ${plan.price}` : "Free"}
-                      {plan.price > 0 && (
-                        <span className="text-sm font-normal">/month</span>
-                      )}
+                      {plan.price > 0 && <span className="text-sm font-normal">/{plan.duration}</span>}
                     </div>
-                    <ul className="text-sm text-gray-700 mb-6 flex-grow">
-                      <li className="mb-2 flex items-start">
-                        <FaCheck className="text-green-600 mr-2 mt-1 flex-shrink-0" />
-                        <span>{plan.listings} animal listings</span>
-                      </li>
+                    <p className="text-sm text-gray-600 mb-3">{plan.description}</p>
+                    <ul className="text-sm text-gray-700 mb-4 flex-grow">
                       {plan.features.map((feature, index) => (
-                        <li key={index} className="mb-2 flex items-start">
-                          <FaCheck className="text-green-600 mr-2 mt-1 flex-shrink-0" />
+                        <li key={index} className="mb-1 flex items-start">
+                          <FaCheck className="text-green-600 mr-2 mt-1 flex-shrink-0 text-xs" />
                           <span>{feature}</span>
                         </li>
                       ))}
@@ -1854,14 +1709,39 @@ export default function Dashboard() {
                           : "bg-green-700 text-white hover:bg-green-800"
                       }`}
                     >
-                      {user.subscription === plan.id
-                        ? "Current Plan"
-                        : plan.price > 0
-                        ? "Upgrade"
-                        : "Downgrade"}
+                      {user.subscription === plan.id ? "Current Plan" : "Subscribe"}
                     </button>
                   </div>
                 ))}
+              </div>
+
+              {/* Payment Instructions */}
+              <div className="mt-8 border-t pt-6">
+                <h3 className="text-lg font-medium text-gray-800 mb-4">Payment Instructions</h3>
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <div className="flex flex-col md:flex-row md:items-center gap-4">
+                    <div className="flex-grow">
+                      <p className="text-gray-800 font-medium mb-2">
+                        Follow these steps to complete your subscription:
+                      </p>
+                      <ol className="list-decimal pl-5 text-gray-700 text-sm space-y-1">
+                        <li>Select your desired subscription plan above</li>
+                        <li>Send the exact amount to our JazzCash account</li>
+                        <li>
+                          Include your user ID <span className="font-mono bg-gray-100 px-1">{user.id}</span> in the
+                          payment reference
+                        </li>
+                        <li>Our admin will verify and activate your subscription within 24 hours</li>
+                      </ol>
+                    </div>
+                    <div className="bg-white p-4 rounded-lg border border-gray-200 text-center min-w-[200px]">
+                      <p className="text-sm text-gray-500 mb-1">Send payment to:</p>
+                      <p className="text-xl font-bold text-green-700 mb-1">JazzCash</p>
+                      <p className="text-lg font-medium">0300-1234567</p>
+                      <p className="text-xs text-gray-500 mt-2">Account Name: Animal Marketplace</p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -1876,12 +1756,9 @@ export default function Dashboard() {
               <div className="flex items-center justify-center text-red-600 mb-4">
                 <FaExclamationTriangle className="text-4xl" />
               </div>
-              <h3 className="text-xl font-medium text-gray-900 text-center mb-2">
-                Delete Animal Listing
-              </h3>
+              <h3 className="text-xl font-medium text-gray-900 text-center mb-2">Delete Animal Listing</h3>
               <p className="text-gray-600 text-center mb-6">
-                Are you sure you want to delete this listing? This action cannot
-                be undone.
+                Are you sure you want to delete this listing? This action cannot be undone.
               </p>
               <div className="flex justify-center space-x-4">
                 <button
@@ -1911,14 +1788,10 @@ export default function Dashboard() {
             toast.type === "success" ? "bg-green-600" : "bg-red-600"
           } text-white flex items-center`}
         >
-          {toast.type === "success" ? (
-            <FaCheckCircle className="mr-2" />
-          ) : (
-            <FaExclamationCircle className="mr-2" />
-          )}
+          {toast.type === "success" ? <FaCheckCircle className="mr-2" /> : <FaExclamationCircle className="mr-2" />}
           {toast.message}
         </div>
       )}
     </div>
-  );
+  )
 }

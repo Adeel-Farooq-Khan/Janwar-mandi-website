@@ -1,26 +1,14 @@
-"use client";
+"use client"
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import {
-  FaGoogle,
-  FaFacebook,
-  FaEnvelope,
-  FaLock,
-  FaEye,
-  FaEyeSlash,
-  FaUser,
-} from "react-icons/fa";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
-import { initializeApp } from "firebase/app";
-import {
-  getAuth,
-  signInWithPopup,
-  GoogleAuthProvider,
-  FacebookAuthProvider,
-  onAuthStateChanged,
-} from "firebase/auth";
+import type React from "react"
+
+import { useState } from "react"
+import Link from "next/link"
+import { FaGoogle, FaFacebook, FaEnvelope, FaLock, FaEye, FaEyeSlash, FaUser } from "react-icons/fa"
+import { useRouter } from "next/navigation"
+import Image from "next/image"
+import { initializeApp } from "firebase/app"
+import { getAuth, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider } from "firebase/auth"
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -29,46 +17,45 @@ const firebaseConfig = {
   storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-};
+}
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const googleProvider = new GoogleAuthProvider();
-const facebookProvider = new FacebookAuthProvider();
+const app = initializeApp(firebaseConfig)
+const auth = getAuth(app)
+const googleProvider = new GoogleAuthProvider()
+const facebookProvider = new FacebookAuthProvider()
+
+// Function to set cookies
+const setCookie = (name: string, value: string, days: number) => {
+  const expires = new Date()
+  expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000)
+  document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`
+}
 
 export default function Signup() {
-  const router = useRouter();
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+  const router = useRouter()
+  const [fullName, setFullName] = useState("")
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState("")
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        // User is signed in, redirect to dashboard
-        router.push("/dashboard");
-      }
-    });
-
-    return () => unsubscribe();
-  }, [router]);
+  // Removed the useEffect that was causing automatic redirect
 
   const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+    e.preventDefault()
 
     if (password !== confirmPassword) {
-      alert("Passwords do not match");
-      return;
+      setError("Passwords do not match")
+      return
     }
 
     try {
-      setIsLoading(true);
+      setIsLoading(true)
+      setError("")
 
       const res = await fetch("/api/auth/register", {
         method: "POST",
@@ -81,115 +68,194 @@ export default function Signup() {
           password,
           confirmPassword,
         }),
-      });
+      })
 
-      const data = await res.json();
+      const data = await res.json()
 
       if (!res.ok) {
-        throw new Error(data.error || "Something went wrong");
+        throw new Error(data.error || "Something went wrong")
       }
 
-      alert("Account created successfully!");
-      router.push("/dashboard");
+      // Get the token from the response
+      if (data.token) {
+        // Set token in cookie for middleware
+        setCookie("token", data.token, 7)
+
+        // Store token in localStorage
+        localStorage.setItem("token", data.token)
+
+        // Store user data if available
+        if (data.user) {
+          localStorage.setItem("user", JSON.stringify(data.user))
+        }
+      }
+
+      // Show success message
+      alert("Account created successfully!")
+
+      // Redirect to dashboard
+      router.push("/dashboard")
     } catch (error) {
       if (error instanceof Error) {
-        setError(error.message);
+        setError(error.message)
       } else {
-        setError("An unknown error occurred");
+        setError("An unknown error occurred")
       }
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   const toggleConfirmPasswordVisibility = () => {
-    setShowConfirmPassword((prev) => !prev);
-  };
+    setShowConfirmPassword((prev) => !prev)
+  }
 
   const handleGoogleSignup = async () => {
-    setError("");
-    setIsLoading(true);
-  
+    setError("")
+    setIsLoading(true)
+
     try {
-      const result = await signInWithPopup(auth, googleProvider);
-      const user = result.user;
-      console.log("Google sign in successful", user);
-      router.push("/dashboard");
+      const result = await signInWithPopup(auth, googleProvider)
+      const user = result.user
+
+      // Get Firebase ID token
+      const firebaseToken = await user.getIdToken()
+
+      // Exchange Firebase token for your JWT token
+      const response = await fetch("/api/auth/social-login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          provider: "google",
+          token: firebaseToken,
+          uid: user.uid,
+          email: user.email,
+          displayName: user.displayName,
+          photoURL: user.photoURL,
+        }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || "Failed to authenticate with Google")
+      }
+
+      const data = await response.json()
+
+      // Set token in cookie for middleware
+      setCookie("token", data.token, 7)
+
+      // Store token in localStorage
+      localStorage.setItem("token", data.token)
+
+      // Store user data
+      if (data.user) {
+        localStorage.setItem("user", JSON.stringify(data.user))
+      }
+
+      // Redirect to dashboard
+      router.push("/dashboard")
     } catch (error: unknown) {
-      console.error("Google sign in error", error);
+      console.error("Google sign in error", error)
       if (error instanceof Error) {
-        setError(error.message || "Failed to sign in with Google");
+        setError(error.message || "Failed to sign in with Google")
       } else {
-        setError("Failed to sign in with Google");
+        setError("Failed to sign in with Google")
       }
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   const handleFacebookSignup = async () => {
-    setError("");
-    setIsLoading(true);
-  
+    setError("")
+    setIsLoading(true)
+
     try {
-      const result = await signInWithPopup(auth, facebookProvider);
-      const user = result.user;
-      console.log("Facebook sign in successful", user);
-      router.push("/dashboard");
+      const result = await signInWithPopup(auth, facebookProvider)
+      const user = result.user
+
+      // Get Firebase ID token
+      const firebaseToken = await user.getIdToken()
+
+      // Exchange Firebase token for your JWT token
+      const response = await fetch("/api/auth/social-login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          provider: "facebook",
+          token: firebaseToken,
+          uid: user.uid,
+          email: user.email,
+          displayName: user.displayName,
+          photoURL: user.photoURL,
+        }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || "Failed to authenticate with Facebook")
+      }
+
+      const data = await response.json()
+
+      // Set token in cookie for middleware
+      setCookie("token", data.token, 7)
+
+      // Store token in localStorage
+      localStorage.setItem("token", data.token)
+
+      // Store user data
+      if (data.user) {
+        localStorage.setItem("user", JSON.stringify(data.user))
+      }
+
+      // Redirect to dashboard
+      router.push("/dashboard")
     } catch (error: unknown) {
-      console.error("Facebook sign in error", error);
+      console.error("Facebook sign in error", error)
       if (error instanceof Error) {
-        setError(error.message || "Failed to sign in with Facebook");
+        setError(error.message || "Failed to sign in with Facebook")
       } else {
-        setError("Failed to sign in with Facebook");
+        setError("Failed to sign in with Facebook")
       }
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
+    setShowPassword(!showPassword)
+  }
 
   return (
-    <div className="flex flex-col lg:flex-row w-full h-full min-h-screen">
-      {/* Left side - Image */}
+    <div className="flex h-screen w-full">
+      {/* Left side - Image (50% width) */}
       <div className="relative w-full lg:w-1/2 h-64 lg:h-full">
-        <Image
-          src="/signup-image.jpg"
-          alt="Sign up"
-          className="w-full h-full object-cover"
-          width={80}
-          height={80}
-        />
+        <Image src="/signup-image.jpg" alt="Sign up" fill className="object-cover" priority />
         <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black/50 flex items-center justify-center p-8">
-          <div className="text-white text-center max-w-4/5">
+          <div className="text-white text-center">
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 lg:mb-4 drop-shadow-md">
               Join Our Community
             </h1>
-            <p className="text-base sm:text-lg lg:text-xl opacity-90 drop-shadow">
-              Create an account to get started
-            </p>
+            <p className="text-base sm:text-lg lg:text-xl opacity-90 drop-shadow">Create an account to get started</p>
           </div>
         </div>
       </div>
 
-      {/* Right side - Form */}
+      {/* Right side - Form (50% width) */}
       <div className="w-full lg:w-1/2 flex items-center justify-center bg-white p-6 lg:p-8 overflow-y-auto">
         <div className="w-full max-w-md p-2 sm:p-4">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">
-              Create Account
-            </h1>
+            <h1 className="text-3xl font-bold text-gray-800 mb-2">Create Account</h1>
             <p className="text-gray-600">Sign up to get started</p>
           </div>
 
-          {error && (
-            <div className="bg-red-100 text-red-500 p-3 rounded-lg mb-6 text-sm">
-              {error}
-            </div>
-          )}
+          {error && <div className="bg-red-100 text-red-500 p-3 rounded-lg mb-6 text-sm">{error}</div>}
 
           {/* Social login buttons */}
           <div className="flex flex-col gap-4 mb-6">
@@ -302,17 +368,11 @@ export default function Signup() {
                 <input type="checkbox" required className="mt-1" />
                 <span>
                   I agree to the{" "}
-                  <Link
-                    href="/terms"
-                    className="text-blue-500 font-medium hover:underline"
-                  >
+                  <Link href="/terms" className="text-blue-500 font-medium hover:underline">
                     Terms of Service
                   </Link>{" "}
                   and{" "}
-                  <Link
-                    href="/privacy"
-                    className="text-blue-500 font-medium hover:underline"
-                  >
+                  <Link href="/privacy" className="text-blue-500 font-medium hover:underline">
                     Privacy Policy
                   </Link>
                 </span>
@@ -331,10 +391,7 @@ export default function Signup() {
           <div className="text-center mt-8 text-sm text-gray-500">
             <p>
               Already have an account?{" "}
-              <Link
-                href="/login"
-                className="text-blue-500 font-medium hover:underline"
-              >
+              <Link href="/login" className="text-blue-500 font-medium hover:underline">
                 Sign in
               </Link>
             </p>
@@ -342,5 +399,5 @@ export default function Signup() {
         </div>
       </div>
     </div>
-  );
+  )
 }
