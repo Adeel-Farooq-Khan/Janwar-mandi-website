@@ -12,16 +12,18 @@ import {
   FaLayerGroup,
   FaBars,
   FaTimes,
+  FaTools,
 } from "react-icons/fa"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [dropdownOpen, setDropdownOpen] = useState(false)
+  const dropdownRef = useRef<HTMLDivElement>(null)
 
-  // Close sidebar when screen size changes to larger than md breakpoint
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 768) {
@@ -29,12 +31,21 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       }
     }
 
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setDropdownOpen(false)
+      }
+    }
+
     window.addEventListener("resize", handleResize)
-    return () => window.removeEventListener("resize", handleResize)
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => {
+      window.removeEventListener("resize", handleResize)
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
   }, [])
 
   const handleSignOut = () => {
-    // You can add any sign-out logic here (clear tokens, etc.)
     router.push("/admin/adminlogin")
   }
 
@@ -44,9 +55,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <div className="h-screen flex">
-      {/* Overlay for mobile when sidebar is open */}
       {sidebarOpen && (
-        <div className="fixed inset-0  bg-opacity-50 z-30 md:hidden" onClick={() => setSidebarOpen(false)} />
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden" onClick={() => setSidebarOpen(false)} />
       )}
 
       {/* Sidebar */}
@@ -75,12 +85,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <FaUsers /> <span>Users</span>
           </Link>
 
-          {/* Categories Link (without dropdown) */}
           <Link href="/admin/categories" className="flex items-center gap-2 hover:text-gray-300 py-2">
             <FaThList /> <span>Categories</span>
           </Link>
 
-          {/* New Subcategories Link */}
           <Link href="/admin/subcategories" className="flex items-center gap-2 hover:text-gray-300 py-2">
             <FaLayerGroup /> <span>Subcategories</span>
           </Link>
@@ -88,27 +96,42 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <Link href="/admin/breeds" className="flex items-center gap-2 hover:text-gray-300 py-2">
             <FaCog /> <span>Breeds</span>
           </Link>
+
+          {/* New Admin Settings Link */}
+          <Link href="/admin/adminsettings" className="flex items-center gap-2 hover:text-gray-300 py-2">
+            <FaTools /> <span>Admin Settings</span>
+          </Link>
         </nav>
       </aside>
 
       {/* Main Content */}
       <div className="flex-1 md:ml-[250px] flex flex-col">
         <header className="fixed top-0 left-0 md:left-[250px] right-0 h-16 bg-white shadow flex items-center justify-between px-6 z-30 border-b">
-          {/* Hamburger menu for mobile */}
           <button className="text-gray-700 md:hidden" onClick={toggleSidebar}>
             <FaBars size={24} />
           </button>
 
           <h1 className="text-xl font-semibold text-gray-800 ml-4 md:ml-0">Admin Dashboard</h1>
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <FaUserCircle className="text-2xl text-gray-500" />
-              <span className="text-gray-700 font-medium hidden sm:inline">Admin User</span>
-              <button onClick={handleSignOut} className="ml-4 flex items-center gap-1 text-red-500 hover:text-red-700">
-                <FaSignOutAlt />
-                <span className="hidden sm:inline">Sign Out</span>
-              </button>
-            </div>
+
+          {/* Admin Dropdown with only Sign Out */}
+          <div className="relative" ref={dropdownRef}>
+            <button
+              onClick={() => setDropdownOpen(!dropdownOpen)}
+              className="flex items-center gap-2 text-gray-700"
+            >
+              <FaUserCircle className="text-2xl" />
+              <span className="hidden sm:inline font-medium">Admin User</span>
+            </button>
+            {dropdownOpen && (
+              <div className="absolute right-0 mt-2 w-48 bg-white border rounded shadow z-50">
+                <button
+                  onClick={handleSignOut}
+                  className="w-full px-4 py-2 flex items-center gap-2 text-red-600 hover:bg-gray-100"
+                >
+                  <FaSignOutAlt /> Sign Out
+                </button>
+              </div>
+            )}
           </div>
         </header>
 
